@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "3B09F5448395CB82E461A1F388E310E2CFC32CD0",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "3B09F5448395CB82E461A1F388E310E2CFC32CD0" : 9223372036854775807,
+    "9233F0F4A2BE011BD468E5177A5AD6623263B23D" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "E5ECBC1F-6801-415D-9743-194E02EBDBB9",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "3B09F5448395CB82E461A1F388E310E2CFC32CD0" : "ofxDarkKnight\/",
+    "9233F0F4A2BE011BD468E5177A5AD6623263B23D" : "ofxDatGui\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Alfred",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "example\/Alfred\/Alfred.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/luiscript\/ofxDarkKnight",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "3B09F5448395CB82E461A1F388E310E2CFC32CD0"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/luiscript\/ofxDatGui",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "9233F0F4A2BE011BD468E5177A5AD6623263B23D"
+    }
+  ]
+}

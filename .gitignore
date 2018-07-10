@@ -1,0 +1,9 @@
+[Bb]uild/
+[Oo]bj/
+*.o
+
+
+example/**/[Dd]ebug*/
+example/**/[Rr]elease*/
+
+example/Alfred/bin
