@@ -2,6 +2,12 @@
 
 #include "ofMain.h"
 #include "ofxDarkKnight.hpp"
+#include "preview.hpp"
+#include "mediaPool.hpp"
+#include "basic.hpp"
+#include "screenOutput.hpp"
+
+#include "unordered_map"
 
 class ofApp : public ofBaseApp{
     
@@ -13,4 +19,5 @@ public:
     
     ofxDarkKnight manager;
     shared_ptr<ofAppBaseWindow> mainWindow;
+    
 };

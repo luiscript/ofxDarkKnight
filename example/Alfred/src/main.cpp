@@ -9,8 +9,8 @@ int main( ){
     
     ofGLFWWindowSettings settings;
     settings.resizable = true;
-    settings.width = 2*thisWidth;
-    settings.height = 2*thisHeight;
+    settings.width = 1920;
+    settings.height = 1080;
     settings.windowMode = OF_WINDOW;
     
     shared_ptr<ofAppBaseWindow> mainWindow = ofCreateWindow(settings);

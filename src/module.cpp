@@ -37,14 +37,14 @@ void Module::setupModule(string name, ofxDatGuiTheme * themePtr, ofVec2f resolut
     setupGui(theme);
     setup();
     
-    float x = gui->getPosition().x + gui->getWidth() + 24;
-    float y = gui->getPosition().y + 15;
+    float x = gui->getPosition().x + gui->getWidth() + 17;
+    float y = gui->getPosition().y + 13;
     
     fboOutput = new WireConnection;
     fboOutput->setup(ofPoint(x,y), "fboOutput");
     
-    x = gui->getPosition().x - 24;
-    y = gui->getPosition().y + 15;
+    x = gui->getPosition().x - 17;
+    y = gui->getPosition().y + 13;
     
     fboInput = new WireConnection;
     fboInput->setup(ofPoint(x,y), "fboInput");
@@ -52,6 +52,9 @@ void Module::setupModule(string name, ofxDatGuiTheme * themePtr, ofVec2f resolut
     moduleIsChild = false;
     
     moduleInitialized = true;
+    
+    connectionImage.load("gui/connectionRed.png");
+    connectionImage.resize(24,24);
 
 }
 
@@ -70,6 +73,7 @@ void Module::setupGui(ofxDatGuiTheme * themePtr)
     
     gui->setPosition(0, 0);
     gui->setTheme(theme);
+    //gui->setWidth(gui->getWidth()/2);
     
 }
 
@@ -80,12 +84,12 @@ void Module::updateModule()
         update();
     }
     
-    float x = gui->getPosition().x + gui->getWidth() + 24;
-    float y = gui->getPosition().y + 15;
+    float x = gui->getPosition().x + gui->getWidth() + 17;
+    float y = gui->getPosition().y + 13;
 
     fboOutput->setWireConnectionPos(ofPoint(x,y));
-    x = gui->getPosition().x - 24;
-    y = gui->getPosition().y + 15;
+    x = gui->getPosition().x - 17;
+    y = gui->getPosition().y + 13;
     fboInput->setWireConnectionPos(ofPoint(x,y));
     fboInput->setup(ofPoint(x,y), "fboInput");
 }
@@ -163,8 +167,8 @@ ofxDatGuiTheme * Module::getGuiTheme()
 
 WireConnection * Module::getMainOutput(int x, int y)
 {
-    float xC = gui->getPosition().x + gui->getWidth() + 24;
-    float yC = gui->getPosition().y + 15;
+    float xC = gui->getPosition().x + gui->getWidth() + 17;
+    float yC = gui->getPosition().y + 13;
     fboOutput->setWireConnectionPos(ofPoint(xC, yC));
     
     return ofDist(x, y, xC, yC) <= 15.0 ? fboOutput : nullptr;
@@ -172,8 +176,8 @@ WireConnection * Module::getMainOutput(int x, int y)
 
 WireConnection * Module::getMainInput(int x, int y)
 {
-    float xC = gui->getPosition().x - 24;
-    float yC = gui->getPosition().y + 15;
+    float xC = gui->getPosition().x - 17;
+    float yC = gui->getPosition().y + 13;
     
     fboInput->setWireConnectionPos(ofPoint(xC, yC));
     
@@ -246,40 +250,28 @@ void Module::setResolution(int w, int h)
     setModuleHeight(h);
 }
 
-void Module::drawOutputConnection(ofColor col)
+void Module::drawOutputConnection()
 {
     if(getModuleMidiMapMode())
     {
         ofPushStyle();
-        float x = gui->getPosition().x + gui->getWidth() + 24;
-        float y = gui->getPosition().y + 15;
-        ofSetColor(84, 84, 84);
-        canvasGraphics.circle(x, y, 15);
-        ofSetColor(col);
-        canvasGraphics.circle(x, y, 12);
-        ofSetColor(84, 84, 84);
-        canvasGraphics.circle(x, y, 10);
-        ofSetColor(0);
-        canvasGraphics.circle(x, y, 7);
+        float x = gui->getPosition().x + gui->getWidth() + 5;
+        float y = gui->getPosition().y + 1;
+
+        connectionImage.draw(x,y);
         ofPopStyle();
     }
 }
 
-void Module::drawInputConnection(ofColor col)
+void Module::drawInputConnection()
 {
     if(getModuleMidiMapMode())
     {
         ofPushStyle();
-        float x = gui->getPosition().x - 24;
-        float y = gui->getPosition().y + 15;
-        ofSetColor(84, 84, 84);
-        canvasGraphics.circle(x, y, 15);
-        ofSetColor(col);
-        canvasGraphics.circle(x, y, 12);
-        ofSetColor(84, 84, 84);
-        canvasGraphics.circle(x, y, 10);
-        ofSetColor(0);
-        canvasGraphics.circle(x, y, 7);
+        float x = gui->getPosition().x - 29;
+        float y = gui->getPosition().y + 1;
+
+        connectionImage.draw(x,y);
         ofPopStyle();
     }
 

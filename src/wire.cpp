@@ -30,7 +30,7 @@ Wire::Wire()
     active = true;
     
     wiresTension = 0.95;
-    connectionRadius = 7;
+    connectionRadius = 5;
 }
 
 void Wire::update()
@@ -73,14 +73,13 @@ void Wire::drawWire(ofPoint p1, ofPoint p2, ofPoint p3)
 {
     ofPushStyle();
     ofPushMatrix();
-    
-    wireGraphics.setColor(232, 181, 54);
-    wireGraphics.setLineWidth(5);
-    wireGraphics.noFill();
-    wireGraphics.bezier(p1.x, p1.y, p3.x, p3.y, p3.x, p3.y, p2.x, p2.y);
-    wireGraphics.fill();
-    wireGraphics.circle(p1.x, p1.y, connectionRadius);
-    wireGraphics.circle(p2.x, p2.y, connectionRadius);
+    ofNoFill();
+    ofSetLineWidth(3);
+    ofSetColor(232, 181, 54);
+    ofDrawBezier(p1.x, p1.y, p3.x, p3.y, p3.x, p3.y, p2.x, p2.y);
+    ofFill();
+    ofDrawCircle(p1.x, p1.y, connectionRadius);
+    ofDrawCircle(p2.x, p2.y, connectionRadius);
     
     ofPopMatrix();
     ofPopStyle();

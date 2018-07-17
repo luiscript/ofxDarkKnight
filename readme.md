@@ -1,15 +1,12 @@
 ## ofxDarkKnight ##
 
-**Node based programming environment for live audiovisual performances created with openframeworks**
+**Node based programming environment for openframeworks**
 
 ## Setup
 - Copy /data content into yourProject/bin/data/
-- Add dependencies
 
 ## Dependencies
-- My fork of [ofxDatGui](https://github.com/luiscript/ofxDatGui)
-- ofxSvg
-- ofxVectorGraphics
+- My fork of [ofxDatGui](https://github.com/luiscript/ofxDatGui) (included in libs)
 
 ## Instructions
 - Press CMD+Enter to show/hide modules list
@@ -18,6 +15,6 @@
 - Connect the nodes (ex. Sketch pool main output -> Preview input)
 
 ## Tested on
-- Mac OSX 10.12.4  
+- Mac OSX 10.13.6  
 - oF 0.9.8  
-- Xcode 8.0
+- Xcode 9.4.1

@@ -25,7 +25,7 @@
 #include "ofMain.h"
 #include "module.hpp"
 #include "wireConnection.hpp"
-#include "ofxVectorGraphics.h"
+//#include "ofxVectorGraphics.h"
 
 class Wire{
 public:
@@ -56,7 +56,7 @@ public:
     ofxDatGuiSlider * slider;
     bool active;
     
-    ofxVectorGraphics wireGraphics;
+   // ofxVectorGraphics wireGraphics;
     float connectionRadius;
     float wiresTension;
     

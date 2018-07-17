@@ -24,17 +24,15 @@
 #define modulesManager_hpp
 
 #include "unordered_map"
-
 #include "ofMain.h"
 
 #include "module.hpp"
 #include "ofxDatGui.h"
 #include "wireConnection.hpp"
 #include "wire.hpp"
-#include "ofxVectorGraphics.h"
+
 #include "preview.hpp"
 #include "mediaPool.hpp"
-#include "basic.hpp"
 #include "screenOutput.hpp"
 
 
@@ -67,7 +65,7 @@ public:
     
     shared_ptr<ofAppBaseWindow> mainWindow;
     
-    void setup();
+    void setup(unordered_map<string, Module*> *);
     void update();
     
     void draw();
@@ -91,6 +89,7 @@ public:
     
     void onResolutionChange(ofVec2f &);
     void onComponentListChange(ofxDatGuiScrollViewEvent e);
+    
 };
 
 #endif /* modulesManager_hpp */

@@ -33,7 +33,7 @@ void MediaPool::init()
     font.load("fonts/Roboto-Light.ttf", 15, true, true);
     setModuleHasChild(true);
     alpha = 255;
-    yOffsetGui = 135;
+    yOffsetGui = 120;
     showMediaPool = false;
     lightPositionX = lightPositionY = lightPositionZ = 0;
     diffuseR = diffuseG = diffuseB = 0;
@@ -323,12 +323,12 @@ void MediaPool::gotMidiPitch(string mapping)
 
 void MediaPool::drawMasterInput()
 {
-    drawInputConnection(ofColor(255,0,0));
+    drawInputConnection();
 }
 
 void MediaPool::drawMasterOutput()
 {
-    drawOutputConnection(ofColor(255,0,0));
+    drawOutputConnection();
 }
 
 void MediaPool::setCollectionName(string name)

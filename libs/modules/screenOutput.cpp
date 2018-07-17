@@ -21,7 +21,7 @@ ofFbo * ScreenOutput::getFbo()
 
 void ScreenOutput::drawMasterInput()
 {
-    drawInputConnection(ofColor(255,0,0));
+    drawInputConnection();
 }
 
 void ScreenOutput::drawMasterOutput()
@@ -82,7 +82,7 @@ void ScreenOutput::onVideoOutputChange(ofxDatGuiDropdownEvent e)
         settings.shareContextWith = mainWindow;
         display = ofCreateWindow(settings);
         ofAddListener(display->events().draw, this, &ScreenOutput::drawDisplay);
-        
+        //display->setFullscreen(true);
     } else {
         display->setFullscreen(false);
         display->setWindowShouldClose();

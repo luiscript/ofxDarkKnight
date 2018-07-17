@@ -33,19 +33,23 @@ ofxDarkKnight::~ofxDarkKnight()
     
 }
 
-void ofxDarkKnight::setup()
+void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
 {
     // the modules that you can load in your app
-    modulesPool = {
-        { "PREVIEW", new Preview },
-        { "SCREEN OUTPUT", new ScreenOutput },
-        { "SKETCH POOL", new Basic }
-    };
+   
     
     theme = new ofxDatGuiThemeCharcoal();
     cmdKey = midiMapMode = drawing = showExplorer = false;
     translation = { 0, 0 };
-    resolution = { 1920, 1200 };
+    resolution = { 1920, 1080 };
+    
+    modulesPool = *pool;
+    const int s = modulesPool.size();
+    
+    for(pair<string, Module*> module : modulesPool )
+        poolNames.push_back(module.first);
+    
+    poolNames.sort();
     
     componentsList = new ofxDatGuiScrollView("Modules list", 10);
     componentsList->setTheme(theme);
@@ -53,16 +57,8 @@ void ofxDarkKnight::setup()
     componentsList->setHeight(600);
     componentsList->setPosition(ofGetWidth()/2 - 400, ofGetHeight()/2 - 400);
     
-    const int s = modulesPool.size();
-    
-    for(pair<string, Module*> module : modulesPool )
-        poolNames.push_back(module.first);
-
-    poolNames.sort();
-    
     for(list<string>::iterator it = poolNames.begin(); it != poolNames.end(); it++)
         componentsList->add(*it);
-    
     
     componentsList->onScrollViewEvent(this, &ofxDarkKnight::onComponentListChange);
     ofAddListener(ofEvents().mousePressed, this, &ofxDarkKnight::handleMousePressed);
@@ -476,3 +472,4 @@ void ofxDarkKnight::close()
     }
     modules.clear();
 }
+

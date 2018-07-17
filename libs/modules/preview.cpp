@@ -26,7 +26,7 @@ void Preview::setup()
 {
     drawFbo = false;
     fbo = nullptr;
-    scaleX = scaleY = 0.25;
+    scaleX = scaleY = 0.5;
 }
 
 void Preview::update()
@@ -39,7 +39,7 @@ void Preview::draw()
     if(drawFbo)
     {
         ofPushMatrix();
-        ofTranslate(gui->getPosition().x, gui->getPosition().y + 70);
+        ofTranslate(gui->getPosition().x, gui->getPosition().y + 60);
         ofScale(scaleX, scaleY);
         fbo->draw(0,0);
         ofPopMatrix();
@@ -70,11 +70,11 @@ ofFbo * Preview::getFbo()
 
 void Preview::drawMasterOutput()
 {
-    drawOutputConnection(ofColor(255,0,0));
+    drawOutputConnection();
 }
 
 void Preview::drawMasterInput()
 {
-    drawInputConnection(ofColor(255,0,0));
+    drawInputConnection();
 }
 

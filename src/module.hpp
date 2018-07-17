@@ -26,7 +26,6 @@
 #include "ofMain.h"
 #include "ofxDatGui.h"
 #include "unordered_map"
-#include "ofxVectorGraphics.h"
 #include "wireConnection.hpp"
 
 class Module{
@@ -59,7 +58,8 @@ public:
     bool customParams = false;
     bool moduleIsChild = false;
     ofxDatGui * gui;
-    ofxVectorGraphics canvasGraphics;
+    //ofxVectorGraphics canvasGraphics;
+    ofImage connectionImage;
     
     WireConnection * fboOutput;
     WireConnection * fboInput;
@@ -88,8 +88,8 @@ public:
     void enable();
     void disable();
     
-    void drawOutputConnection(ofColor);
-    void drawInputConnection(ofColor);
+    void drawOutputConnection();
+    void drawInputConnection();
     
     int getModuleIndex();
     float getModuleWidth();

@@ -1,4 +1,1 @@
 ofxDarkKnight
-ofxDatGui
-ofxSvg
-ofxVectorGraphics
