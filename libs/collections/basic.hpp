@@ -34,8 +34,18 @@ public:
         setCollectionName("Example");
         
         collection = {
-            { "TERRAIN", new Terrain, "thumbnails/terrain.jpg", new ofImage },
-            { "CONSTELLATION", new Constellation, "thumbnails/constellation.jpg", new ofImage },
+            {
+                "TERRAIN",
+                new Terrain,
+                "thumbnails/terrain.jpg",
+                new ofImage
+            },
+            {
+                "CONSTELLATION",
+                new Constellation,
+                "thumbnails/constellation.jpg",
+                new ofImage
+            },
         };
         init();
     }

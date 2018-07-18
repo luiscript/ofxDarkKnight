@@ -102,10 +102,10 @@ void Module::updateModule(float tx, float ty)
 
 void Module::drawModule()
 {
-    if (moduleEnabled) draw();
     gui->draw();
     drawMasterInput();
     drawMasterOutput();
+    if (moduleEnabled) draw();
 }
 
 
