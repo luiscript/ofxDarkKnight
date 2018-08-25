@@ -1,0 +1,7 @@
+ofxAbletonLink
+ofxDarkKnight
+ofxDarkKnightAbletonLink
+ofxDarkKnightMidi
+ofxDarkKnightOsc
+ofxMidi
+ofxOsc

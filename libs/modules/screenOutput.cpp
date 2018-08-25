@@ -69,7 +69,6 @@ void ScreenOutput::onVideoOutputChange(ofxDatGuiDropdownEvent e)
 
         int xpos, ypos;
         glfwGetMonitorPos(*monitors, &xpos, &ypos);
-        
         ofGLFWWindowSettings settings;
         
         settings.width = getModuleWidth();

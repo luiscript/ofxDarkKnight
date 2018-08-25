@@ -65,7 +65,6 @@ void MediaPool::init()
     addCustomParameters();
     triggerPoolMedia(index);
     //ofAddListener(ofEvents().mousePressed, this, &MediaPool::mousePressed);
-    cout << "media pool init "<< endl;
 }
 
 

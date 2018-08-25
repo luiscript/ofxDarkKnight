@@ -2,9 +2,9 @@
 [Oo]bj/
 *.o
 
-example/**/[Dd]ebug*/
-example/**/[Rr]elease*/
+examples/**/[Dd]ebug*/
+examples/**/[Rr]elease*/
 
 
-example/Alfred/bin
-example/ofxDarkKnightMidiExample/bin
+examples/basicExample/bin
+examples/allModulesExample/bin

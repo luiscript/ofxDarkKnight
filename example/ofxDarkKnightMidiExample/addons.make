@@ -1,3 +1,0 @@
-ofxDarkKnight
-ofxDarkKnightMidi
-ofxMidi
