@@ -3,5 +3,7 @@ ofxDarkKnight
 ofxDarkKnightAbletonLink
 ofxDarkKnightMidi
 ofxDarkKnightOsc
+ofxDarkKnightSyphon
 ofxMidi
 ofxOsc
+ofxSyphon

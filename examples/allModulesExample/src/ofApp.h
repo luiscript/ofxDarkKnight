@@ -6,6 +6,7 @@
 #include "ofxDarkKnightMidi.hpp"
 #include "ofxDarkKnightOsc.hpp"
 #include "ofxDarkKnightAbletonLink.hpp"
+#include "ofxDarkKnightSyphon.hpp"
 
 #include "preview.hpp"
 #include "basic.hpp"

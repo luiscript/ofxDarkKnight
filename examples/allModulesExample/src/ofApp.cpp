@@ -15,7 +15,8 @@ void ofApp::setup()
         { "MIDI CONTROLLER", new ofxDarkKnightMidi},
         { "OSC CONTROLLER", new ofxDarkKnightOsc},
         { "SCREEN OUTPUT", new ScreenOutput },
-        { "SKETCH POOL", new Basic }
+        { "SKETCH POOL", new Basic },
+        { "SYPHON SERVER", new ofxDarkKnightSyphon}
     };
     
     manager.setup(&modulesPool);

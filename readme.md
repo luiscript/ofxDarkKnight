@@ -197,7 +197,9 @@ The **stand alone** modules are designed to interact with your sketches in diffe
 
 The **drawer modules** are designed to draw something on the screen, this could be a video, generative animation, shader or anything that can draw on the screen.
 
-##The Module class
+
+## The Module Class
+
 
 To create a new module follow the steps:
 
@@ -463,6 +465,8 @@ MIDI controller [ofxDarkKnightMidi](https://github.com/luiscript/ofxDarkKnightMi
 OSC controller [ofxDarkKnightOsc](https://github.com/luiscript/ofxDarkKnightOsc)
 
 Ableton Link [ofxDarkKnightAbletonLink](https://github.com/luiscript/ofxDarkKnightAbletonLink)
+
+Syphon server [ofxDarkKnightSyphon](https://github.com/luiscript/ofxDarkKnightSyphon)
 
 
 # License
