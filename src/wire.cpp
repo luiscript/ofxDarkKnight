@@ -41,21 +41,16 @@ void Wire::update()
         {
             slider->setComponentScale(*output->getScale());
         }
-        else if(type == "fbo")
-        {
-            
-        }
     }
 }
 
 void Wire::draw()
 {
-    if (this->inputModule->getModuleEnabled() && this->outputModule->getModuleEnabled()) {
-        float dist = this->getDistance();
-        
-        ofPoint p1 = this->getOutput()->getWireConnectionPos();
-        ofPoint p2 = this->getInput()->getWireConnectionPos();
-        ofPoint p3 = getWireControlPoint(p1, p2, this->getOutput()->getDist(this->getInput()));
+    if (inputModule->getModuleEnabled() && outputModule->getModuleEnabled()) {
+        float dist = getDistance();
+        ofPoint p1 = output->getWireConnectionPos();
+        ofPoint p2 = input->getWireConnectionPos();
+        ofPoint p3 = getWireControlPoint(p1, p2, output->getDist(input));
         drawWire(p1, p2, p3);
     }
 }
@@ -87,9 +82,9 @@ void Wire::drawWire(ofPoint p1, ofPoint p2, ofPoint p3)
 
 void Wire::drawCurrentWire(ofPoint p)
 {
-    ofPoint op = this->getOutput()->getWireConnectionPos();
+    ofPoint op = output->getWireConnectionPos();
     float dist = ofDist(op.x, op.y, p.x, p.y);
-    ofPoint out = this->getOutput()->getWireConnectionPos();
+    ofPoint out = output->getWireConnectionPos();
     ofPoint controlPoint = getWireControlPoint(out, p, dist);
     drawWire(out, p, controlPoint);
 }

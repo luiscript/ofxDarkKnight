@@ -58,7 +58,6 @@ public:
     bool customParams = false;
     bool moduleIsChild = false;
     ofxDatGui * gui;
-    //ofxVectorGraphics canvasGraphics;
     ofImage connectionImage;
     
     WireConnection * fboOutput;

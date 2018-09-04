@@ -200,6 +200,7 @@ void ofxDarkKnight::handleMousePressed(ofMouseEventArgs &mouse)
     
     for(pair<string, Module*> module : modules )
     {
+        //send mouse arguments to modules with childs (like Media Pool)
         if(module.second->getModuleHasChild())
         {
             MediaPool * mp = static_cast<MediaPool*>(module.second);
@@ -230,7 +231,9 @@ void ofxDarkKnight::handleMousePressed(ofMouseEventArgs &mouse)
                 {
                     //disconect the wire and delete it from the list
                     currentWire = new Wire;
+                    currentWire->type = "scale";
                     currentWire->setOutput(it->getOutput());
+                    currentWire->outputModule = it->outputModule;
 
                     pointer.x = x;
                     pointer.y = y;
@@ -315,7 +318,7 @@ void ofxDarkKnight::handleMouseReleased(ofMouseEventArgs & mouse)
     {
         input = module.second->getInputConnection(x, y);
         
-        //true if user released the cable in input connection
+        //true if user released the wire on input connection
         if(input != nullptr && currentWire != nullptr)
         {
             currentWire->setInput(input);

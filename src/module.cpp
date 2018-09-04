@@ -73,7 +73,6 @@ void Module::setupGui(ofxDatGuiTheme * themePtr)
     
     gui->setPosition(0, 0);
     gui->setTheme(theme);
-    //gui->setWidth(gui->getWidth()/2);
     
 }
 
