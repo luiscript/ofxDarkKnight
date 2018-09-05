@@ -1,0 +1,3 @@
+[submodule "libs/ofxDatGui"]
+	path = libs/ofxDatGui
+	url = https://github.com/luiscript/ofxDatGui

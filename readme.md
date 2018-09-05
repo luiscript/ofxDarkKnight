@@ -23,6 +23,10 @@ Download and install [ofxDarkKnight](https://github.com/luiscript/ofxDarkKnight/
   
   `git clone https://github.com/luiscript/ofxDarkKnight/`
 
+## Add dependencies
+
+ `git submodule update --init --recursive`
+
 # Running the examples
 
 1. Open the [basicExample](https://github.com/luiscript/ofxDarkKnight/tree/master/examples/basicExample) project under your `openframeworks/addons/ofxDarkKnight/example` directory.
