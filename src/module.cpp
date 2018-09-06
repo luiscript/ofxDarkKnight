@@ -253,11 +253,15 @@ void Module::drawOutputConnection()
 {
     if(getModuleMidiMapMode())
     {
+        
+        float x = gui->getPosition().x + gui->getWidth() + 17;
+        float y = gui->getPosition().y + 13;
+        
         ofPushStyle();
-        float x = gui->getPosition().x + gui->getWidth() + 5;
-        float y = gui->getPosition().y + 1;
-
-        connectionImage.draw(x,y);
+        ofSetColor(180,180,0);
+        ofDrawCircle(x, y, 10);
+        ofSetColor(0);
+        ofDrawCircle(x, y, 6);
         ofPopStyle();
     }
 }
@@ -266,12 +270,17 @@ void Module::drawInputConnection()
 {
     if(getModuleMidiMapMode())
     {
-        ofPushStyle();
-        float x = gui->getPosition().x - 29;
-        float y = gui->getPosition().y + 1;
+        
+        float x = gui->getPosition().x - 17;
+        float y = gui->getPosition().y + 13;
 
-        connectionImage.draw(x,y);
+        ofPushStyle();
+        ofSetColor(180,180,0);
+        ofDrawCircle(x, y, 10);
+        ofSetColor(0);
+        ofDrawCircle(x, y, 6);
         ofPopStyle();
+        
     }
 
 }

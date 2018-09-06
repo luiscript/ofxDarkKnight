@@ -39,7 +39,7 @@ void Preview::draw()
     if(drawFbo)
     {
         ofPushMatrix();
-        ofTranslate(gui->getPosition().x, gui->getPosition().y + 60);
+        ofTranslate(gui->getPosition().x, gui->getPosition().y + 65);
         ofScale(scaleX, scaleY);
         fbo->draw(0,0);
         ofPopMatrix();

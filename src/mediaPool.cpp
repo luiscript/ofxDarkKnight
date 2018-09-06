@@ -33,15 +33,16 @@ void MediaPool::init()
     font.load("fonts/Roboto-Light.ttf", 15, true, true);
     setModuleHasChild(true);
     alpha = 255;
-    yOffsetGui = 120;
+    yOffsetGui = 65;
     showMediaPool = false;
     lightPositionX = lightPositionY = lightPositionZ = 0;
     diffuseR = diffuseG = diffuseB = 0;
     ambientR = ambientG = ambientB = 0;
     
-    ofVec2f resolution = {getModuleWidth(), getModuleHeight()};
+    ofVec2f resolution = { getModuleWidth(), getModuleHeight() };
     
-    for (auto collectionItem : collection) {
+    for (auto collectionItem : collection)
+    {
         collectionItem.thumbnail->load(collectionItem.fileName);
         collectionItem.canvas->setupModule(collectionItem.collectionName, this->getGuiTheme(), resolution);
         collectionItem.canvas->gui->setVisible(false);
@@ -52,12 +53,10 @@ void MediaPool::init()
     nextIndex = index = 0;
     modules = nullptr;
     
-    
     mainFbo.allocate(getModuleWidth(), getModuleHeight(), GL_RGBA, 4);
     mainFbo.begin();
     ofClear(0, 0, 0,0);
     mainFbo.end();
-    
     
     currentCanvas = collection[index].canvas;
     currentCanvas->moduleIsChild = true;
@@ -244,11 +243,10 @@ void MediaPool::triggerPoolMedia(int ind)
 
 void MediaPool::addModuleParameters()
 {
-    gui->addSlider("Alpha", 0, 255)->bind(alpha);
-    ofxDatGuiToggle * toggleDraw = gui->addToggle("draw");
-    toggleDraw->setChecked(false);
-    toggleDraw->onToggleEvent(this, &MediaPool::onToggleDraw);
-
+    //gui->addSlider("Alpha", 0, 255)->bind(alpha);
+    //ofxDatGuiToggle * toggleDraw = gui->addToggle("draw");
+    //toggleDraw->setChecked(false);
+    //toggleDraw->onToggleEvent(this, &MediaPool::onToggleDraw);
 }
 
 void MediaPool::onMatrix1Change(ofxDatGuiMatrixEvent e)

@@ -55,7 +55,7 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
     componentsList->setTheme(theme);
     componentsList->setWidth(800);
     componentsList->setHeight(600);
-    componentsList->setPosition(ofGetWidth()/2 - 400, ofGetHeight()/2 - 400);
+    componentsList->setPosition(ofGetScreenWidth()/2 - 400, ofGetScreenHeight()/2 - 400);
     
     for(list<string>::iterator it = poolNames.begin(); it != poolNames.end(); it++)
         componentsList->add(*it);
