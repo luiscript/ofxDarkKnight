@@ -144,12 +144,13 @@ void ofxDarkKnight::onComponentListChange(ofxDatGuiScrollViewEvent e)
             ScreenOutput * so = static_cast<ScreenOutput*>(it->second);
             so->mainWindow = mainWindow;
             modules.insert({it->first, so});
-        }else if(e.target->getName() == "MIDI CONTROLLER")
-        {
-            ofxDarkKnightMidi * controller = static_cast<ofxDarkKnightMidi*>(it->second);
-            ofAddListener(controller->sendMidi, this, &ofxDarkKnight::onMidiMappingArrive);
-            modules.insert({it->first, controller});
         }
+//        else if(e.target->getName() == "MIDI CONTROLLER")
+//        {
+//            ofxDarkKnightMidi * controller = static_cast<ofxDarkKnightMidi*>(it->second);
+//            ofAddListener(controller->sendMidi, this, &ofxDarkKnight::onMidiMappingArrive);
+//            modules.insert({it->first, controller});
+//        }
         else
         {
             modules.insert({it->first, it->second});
@@ -482,7 +483,9 @@ void ofxDarkKnight::close()
     modules.clear();
 }
 
-void ofxDarkKnight::onMidiMappingArrive(ofxMidiMessage & msg)
+/********   uncomment this when ofxDarkKnightMidi is included
+ 
+ void ofxDarkKnight::onMidiMappingArrive(ofxMidiMessage & msg)
 {
     string mapping;
     if(msg.control > 0)
@@ -490,7 +493,7 @@ void ofxDarkKnight::onMidiMappingArrive(ofxMidiMessage & msg)
         mapping = ofToString(msg.channel) + "/" + ofToString(msg.control);
     } else {
         mapping = ofToString(msg.channel) + "/" + ofToString(msg.pitch);
-        
+
         if(msg.status == MIDI_NOTE_ON)
             for(pair<string, Module*> module : modules )
                 if(module.second->getModuleHasChild())
@@ -500,3 +503,4 @@ void ofxDarkKnight::onMidiMappingArrive(ofxMidiMessage & msg)
                 }
     }
 }
+*********/

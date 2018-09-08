@@ -34,7 +34,7 @@
 #include "preview.hpp"
 #include "mediaPool.hpp"
 #include "screenOutput.hpp"
-#include "ofxDarkKnightMidi.hpp"
+//#include "ofxDarkKnightMidi.hpp"
 
 
 class ofxDarkKnight {
@@ -90,7 +90,7 @@ public:
     
     void onResolutionChange(ofVec2f &);
     void onComponentListChange(ofxDatGuiScrollViewEvent e);
-    void onMidiMappingArrive(ofxMidiMessage &);
+    //void onMidiMappingArrive(ofxMidiMessage &);
     
 };
 
