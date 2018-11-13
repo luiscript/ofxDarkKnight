@@ -35,13 +35,10 @@ ofxDarkKnight::~ofxDarkKnight()
 
 void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
 {
-    // the modules that you can load in your app
-   
-    
     theme = new ofxDatGuiThemeCharcoal();
-    cmdKey = midiMapMode = drawing = showExplorer = false;
+    altKey = cmdKey = midiMapMode = drawing = showExplorer = false;
     translation = { 0, 0 };
-    resolution = { 1920, 1080 };
+    resolution = { 1080, 1080 };
     
     modulesPool = *pool;
     const int s = modulesPool.size();
@@ -55,7 +52,7 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
     componentsList->setTheme(theme);
     componentsList->setWidth(800);
     componentsList->setHeight(600);
-    componentsList->setPosition(ofGetScreenWidth()/2 - 400, ofGetScreenHeight()/2 - 400);
+    componentsList->setPosition(ofGetWidth()/2 - 400, ofGetHeight()/2 - 400);
     
     for(list<string>::iterator it = poolNames.begin(); it != poolNames.end(); it++)
         componentsList->add(*it);
@@ -75,7 +72,8 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
 void ofxDarkKnight::update()
 {
     for(pair<string, Module*> module : modules )
-        module.second->updateModule(translation.x, translation.y);
+        if(module.second->getModuleEnabled())
+            module.second->updateModule(translation.x, translation.y);
 
     for (auto wire : wires)
         if(wire.inputModule->getModuleEnabled() && wire.outputModule->getModuleEnabled())
@@ -101,7 +99,7 @@ void ofxDarkKnight::draw()
         for(auto wire : wires) wire.draw();
         if(drawing) currentWire->drawCurrentWire(pointer);
     }
-    
+
     ofPopMatrix();
     
     if (showExplorer) {
@@ -145,12 +143,12 @@ void ofxDarkKnight::onComponentListChange(ofxDatGuiScrollViewEvent e)
             so->mainWindow = mainWindow;
             modules.insert({it->first, so});
         }
-//        else if(e.target->getName() == "MIDI CONTROLLER")
-//        {
+        else if(e.target->getName() == "MIDI CONTROLLER")
+        {
 //            ofxDarkKnightMidi * controller = static_cast<ofxDarkKnightMidi*>(it->second);
-//            ofAddListener(controller->sendMidi, this, &ofxDarkKnight::onMidiMappingArrive);
+//            ofAddListener(controller->sendMidi, this, &ofxDarkKnight::newMidiMessage);
 //            modules.insert({it->first, controller});
-//        }
+        }
         else
         {
             modules.insert({it->first, it->second});
@@ -170,26 +168,6 @@ void ofxDarkKnight::onComponentListChange(ofxDatGuiScrollViewEvent e)
 
     toggleList();
 }
-
-
-//void ofxDarkKnight::onMidiMappingArrive(ofxMidiMessage & msg)
-//{
-//    string mapping;
-//    if(msg.control > 0)
-//    {
-//        mapping = ofToString(msg.channel) + "/" + ofToString(msg.control);
-//    } else {
-//        mapping = ofToString(msg.channel) + "/" + ofToString(msg.pitch);
-//        
-//        if(msg.status == MIDI_NOTE_ON)
-//            for(pair<string, Module*> module : modules )
-//                if(module.second->getModuleHasChild())
-//                {
-//                    MediaPool * mp = static_cast<MediaPool*>(module.second);
-//                    mp->gotMidiPitch(mapping);
-//                }
-//    }
-//}
 
 void ofxDarkKnight::handleMousePressed(ofMouseEventArgs &mouse)
 {
@@ -298,6 +276,19 @@ void ofxDarkKnight::handleMousePressed(ofMouseEventArgs &mouse)
         }
         
     }
+    
+    //right click?
+    if(mouse.button == 2)
+    {
+        toggleList();
+    }
+    
+    //middle click
+    if(mouse.button == 1)
+    {
+        toggleMappingMode();
+    }
+    
 }
 
 void ofxDarkKnight::handleMouseDragged(ofMouseEventArgs & mouse)
@@ -449,15 +440,17 @@ void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
     
     if(keyboard.key == OF_KEY_COMMAND) cmdKey = true;
     if(keyboard.key == OF_KEY_SHIFT) shiftKey = true;
+    if(keyboard.key == OF_KEY_ALT) altKey = true;
+        
     
     // toggle show explorer
-    if(cmdKey && keyboard.key == OF_KEY_RETURN)
+    if(cmdKey && (keyboard.key == OF_KEY_RETURN || keyboard.key == 'z'))
     {
         toggleList();
     }
     
-    // cmd+shift+m -> Toggle midiMap on all layers
-    if(keyboard.key == 'm' && cmdKey && shiftKey){
+    // cmd+shift+m || cmd+shift+<  -> Toggle midiMap on all layers
+    if(cmdKey && (keyboard.key == 'm' || keyboard.key == '<')){
         toggleMappingMode();
     }
 
@@ -472,6 +465,7 @@ void ofxDarkKnight::handleKeyReleased(ofKeyEventArgs &keyboard)
 {
     if(keyboard.key == OF_KEY_COMMAND) cmdKey = false;
     if(keyboard.key == OF_KEY_SHIFT) shiftKey = false;
+    if(keyboard.key == OF_KEY_ALT) altKey = false;
 }
 
 void ofxDarkKnight::close()
@@ -483,24 +477,38 @@ void ofxDarkKnight::close()
     modules.clear();
 }
 
-/********   uncomment this when ofxDarkKnightMidi is included
- 
- void ofxDarkKnight::onMidiMappingArrive(ofxMidiMessage & msg)
+//  comment this when ofxDarkKnightMidi is not included
+
+/*
+void ofxDarkKnight::newMidiMessage(ofxMidiMessage & msg)
 {
+    //send midi message to media pool.
+    for(pair<string, Module*> module : modules )
+        if(module.second->getModuleHasChild())
+        {
+            MediaPool * mp = static_cast<MediaPool*>(module.second);
+            mp->gotMidiMessage(&msg);
+        }
+    
     string mapping;
     if(msg.control > 0)
     {
-        mapping = ofToString(msg.channel) + "/" + ofToString(msg.control);
+        mapping = ofToString(msg.channel) + "/"
+                + ofToString(msg.control);
     } else {
-        mapping = ofToString(msg.channel) + "/" + ofToString(msg.pitch);
+        mapping = ofToString(msg.channel) + "/"
+                + ofToString(msg.pitch);
 
         if(msg.status == MIDI_NOTE_ON)
             for(pair<string, Module*> module : modules )
                 if(module.second->getModuleHasChild())
                 {
                     MediaPool * mp = static_cast<MediaPool*>(module.second);
-                    mp->gotMidiPitch(mapping);
+                    mp->gotMidiMapping(mapping);
                 }
     }
+    
 }
-*********/
+
+ */
+//   ofxDarkKnightMidi /

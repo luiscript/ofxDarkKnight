@@ -48,6 +48,7 @@ private:
     bool midiMapMode;
     bool cmdKey;
     bool shiftKey;
+    bool altKey;
     
     Wire * currentWire;
     vector<Wire> wires;
@@ -90,7 +91,7 @@ public:
     
     void onResolutionChange(ofVec2f &);
     void onComponentListChange(ofxDatGuiScrollViewEvent e);
-    //void onMidiMappingArrive(ofxMidiMessage &);
+   // void newMidiMessage(ofxMidiMessage &);
     
 };
 

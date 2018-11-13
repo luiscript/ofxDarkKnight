@@ -50,7 +50,7 @@ void Constellation::setup()
     }
     
     numParticles = 1000;
-    
+    ofClear(0,0,0,0);
 }
 
 
@@ -103,7 +103,7 @@ void Constellation::draw()
     //draw the FBO
     //fbo.begin();
     ofPushMatrix();
-    ofClear(0,0,0,0);
+    //ofClear(0,0,0,0);
     
     
     ofSetColor(255);
@@ -241,7 +241,6 @@ void Constellation::addModuleParameters()
     connectionParams->addSlider("line width", 0, 10, 1)->bind(lineWidth);
     connectionParams->expand();
     
-
 }
 
 void Constellation::onDrawingModeChange(ofxDatGuiMatrixEvent e)

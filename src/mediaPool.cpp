@@ -20,7 +20,7 @@
  SOFTWARE.
  */
 
-#include "MediaPool.hpp"
+#include "mediaPool.hpp"
 
 
 void MediaPool::setup()
@@ -33,11 +33,16 @@ void MediaPool::init()
     font.load("fonts/Roboto-Light.ttf", 15, true, true);
     setModuleHasChild(true);
     alpha = 255;
-    yOffsetGui = 65;
+    yOffsetGui = 30;
+    gui->setWidth(450);
     showMediaPool = false;
-    lightPositionX = lightPositionY = lightPositionZ = 0;
-    diffuseR = diffuseG = diffuseB = 0;
-    ambientR = ambientG = ambientB = 0;
+    lightPositionX = getModuleWidth()/2;
+    lightPositionY = getModuleHeight()/2;
+    lightPositionZ = 0;
+    diffuseR = 0;
+    diffuseG = 0;
+    diffuseB = 0;
+    ambientR = ambientG = ambientB = 255;
     
     ofVec2f resolution = { getModuleWidth(), getModuleHeight() };
     
@@ -64,6 +69,12 @@ void MediaPool::init()
     addCustomParameters();
     triggerPoolMedia(index);
     //ofAddListener(ofEvents().mousePressed, this, &MediaPool::mousePressed);
+    
+    midiMappings.insert({"16/0", 0});
+    midiMappings.insert({"16/1", 1});
+    midiMappings.insert({"16/2", 2});
+    midiMappings.insert({"16/3", 3});
+    midiMappings.insert({"16/4", 4});
 }
 
 
@@ -86,10 +97,10 @@ void MediaPool::draw()
 
     mainFbo.begin();
     
-    if(!drawMode)
-    {
-       ofClear(0,0,0,255);
-    }
+//    if(!drawMode)
+//    {
+//       ofClear(0,0,0,255);
+//    }
     
     
     ofPushStyle();
@@ -99,32 +110,33 @@ void MediaPool::draw()
     
     light.setDiffuseColor(ofColor(diffuseR, diffuseG, diffuseB));
     light.setAmbientColor(ofColor(ambientR, ambientG, ambientB));
-    ofEnableDepthTest();
+   // ofEnableDepthTest();
 
     currentCanvas->draw();
     
-    ofDisableDepthTest();
+  //  ofDisableDepthTest();
     light.disable();
     ofDisableLighting();
     ofPopStyle();
     
 
     
-    if(drawMode)
-    {
-        ofPushStyle();
-        ofSetColor(0, 0, 0, 255 - alpha);
-        ofFill();
-        ofDrawRectangle(0, 0, getModuleWidth(), getModuleHeight());
-        ofPopStyle();
-    }
-    
-    if (hasInput) {
-        ofEnableBlendMode(OF_BLENDMODE_ALPHA);
-        inputFbo->draw(0,0);
-    }
-    
-    
+//    if(drawMode)
+//    {
+//        ofPushStyle();
+//        ofSetColor(0, 0, 0, 255 - alpha);
+//        ofFill();
+//        ofDrawRectangle(0, 0, getModuleWidth(), getModuleHeight());
+//        ofPopStyle();
+//    }
+//
+//    if (hasInput) {
+//        ofEnableBlendMode(OF_BLENDMODE_ALPHA);
+//        inputFbo->draw(0,0);
+//    }
+//
+//
+
     mainFbo.end();
 
     drawMediaPool();
@@ -157,7 +169,7 @@ void MediaPool::drawMediaPool()
             if(curIndex < collection.size())
             {
                 ofSetColor(255);
-                collection[curIndex].thumbnail->draw(i*cellWidth+4,  j*cellHeight + 4, cellWidth-4, cellHeight-8);
+                collection[curIndex].thumbnail->draw(i*cellWidth+3,  j*cellHeight+1, cellWidth-4, cellHeight-4);
             }
             if(index == curIndex)
             {
@@ -236,6 +248,10 @@ void MediaPool::triggerPoolMedia(int ind)
         if(nextIndex != index) currentCanvas->triggerMidiEvent();
         nextIndex = index = ind;
         addCustomParameters();
+        
+        mainFbo.begin();
+        ofClear(0,0,0,0);
+        mainFbo.end();
 
     }
 }
@@ -287,8 +303,9 @@ void MediaPool::addCustomParameters()
     
 }
 
-void MediaPool::gotMidiPitch(string mapping)
+void MediaPool::gotMidiMapping(string mapping)
 {
+    
     unordered_map<string, int>::iterator it;
     it = midiMappings.find(mapping);
     
@@ -308,6 +325,7 @@ void MediaPool::gotMidiPitch(string mapping)
         if(!this->getModuleMidiMapMode())
         {
             int ind = midiMappings[mapping];
+            cout << "ind mapping" << ind << endl;
             if(ind != index)
             {
                 nextIndex = ind;
@@ -317,6 +335,11 @@ void MediaPool::gotMidiPitch(string mapping)
         }
     }
 }
+
+//void MediaPool::gotMidiMessage(ofxMidiMessage * msg)
+//{
+//    currentCanvas->triggerMidiMessage(msg);
+//}
 
 void MediaPool::drawMasterInput()
 {
@@ -348,8 +371,8 @@ void MediaPool::setFbo(ofFbo * fboptr)
 void MediaPool::mousePressed(ofMouseEventArgs & mouse)
 {
     translation != nullptr
-        ?   updatePoolIndex(*mouse.getPtr() - translation->x, *(mouse.getPtr()+1) - translation->y)
-        :   updatePoolIndex(*mouse.getPtr(), *(mouse.getPtr()+1))
+        ?   updatePoolIndex(mouse.x - translation->x, mouse.y - translation->y)
+        :   updatePoolIndex(mouse.x, mouse.y)
     ;
 }
 

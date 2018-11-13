@@ -49,13 +49,8 @@ void Module::setupModule(string name, ofxDatGuiTheme * themePtr, ofVec2f resolut
     fboInput = new WireConnection;
     fboInput->setup(ofPoint(x,y), "fboInput");
     
-    moduleIsChild = false;
-    
+    moduleIsChild = false;  
     moduleInitialized = true;
-    
-    connectionImage.load("gui/connectionRed.png");
-    connectionImage.resize(24,24);
-
 }
 
 void Module::setupGui(ofxDatGuiTheme * themePtr)
@@ -63,16 +58,17 @@ void Module::setupGui(ofxDatGuiTheme * themePtr)
     theme = themePtr;
     gui = new ofxDatGui();
     
+    gui->setTheme(theme);
     gui->addHeader(moduleName);
     
-    ofxDatGuiToggle * toggle = gui->addToggle("enable");
-    toggle->setChecked(moduleEnabled);
-    toggle->onToggleEvent(this, &Module::onEnableChange);
-    
+//    ofxDatGuiToggle * toggle = gui->addToggle("enable");
+//    toggle->setChecked(moduleEnabled);
+//    toggle->onToggleEvent(this, &Module::onEnableChange);
+//    
     addModuleParameters();
     
     gui->setPosition(0, 0);
-    gui->setTheme(theme);
+    gui->setWidth(450);
     
 }
 

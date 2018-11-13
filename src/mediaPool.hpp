@@ -26,6 +26,10 @@
 #include "module.hpp"
 #include <math.h>
 
+//include this with ofxDarkKnightMidi
+//#include "ofxMidi.h"
+
+
 class CollectionItem{
 public:
     string collectionName;
@@ -103,7 +107,9 @@ public:
     void updatePoolIndex(int, int);
     //void onMouseMove(int, int);
     void triggerPoolMedia(int);
-    void gotMidiPitch(string);
+    void gotMidiMapping(string);
+    //void gotMidiMessage(ofxMidiMessage*);
+   // void sendMidiNote(ofxMidiMessage*);
     
     void unMount();
     

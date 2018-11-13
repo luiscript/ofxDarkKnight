@@ -27,6 +27,7 @@
 #include "ofxDatGui.h"
 #include "unordered_map"
 #include "wireConnection.hpp"
+//#include "ofxMidi.h"
 
 class Module{
 private:
@@ -58,7 +59,6 @@ public:
     bool customParams = false;
     bool moduleIsChild = false;
     ofxDatGui * gui;
-    ofImage connectionImage;
     
     WireConnection * fboOutput;
     WireConnection * fboInput;
@@ -75,6 +75,7 @@ public:
     virtual void onMouseMove(int, int) { };
     virtual Module * getChildModule() { };
     virtual void triggerMidiEvent(){ };
+    //virtual void triggerMidiMessage(ofxMidiMessage *) { };
     
     void init();
     void setupModule(string, ofxDatGuiTheme *, ofVec2f);
@@ -82,7 +83,6 @@ public:
     void updateModule();
     void updateModule(float, float);
     void drawModule();
-    
     
     void enable();
     void disable();
