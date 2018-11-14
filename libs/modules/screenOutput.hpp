@@ -12,6 +12,8 @@
 #include "ofMain.h"
 #include "ofxDatGui.h"
 #include "module.hpp"
+#include "GLFW/glfw3.h"
+
 
 class ScreenOutput : public Module{
 private:

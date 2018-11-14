@@ -38,7 +38,7 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
     theme = new ofxDatGuiThemeCharcoal();
     altKey = cmdKey = midiMapMode = drawing = showExplorer = false;
     translation = { 0, 0 };
-    resolution = { 1080, 1080 };
+    resolution = { 1920, 1080 };
     
     modulesPool = *pool;
     const int s = modulesPool.size();
