@@ -8,18 +8,18 @@
 # Getting started
 
 ## Download openFrameworks
-ofxDarkKnight it's built on top of [openframeworks](https://openframeworks.cc/) v0.9.8 and it's only tested on MacOS for now. 
+ofxDarkKnight it's built on top of [openframeworks](https://openframeworks.cc/) ~~v0.9.8 and it's only tested on MacOS for now~~ v0.10.0 and is tested on Mac OS and Windows. 
 
-Download [openFrameworks v0.9.8](https://openframeworks.cc/download/older/) for your development platform. Open an example and run it to make sure that everything is working correctly.
+Download [openFrameworks v0.10.0](https://openframeworks.cc/download) for your development platform. Open an example and run it to make sure that everything is working correctly.
 
 If your having problems running the examples please [read this guide](https://openframeworks.cc/ofBook/chapters/setup_and_project_structure.html#runningexamples)
 
 
-Double check that you download the (0.9.8) version
+~~Double check that you download the (0.9.8) version~~ Now compatible with OF 0.10.
 
 
 ## Install ofxDarkKnight
-Download and install [ofxDarkKnight](https://github.com/luiscript/ofxDarkKnight/) addon into your `openframeworks_v0.9.8/addons/` directory or install it using git:
+Download and install [ofxDarkKnight](https://github.com/luiscript/ofxDarkKnight/) addon into your `openframeworks/addons/` directory or install it using git:
   
   `git clone https://github.com/luiscript/ofxDarkKnight/`
 
@@ -29,7 +29,7 @@ Download and install [ofxDarkKnight](https://github.com/luiscript/ofxDarkKnight/
 
 # Running the examples
 
-1. Open the [basicExample](https://github.com/luiscript/ofxDarkKnight/tree/master/examples/basicExample) project under your `openframeworks/addons/ofxDarkKnight/example` directory.
+1. Open the example [basic](https://github.com/luiscript/ofxDarkKnight/tree/master/examples/basic) project under your `openframeworks/addons/ofxDarkKnight/example` directory.
 
 2. Run the project.
 
@@ -179,8 +179,7 @@ int main( ){
     
     ofGLFWWindowSettings settings;
     settings.resizable = true;
-    settings.width = 1920;
-    settings.height = 1080;
+    settings.setSize(1920, 1080);
     settings.windowMode = OF_WINDOW;
     
     shared_ptr<ofAppBaseWindow> mainWindow = ofCreateWindow(settings);

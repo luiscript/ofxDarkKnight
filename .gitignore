@@ -6,5 +6,5 @@ examples/**/[Dd]ebug*/
 examples/**/[Rr]elease*/
 
 
-examples/basicExample/bin
+examples/basic/bin
 examples/allModulesExample/bin
