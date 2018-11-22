@@ -34,10 +34,11 @@
 #include "preview.hpp"
 #include "mediaPool.hpp"
 #include "screenOutput.hpp"
-//#include "ofxDarkKnightMidi.hpp"
+#include "ofxDarkKnightMidi.hpp"
+#include "ofxXmlSettings.h"
 
 
-class ofxDarkKnight {
+class ofxDarkKnight : public ofxMidiListener{
 private:
     ofxDatGuiTheme * theme;
     ofVec2f resolution;
@@ -60,6 +61,8 @@ private:
     unordered_map<string, Module*> modules;
     
     list<string> poolNames;
+    
+    ofxXmlSettings xml;
 public:
     
     ofxDarkKnight();
@@ -91,7 +94,10 @@ public:
     
     void onResolutionChange(ofVec2f &);
     void onComponentListChange(ofxDatGuiScrollViewEvent e);
-   // void newMidiMessage(ofxMidiMessage &);
+    void newMidiMessage(ofxMidiMessage &);
+    
+    
+    void saveProject();
     
 };
 

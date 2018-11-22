@@ -1,3 +1,18 @@
 [submodule "libs/ofxDatGui"]
 	path = libs/ofxDatGui
 	url = https://github.com/luiscript/ofxDatGui
+[submodule "libs/ofxDarkKnightMidi"]
+	path = libs/ofxDarkKnightMidi
+	url = git://github.com/luiscript/ofxDarkKnightMidi
+[submodule "libs/ofxDarkKnightOsc"]
+	path = libs/ofxDarkKnightOsc
+	url = git://github.com/luiscript/ofxDarkKnightOsc
+[submodule "libs/ofxDarkKnightMapping"]
+	path = libs/ofxDarkKnightMapping
+	url = git://github.com/luiscript/ofxDarkKnightMapping
+[submodule "libs/ofxDarkKnightSyphon"]
+	path = libs/ofxDarkKnightSyphon
+	url = git://github.com/luiscript/ofxDarkKnightSyphon
+[submodule "libs/ofxDarkKnightAbletonLink"]
+	path = libs/ofxDarkKnightAbletonLink
+	url = git://github.com/luiscript/ofxDarkKnightAbletonLink

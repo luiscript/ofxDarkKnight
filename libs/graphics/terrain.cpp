@@ -110,23 +110,15 @@ void Terrain::addModuleParameters()
     matrix->setRadioMode(true);
     matrix->onMatrixEvent(this, &Terrain::onDrawingModeChange);
     
-    
-    ofxDatGuiFolder * terrainParams = gui->addFolder("GLOBAL");
-    terrainParams->addSlider("rotate", 0, 180)->bind(rotate);
-    terrainParams->addSlider("scale", 0, 100)->bind(scl);
-    terrainParams->addSlider("translate x", -3000, 3000, 0)->bind(translateX);
-    terrainParams->addSlider("translate y", -1500, 0, 0)->bind(translateY);
-    terrainParams->addSlider("translate z", -500, 300, 0)->bind(translateZ);
-    terrainParams->addSlider("noise", 0, 1, 0)->bind(noiseX);
-    terrainParams->addSlider("direction",-1, 1, 0)->bind(direction);
-    terrainParams->addSlider("particle size", 0, 100, 1)->bind(lineWidth);
-    terrainParams->expand();
-    
-//    ofxDatGuiFolder * patternsParams = gui->addFolder("PATTERNS");
-//    ofxDatGuiMatrix * matrix = patternsParams->addMatrix("drawing modes", 8, true);
-//    matrix->onMatrixEvent(this, &Terrain::onDrawingModeChange);
-//    matrix->setRadioMode(true);
-//    patternsParams->expand();
+    addSlider("rotate", rotate, 0, 180, 0);
+    addSlider("scale", scl, 0, 100, 100);
+    addSlider("translate x", translateX, -3000, 3000, 0);
+    addSlider("translate y", translateY, -1500, 0, 0);
+    addSlider("translate z", translateZ, -500, 300, 0);
+    addSlider("noise", noiseX, 0, 1, 0);
+    addSlider("direction", direction, -1, 1, 0);
+    addSlider("particle size", lineWidth, 0, 10, 1);
+     
 }
 
 void Terrain::onSliderEvent(ofxDatGuiSliderEvent e)
@@ -143,21 +135,6 @@ void Terrain::onDrawingModeChange(ofxDatGuiMatrixEvent e)
     if(e.child == 2) drawingMode = GL_QUAD_STRIP;
     if(e.child == 3) drawingMode = GL_LINE_STRIP;
     if(e.child == 4) drawingMode = GL_TRIANGLE_STRIP;
-    
-    
-    
-    
-    
-    //if(e.child == 1) drawingMode = GL_TRIANGLES;
-    //if(e.child == 4) drawingMode = GL_QUADS;
-    //if(e.child == 6) drawingMode = GL_POLYGON;
-    //if(e.child == 7) drawingMode = GL_LINE_STRIP;
-    //if(e.child == 3) drawingMode = GL_TRIANGLE_FAN;
-    //if(e.child == 4) drawingMode = GL_TRIANGLES_ADJACENCY;
-    //if(e.child == 5) drawingMode = GL_LINE_LOOP;
-    //if(e.child == 6) drawingMode = GL_LINES;
-    //if(e.child == 7) drawingMode = GL_LINES_ADJACENCY;
-
     
 }
 

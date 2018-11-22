@@ -27,7 +27,7 @@
 #include "ofxDatGui.h"
 #include "unordered_map"
 #include "wireConnection.hpp"
-//#include "ofxMidi.h"
+#include "ofxMidi.h"
 
 class Module{
 private:
@@ -40,25 +40,25 @@ private:
     bool    moduleDrawMasterInput;
     bool    moduleInitialized = false;
     bool    moduleHasChild = false;
-    
-    
-    
+
     float   moduleAlpha;
     float   moduleWidth;
     float   moduleHeight;
     
     float   moduleGuiOpacity;
+    //ofPoint translation;
     
     ofxDatGuiComponent * selectedComponent;
     ofxDatGuiTheme * theme;
     
-    unordered_map<string, ofxDatGuiComponent *> midiMappings;
     
+    unordered_map<string, ofxDatGuiComponent *> midiMappings;
 public:
     
     bool customParams = false;
     bool moduleIsChild = false;
     ofxDatGui * gui;
+    ofxDatGuiFolder * params;
     
     WireConnection * fboOutput;
     WireConnection * fboInput;
@@ -75,10 +75,12 @@ public:
     virtual void onMouseMove(int, int) { };
     virtual Module * getChildModule() { };
     virtual void triggerMidiEvent(){ };
-    //virtual void triggerMidiMessage(ofxMidiMessage *) { };
+    virtual void triggerMidiMessage(ofxMidiMessage *) { };
     
     void init();
+    void setupModule(string, ofxDatGuiTheme *, ofVec2f, bool);
     void setupModule(string, ofxDatGuiTheme *, ofVec2f);
+    void setupCommon(string, ofxDatGuiTheme *, ofVec2f);
     void setupGui(ofxDatGuiTheme *);
     void updateModule();
     void updateModule(float, float);
@@ -97,11 +99,10 @@ public:
     bool getModuleInitialized();
     bool getModuleEnabled();
     bool getModuleHasChild();
-    
+    //ofPoint getTranslation();
     
     WireConnection * getMainOutput(int, int);
     WireConnection * getMainInput(int, int);
-    
     
     void setModuleWidth(float);
     void setModuleHeight(float);
@@ -115,7 +116,6 @@ public:
     WireConnection * getOutputConnection(int, int);
     WireConnection * getInputConnection(int, int);
     
-    
     void setMidiMapping(string);
     void setMidiScale(string, double);
     void setModuleMidiMapMode(bool);
@@ -126,8 +126,10 @@ public:
     
     void onSliderEventParent(ofxDatGuiSliderEvent);
     void onEnableChange(ofxDatGuiToggleEvent);
-
     
+    void addSlider(string, int &, int, int, int);
+    void addSlider(string, float &, float, float, float);
+
     string getName();
 };
 

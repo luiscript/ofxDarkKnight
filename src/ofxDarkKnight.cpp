@@ -52,7 +52,7 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
     componentsList->setTheme(theme);
     componentsList->setWidth(800);
     componentsList->setHeight(600);
-    componentsList->setPosition(ofGetWidth()/2 - 400, ofGetHeight()/2 - 400);
+    componentsList->setPosition(ofGetScreenWidth() - 400, ofGetScreenHeight() - 300);
     
     for(list<string>::iterator it = poolNames.begin(); it != poolNames.end(); it++)
         componentsList->add(*it);
@@ -66,6 +66,17 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
     ofAddListener(ofEvents().keyPressed, this, &ofxDarkKnight::handleKeyPressed);
     ofAddListener(ofEvents().keyReleased, this, &ofxDarkKnight::handleKeyReleased);
     
+    
+    //xml.saveFile("project.xml");
+    
+    cout << xml.loadFile("mySettings.xml") << endl;
+    
+    if( xml.loadFile("mySettings.xml") ){
+        cout << "mySettings.xml loaded!" << endl;
+    }else{
+        cout << "unable to load mySettings.xml check data/ folder" << endl;
+        
+    }
 }
 
 
@@ -145,9 +156,9 @@ void ofxDarkKnight::onComponentListChange(ofxDatGuiScrollViewEvent e)
         }
         else if(e.target->getName() == "MIDI CONTROLLER")
         {
-//            ofxDarkKnightMidi * controller = static_cast<ofxDarkKnightMidi*>(it->second);
-//            ofAddListener(controller->sendMidi, this, &ofxDarkKnight::newMidiMessage);
-//            modules.insert({it->first, controller});
+            ofxDarkKnightMidi * controller = static_cast<ofxDarkKnightMidi*>(it->second);
+            ofAddListener(controller->sendMidi, this, &ofxDarkKnight::newMidiMessage);
+            modules.insert({it->first, controller});
         }
         else
         {
@@ -342,6 +353,7 @@ void ofxDarkKnight::handleMouseReleased(ofMouseEventArgs & mouse)
 
 void ofxDarkKnight::handleMouseScrolled(ofMouseEventArgs & mouse)
 {
+    //translation is not fully supported with ofxDarkKnightMapping, be careful.
     translation.x += 2*mouse.scrollX;
     translation.y += 2*mouse.scrollY;
 }
@@ -442,15 +454,15 @@ void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
     if(keyboard.key == OF_KEY_SHIFT) shiftKey = true;
     if(keyboard.key == OF_KEY_ALT) altKey = true;
         
-    
+
     // toggle show explorer
-    if(cmdKey && (keyboard.key == OF_KEY_RETURN || keyboard.key == 'z'))
+    if(cmdKey && (keyboard.key == OF_KEY_RETURN))
     {
         toggleList();
     }
     
     // cmd+shift+m || cmd+shift+<  -> Toggle midiMap on all layers
-    if(cmdKey && (keyboard.key == 'm' || keyboard.key == '<')){
+    if(shiftKey && (keyboard.key == 109 || keyboard.key == 77)){
         toggleMappingMode();
     }
 
@@ -459,6 +471,11 @@ void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
         deleteFocusedModule();
     }
     
+    if( cmdKey && keyboard.key == 19)
+    {
+        saveProject();
+        cout << "save project"<< endl;
+    }
 }
 
 void ofxDarkKnight::handleKeyReleased(ofKeyEventArgs &keyboard)
@@ -479,7 +496,6 @@ void ofxDarkKnight::close()
 
 //  comment this when ofxDarkKnightMidi is not included
 
-/*
 void ofxDarkKnight::newMidiMessage(ofxMidiMessage & msg)
 {
     //send midi message to media pool.
@@ -510,5 +526,35 @@ void ofxDarkKnight::newMidiMessage(ofxMidiMessage & msg)
     
 }
 
- */
+void ofxDarkKnight::saveProject()
+{
+    xml.clear();
+    xml.addTag("MODULES");
+    xml.pushTag("MODULES");
+    for(pair<string, Module*> module : modules )
+    {
+        if(module.second->moduleIsChild)
+        {
+            int mod = xml.addTag("MODULE");
+            string mName = module.second->getName();
+            std::transform(mName.begin(),mName.end(),mName.begin(), [](char ch){
+                return ch == ' ' ? '_' : ch;
+            });
+            xml.setValue("MODULE:NAME", mName, mod);
+            xml.addTag("MODULE:PARAMS");
+            for(ofxDatGuiComponent * component : module.second->params->children)
+            {
+                ofxDatGuiSlider * slider =  static_cast<ofxDatGuiSlider*>(component);
+                string sName = slider->getName();
+                std::transform(sName.begin(), sName.end(), sName.begin(), [](char ch){
+                    return ch == ' ' ? '_' : ch;
+                });
+                xml.setValue("MODULE:PARAMS:" + sName, slider->getValue(), mod);
+            }
+        }
+    }
+    xml.popTag();
+    
+    cout << xml.saveFile("mySettings.xml") << endl;
+}
 //   ofxDarkKnightMidi /

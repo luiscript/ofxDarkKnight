@@ -27,7 +27,7 @@
 #include <math.h>
 
 //include this with ofxDarkKnightMidi
-//#include "ofxMidi.h"
+#include "ofxMidi.h"
 
 
 class CollectionItem{
@@ -108,8 +108,8 @@ public:
     //void onMouseMove(int, int);
     void triggerPoolMedia(int);
     void gotMidiMapping(string);
-    //void gotMidiMessage(ofxMidiMessage*);
-   // void sendMidiNote(ofxMidiMessage*);
+    void gotMidiMessage(ofxMidiMessage*);
+    void sendMidiNote(ofxMidiMessage*);
     
     void unMount();
     

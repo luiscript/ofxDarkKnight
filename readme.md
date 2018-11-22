@@ -8,14 +8,11 @@
 # Getting started
 
 ## Download openFrameworks
-ofxDarkKnight it's built on top of [openframeworks](https://openframeworks.cc/) ~~v0.9.8 and it's only tested on MacOS for now~~ v0.10.0 and is tested on Mac OS and Windows. 
+ofxDarkKnight it's built on top of [openframeworks](https://openframeworks.cc/) v0.10.0 and is tested on Mac OS and Windows. 
 
 Download [openFrameworks v0.10.0](https://openframeworks.cc/download) for your development platform. Open an example and run it to make sure that everything is working correctly.
 
 If your having problems running the examples please [read this guide](https://openframeworks.cc/ofBook/chapters/setup_and_project_structure.html#runningexamples)
-
-
-~~Double check that you download the (0.9.8) version~~ Now compatible with OF 0.10.
 
 
 ## Install ofxDarkKnight
@@ -23,9 +20,25 @@ Download and install [ofxDarkKnight](https://github.com/luiscript/ofxDarkKnight/
   
   `git clone https://github.com/luiscript/ofxDarkKnight/`
 
-## Add dependencies
+## Add ofxDarkKnight modules
 
- `git submodule update --init --recursive`
+ `cd ofxDarkKnight && git submodule update --init --recursive`
+
+## Required addons
+
+[Danomatica: ](https://github.com/danomatika)[ofxMidi](https://github.com/danomatika/ofxMidi)
+
+[2bbb: ](https://github.com/2bbb/ofxAbletonLink)[ofxAbletonLink](https://github.com/2bbb/ofxAbletonLink)
+
+[astellato: ](https://github.com/astellato)[ofxSyphon](https://github.com/astellato/ofxSyphon)
+
+[nariakiiwatani: ](https://github.com/nariakiiwatani)[ofxMeshWarp](https://github.com/nariakiiwatani/ofxMeshWarp)
+
+
+ofxOsc (included in openframeworks)
+
+ofxXmlSettings (included in openframeworks)
+
 
 # Running the examples
 
@@ -33,13 +46,13 @@ Download and install [ofxDarkKnight](https://github.com/luiscript/ofxDarkKnight/
 
 2. Run the project.
 
-3. Press `CMD+Intro` to show/hide the modules list.
+3. Press `CMD+Intro` or `right-click` to show/hide the modules list.
 
 4. Click on SKETCH POOL module to add it to the stage.
 
 5. Repeat the step (3) and click the PREVIEW module.
 
-6. Press `CMD+M` to enter mapping mode.
+6. Press `Shift+M` or `middle-click` to enter mapping mode.
 
 7. Connect the output of the SKETCH POOL module into the input of PREVIEW module by dragging the mouse.
 
@@ -54,6 +67,8 @@ If you want to start a new project from scratch, follow the next steps:
 - Open the OF projectGenerator
 
 - Add ofxDarkKnight addon
+
+- Include all the required addons
 
 - Generate the project
 
@@ -313,10 +328,11 @@ void ofxDarkKnightEllipse::draw()
 
 void ofxDarkKnightEllipse::addModuleParameters()
 {
-  gui->addSlider("radius", 10, 400)->bind(radius);
-  gui->addSlider("R", 10, 400)->bind(fillColorR);
-  gui->addSlider("G", 10, 400)->bind(fillColorG);
-  gui->addSlider("B", 10, 400)->bind(fillColorB);
+  //addSlider("parameterName", yourVariable, min, max, value);
+  addSlider("radius", radius, 10, 400, 100);
+  addSlider("R", fillColorR, 0, 255, 128);
+  addSlider("G", fillColorG, 10, 255, 128);
+  addSlider("B", fillColorB,10, 255, 128);
 }
 
 ofFbo * ofxDarkKnightEllipse::getFbo()
@@ -454,48 +470,20 @@ void ofxDarkKnightEllipse::draw()
 
 void ofxDarkKnightEllipse::addModuleParameters()
 {
-  gui->addSlider("radius", 10, 400)->bind(radius);
-  gui->addSlider("R", 10, 400)->bind(fillColorR);
-  gui->addSlider("G", 10, 400)->bind(fillColorG);
-  gui->addSlider("B", 10, 400)->bind(fillColorB);
+  addSlider("radius", radius, 10, 400, 100);
+  addSlider("R", fillColorR, 0, 255, 128);
+  addSlider("G", fillColorG, 10, 255, 128);
+  addSlider("B", fillColorB,10, 255, 128);
 }
 ```
-
-# Featured modules
-
-MIDI controller [ofxDarkKnightMidi](https://github.com/luiscript/ofxDarkKnightMidi)
-
-OSC controller [ofxDarkKnightOsc](https://github.com/luiscript/ofxDarkKnightOsc)
-
-Ableton Link [ofxDarkKnightAbletonLink](https://github.com/luiscript/ofxDarkKnightAbletonLink)
-
-Syphon server [ofxDarkKnightSyphon](https://github.com/luiscript/ofxDarkKnightSyphon)
 
 
 # License
 
- **Copyright** (C) 2018 [Luis Fernando García](http://luiscript.com)
- 
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
- 
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
- 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
+MIT
 
  # Credits
 
-ofxDarkKnight was created by [Luis Fernando García](https://github.com/luiscript)
+This repo includes a fork from [ofxDatGui](https://github.com/braitsch/ofxDatGui) as internal dependency that was created by [Stephen Braitsch](https://github.com/braitsch).
 
-ofxDatGui was created by [Stephen Braitsch](https://github.com/braitsch)
+ofxDarkKnight was created and maintained by [Luis Fer García](https://github.com/luiscript)

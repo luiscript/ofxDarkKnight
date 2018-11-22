@@ -64,10 +64,9 @@ public:
     Module * outputModule;
 private:
     bool drawing;
-    
     ofPoint inputPoint;
     ofPoint outputPoint;
-    
+    string name;
 };
 
 #endif /* wires_hpp */

@@ -49,12 +49,11 @@ void MediaPool::init()
     for (auto collectionItem : collection)
     {
         collectionItem.thumbnail->load(collectionItem.fileName);
-        collectionItem.canvas->setupModule(collectionItem.collectionName, this->getGuiTheme(), resolution);
+        collectionItem.canvas->setupModule(collectionItem.collectionName, this->getGuiTheme(), resolution, true);
         collectionItem.canvas->gui->setVisible(false);
     }
     
     translation = nullptr;
-    
     nextIndex = index = 0;
     modules = nullptr;
     
@@ -68,13 +67,12 @@ void MediaPool::init()
     
     addCustomParameters();
     triggerPoolMedia(index);
-    //ofAddListener(ofEvents().mousePressed, this, &MediaPool::mousePressed);
     
-    midiMappings.insert({"16/0", 0});
-    midiMappings.insert({"16/1", 1});
-    midiMappings.insert({"16/2", 2});
-    midiMappings.insert({"16/3", 3});
-    midiMappings.insert({"16/4", 4});
+    //MIDI mappings
+    //to trigger the index 0 (first media) with midi cannel 16 pitch 0
+    //use this:
+    //midiMappings.insert({"16/0", 0});
+
 }
 
 
@@ -97,12 +95,6 @@ void MediaPool::draw()
 
     mainFbo.begin();
     
-//    if(!drawMode)
-//    {
-//       ofClear(0,0,0,255);
-//    }
-    
-    
     ofPushStyle();
     ofEnableLighting();
     light.enable();
@@ -110,33 +102,13 @@ void MediaPool::draw()
     
     light.setDiffuseColor(ofColor(diffuseR, diffuseG, diffuseB));
     light.setAmbientColor(ofColor(ambientR, ambientG, ambientB));
-   // ofEnableDepthTest();
 
     currentCanvas->draw();
     
-  //  ofDisableDepthTest();
     light.disable();
     ofDisableLighting();
     ofPopStyle();
     
-
-    
-//    if(drawMode)
-//    {
-//        ofPushStyle();
-//        ofSetColor(0, 0, 0, 255 - alpha);
-//        ofFill();
-//        ofDrawRectangle(0, 0, getModuleWidth(), getModuleHeight());
-//        ofPopStyle();
-//    }
-//
-//    if (hasInput) {
-//        ofEnableBlendMode(OF_BLENDMODE_ALPHA);
-//        inputFbo->draw(0,0);
-//    }
-//
-//
-
     mainFbo.end();
 
     drawMediaPool();
@@ -259,10 +231,7 @@ void MediaPool::triggerPoolMedia(int ind)
 
 void MediaPool::addModuleParameters()
 {
-    //gui->addSlider("Alpha", 0, 255)->bind(alpha);
-    //ofxDatGuiToggle * toggleDraw = gui->addToggle("draw");
-    //toggleDraw->setChecked(false);
-    //toggleDraw->onToggleEvent(this, &MediaPool::onToggleDraw);
+
 }
 
 void MediaPool::onMatrix1Change(ofxDatGuiMatrixEvent e)
@@ -283,20 +252,20 @@ void MediaPool::addCustomParameters()
         lightParams->addSlider("x", -ofGetWidth(), 2*ofGetWidth(), ofGetWidth()/2)->bind(lightPositionX);
         lightParams->addSlider("y", -ofGetHeight(), 2*ofGetHeight()/2, ofGetHeight()/2)->bind(lightPositionY);
         lightParams->addSlider("z", -2000, 2000, 0)->bind(lightPositionZ);
-        lightParams->expand();
+        
         
         ofxDatGuiFolder* diffuseColorParams = currentCanvas->gui->addFolder("DIFFUSE COLOR", ofColor::white);
         diffuseColorParams->addSlider("r", 0,255,255)->bind(diffuseR);
         diffuseColorParams->addSlider("g", 0,255,255)->bind(diffuseG);
         diffuseColorParams->addSlider("b", 0,255,255)->bind(diffuseB);
-        diffuseColorParams->expand();
+        
         
         ofxDatGuiFolder* ambientColorParams = currentCanvas->gui->addFolder("AMBIENT COLOR", ofColor::white);
         
         ambientColorParams->addSlider("r", 0,255,255)->bind(ambientR);
         ambientColorParams->addSlider("g", 0,255,255)->bind(ambientG);
         ambientColorParams->addSlider("b", 0,255,255)->bind(ambientB);
-        ambientColorParams->expand();
+        
         
         currentCanvas->customParams = true;
     }
@@ -325,7 +294,7 @@ void MediaPool::gotMidiMapping(string mapping)
         if(!this->getModuleMidiMapMode())
         {
             int ind = midiMappings[mapping];
-            cout << "ind mapping" << ind << endl;
+    
             if(ind != index)
             {
                 nextIndex = ind;
@@ -336,10 +305,10 @@ void MediaPool::gotMidiMapping(string mapping)
     }
 }
 
-//void MediaPool::gotMidiMessage(ofxMidiMessage * msg)
-//{
-//    currentCanvas->triggerMidiMessage(msg);
-//}
+void MediaPool::gotMidiMessage(ofxMidiMessage * msg)
+{
+    currentCanvas->triggerMidiMessage(msg);
+}
 
 void MediaPool::drawMasterInput()
 {
@@ -378,7 +347,7 @@ void MediaPool::mousePressed(ofMouseEventArgs & mouse)
 
 void MediaPool::unMount()
 {
-    //currentCanvas->de
+    currentCanvas->unMount();
 }
 
 void MediaPool::enableLighting(bool enable)

@@ -103,7 +103,7 @@ void Constellation::draw()
     //draw the FBO
     //fbo.begin();
     ofPushMatrix();
-    //ofClear(0,0,0,0);
+    ofClear(0,0,0,0);
     
     
     ofSetColor(255);
@@ -219,7 +219,7 @@ void Constellation::draw()
 void Constellation::addModuleParameters()
 {
     
-    ofxDatGuiFolder * patternsParams = gui->addFolder("PATTERNS", ofColor::cyan);
+   /* ofxDatGuiFolder * patternsParams = gui->addFolder("PATTERNS", ofColor::cyan);
     
     ofxDatGuiMatrix * matrix = patternsParams->addMatrix("", 8, true);
     matrix->onMatrixEvent(this, &Constellation::onDrawingModeChange);
@@ -240,7 +240,15 @@ void Constellation::addModuleParameters()
     connectionParams->addSlider("distance", 50, 500, 100)->bind(connectionDistance);
     connectionParams->addSlider("line width", 0, 10, 1)->bind(lineWidth);
     connectionParams->expand();
+    */
     
+    addSlider("count", numParticles, 0, 2000, 500);
+    addSlider("size", particleSize, 0, 50, 5);
+    addSlider("vel x", velocityMultx, 0, 50, 1);
+    addSlider("vel y", velocityMulty, 0, 50, 1);
+    addSlider("vel z", velocityMultz, 0, 50, 1);
+    addSlider("distance", connectionDistance, 50, 500, 100);
+    addSlider("line width", lineWidth, 0, 10, 1);
 }
 
 void Constellation::onDrawingModeChange(ofxDatGuiMatrixEvent e)

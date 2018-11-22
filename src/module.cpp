@@ -23,11 +23,23 @@
 #include "module.hpp"
 
 
+void Module::setupModule(string name, ofxDatGuiTheme * themePtr, ofVec2f resolution, bool child = false)
+{
+    moduleIsChild = child;
+    setupCommon(name, themePtr, resolution);
+    
+}
+
 void Module::setupModule(string name, ofxDatGuiTheme * themePtr, ofVec2f resolution)
+{
+    setupCommon(name, themePtr, resolution);
+}
+
+void Module::setupCommon(string name, ofxDatGuiTheme * themePtr, ofVec2f resolution)
 {
     moduleName = name;
     theme = themePtr;
-
+    
     moduleMidiMapMode = false;
     moduleEnabled = true;
     moduleWidth = resolution.x;
@@ -49,7 +61,7 @@ void Module::setupModule(string name, ofxDatGuiTheme * themePtr, ofVec2f resolut
     fboInput = new WireConnection;
     fboInput->setup(ofPoint(x,y), "fboInput");
     
-    moduleIsChild = false;  
+    moduleIsChild = false;
     moduleInitialized = true;
 }
 
@@ -64,9 +76,14 @@ void Module::setupGui(ofxDatGuiTheme * themePtr)
 //    ofxDatGuiToggle * toggle = gui->addToggle("enable");
 //    toggle->setChecked(moduleEnabled);
 //    toggle->onToggleEvent(this, &Module::onEnableChange);
-//    
-    addModuleParameters();
+//
+    if(moduleIsChild) {
+        params = gui->addFolder("PARAMS");
+        params->expand();
+    }
     
+    addModuleParameters();
+
     gui->setPosition(0, 0);
     gui->setWidth(450);
     
@@ -91,6 +108,8 @@ void Module::updateModule()
 
 void Module::updateModule(float tx, float ty)
 {
+    //translation.x = tx;
+    //translation.y = ty;
     gui->setTranslation(tx, ty);
     updateModule();
 }
@@ -194,6 +213,11 @@ bool Module::getModuleHasChild()
     return moduleHasChild;
 }
 
+//ofPoint Module::getTranslation()
+//{
+//    return translation;
+//}
+
 void Module::onSliderEventParent(ofxDatGuiSliderEvent e)
 {
     if(e.target->getMidiMode())
@@ -293,6 +317,16 @@ void Module::disable()
     gui->setEnabled(false);
     gui->setVisible(false);
     moduleEnabled = false;
+}
+
+void Module::addSlider(string name, int & add, int min, int max, int val)
+{
+    params->addSlider(name, min, max, val)->bind(add);
+}
+
+void Module::addSlider(string name, float & add, float min, float max, float val)
+{
+    params->addSlider(name, min, max, val)->bind(add);
 }
 
 
