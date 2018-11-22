@@ -18,7 +18,5 @@
 	<string>1.0</string>
 	<key>CFBundleIconFile</key>
 	<string>${ICON}</string>
-	<key>NSHighResolutionCapable</key>
-	<true/>
 </dict>
 </plist>
