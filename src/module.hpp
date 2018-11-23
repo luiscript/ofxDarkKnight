@@ -70,12 +70,12 @@ public:
     virtual void drawMasterOutput(){ };
     virtual void addModuleParameters() { };
     virtual void unMount() { };
-    virtual ofFbo * getFbo(){ };
     virtual void setFbo(ofFbo *){ };
     virtual void onMouseMove(int, int) { };
-    virtual Module * getChildModule() { };
     virtual void triggerMidiEvent(){ };
     virtual void triggerMidiMessage(ofxMidiMessage *) { };
+    virtual ofFbo * getFbo(){ return nullptr; };
+    virtual Module * getChildModule() { return nullptr; };
     
     void init();
     void setupModule(string, ofxDatGuiTheme *, ofVec2f, bool);
