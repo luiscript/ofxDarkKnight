@@ -34,6 +34,8 @@ Download and install [ofxDarkKnight](https://github.com/luiscript/ofxDarkKnight/
 
 [nariakiiwatani: ](https://github.com/nariakiiwatani)[ofxMeshWarp](https://github.com/nariakiiwatani/ofxMeshWarp)
 
+[bangnoise: ](https://github.com/bangnoise)[ofxHapPlayer](https://github.com/bangnoise/ofxHapPlayer)
+
 
 ofxOsc (included in openframeworks)
 

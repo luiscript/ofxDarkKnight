@@ -95,6 +95,7 @@ public:
     void drawMasterInput();
     void addModuleParameters();
     void addCustomParameters();
+    void addItem(Module *, string, string);
     void onMidiInputListChange(ofxDatGuiDropdownEvent);
     void onToggleDraw(ofxDatGuiToggleEvent);
     

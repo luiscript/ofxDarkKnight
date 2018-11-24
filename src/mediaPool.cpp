@@ -68,6 +68,7 @@ void MediaPool::init()
     addCustomParameters();
     triggerPoolMedia(index);
     
+
     //MIDI mappings
     //to trigger the index 0 (first media) with midi cannel 16 pitch 0
     //use this:
@@ -271,6 +272,15 @@ void MediaPool::addCustomParameters()
     }
     
 }
+
+void MediaPool::addItem(Module * module, string fileName, string name)
+{
+    CollectionItem item = { name, module, fileName, new ofImage };
+    item.thumbnail->load(item.fileName);
+    item.canvas->gui->setVisible(false);
+    collection.push_back(item);
+}
+
 
 void MediaPool::gotMidiMapping(string mapping)
 {

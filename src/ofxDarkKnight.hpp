@@ -36,6 +36,7 @@
 #include "screenOutput.hpp"
 #include "ofxDarkKnightMidi.hpp"
 #include "ofxXmlSettings.h"
+#include "DarkKnightHap.hpp"
 
 
 class ofxDarkKnight : public ofxMidiListener{
@@ -91,6 +92,7 @@ public:
     void handleMouseScrolled(ofMouseEventArgs&);
     void handleKeyPressed(ofKeyEventArgs & keyboard);
     void handleKeyReleased(ofKeyEventArgs & keyboard);
+    void handleDragEvent(ofDragInfo&);
     
     void onResolutionChange(ofVec2f &);
     void onComponentListChange(ofxDatGuiScrollViewEvent e);

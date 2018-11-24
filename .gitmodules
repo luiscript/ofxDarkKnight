@@ -16,3 +16,6 @@
 [submodule "libs/ofxDarkKnightAbletonLink"]
 	path = libs/ofxDarkKnightAbletonLink
 	url = git://github.com/luiscript/ofxDarkKnightAbletonLink
+[submodule "libs/DarkKnightHap"]
+	path = libs/DarkKnightHap
+	url = https://github.com/luiscript/DarkKnightHap

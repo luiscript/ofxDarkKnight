@@ -65,18 +65,8 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
     
     ofAddListener(ofEvents().keyPressed, this, &ofxDarkKnight::handleKeyPressed);
     ofAddListener(ofEvents().keyReleased, this, &ofxDarkKnight::handleKeyReleased);
+    ofAddListener(ofEvents().fileDragEvent, this, &ofxDarkKnight::handleDragEvent);
     
-    
-    //xml.saveFile("project.xml");
-    
-    cout << xml.loadFile("mySettings.xml") << endl;
-    
-    if( xml.loadFile("mySettings.xml") ){
-        cout << "mySettings.xml loaded!" << endl;
-    }else{
-        cout << "unable to load mySettings.xml check data/ folder" << endl;
-        
-    }
 }
 
 
@@ -356,6 +346,60 @@ void ofxDarkKnight::handleMouseScrolled(ofMouseEventArgs & mouse)
     //translation is not fully supported with ofxDarkKnightMapping, be careful.
     translation.x += 2*mouse.scrollX;
     translation.y += 2*mouse.scrollY;
+}
+
+void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
+{
+    bool mediaPoolFounded = false;
+    if(dragInfo.files.size() > 0)
+    {
+        ofFile file(dragInfo.files[0]);
+        if(file.exists())
+        {
+            string fileExtension = ofToUpper(file.getExtension());
+            if(fileExtension == "MOV")
+            {
+                DarkKnightHap * hapPlayer = new DarkKnightHap;
+                
+                for(pair<string, Module*> module : modules )
+                    if(module.second->getModuleHasChild())
+                    {
+                        MediaPool * mp = static_cast<MediaPool*>(module.second);
+                        hapPlayer->setupModule("video player", theme, resolution, true);
+                        hapPlayer->loadFile(file.getAbsolutePath());
+                        mp->addItem(hapPlayer, "thumbnails/terrain.jpg", "video player");
+                        mediaPoolFounded = true;
+                    }
+                if(!mediaPoolFounded)
+                {
+                    MediaPool * newPool = new MediaPool;
+                    
+                    newPool->setCollectionName("Collection 1");
+                    newPool->collection = {
+                        {
+                            "HAP VIDEO PLAYER",
+                            hapPlayer,
+                            "thumbnails/terrain.jpg",
+                            new ofImage
+                        }
+                    };
+                    
+                    newPool->setupModule("SKETCH POOL 1", theme, resolution, false);
+                    newPool->init();
+                    hapPlayer->loadFile(file.getAbsolutePath());
+                    hapPlayer->gui->setTheme(theme);
+                    hapPlayer->gui->setWidth(450);
+                    
+                    newPool->gui->setPosition(ofGetMouseX() + 15, ofGetMouseY() + 15);
+                    newPool->setModulesReference(&modules);
+                    newPool->setTranslationReferences(&translation);
+                    
+                    modules.insert({"SKETCH POOL 1", newPool});
+                    modules.insert({"SKETCH POOL 1/HAP VIDEO PLAYER", hapPlayer});
+                }
+            }
+        }
+    }
 }
 
 void ofxDarkKnight::addModule(string moduleName, Module * module)
