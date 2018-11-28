@@ -130,29 +130,31 @@ void ofxDarkKnight::onComponentListChange(ofxDatGuiScrollViewEvent e)
 {
     unordered_map<string, Module*>::iterator it;
     it = modules.find(e.target->getName());
-    
     if (it == modules.end())
     {
-        
+    
         it = modulesPool.find(e.target->getName());
-        it->second->setupModule(it->first, theme, resolution);
-        it->second->gui->setPosition(ofGetMouseX() + 15, ofGetMouseY() + 15);
+        Module * newModule = createModule(it->first);
+        if(newModule == nullptr) newModule = it->second;
+    
+        newModule->setupModule(it->first, theme, resolution);
+        newModule->gui->setPosition(ofGetMouseX() + 15, ofGetMouseY() + 15);
   
         if(e.target->getName() == "SCREEN OUTPUT")
         {
-            ScreenOutput * so = static_cast<ScreenOutput*>(it->second);
+            ScreenOutput * so = static_cast<ScreenOutput*>(newModule);
             so->mainWindow = mainWindow;
-            modules.insert({it->first, so});
+            modules.insert({it->first + ofToString(ofGetElapsedTimef()), so});
         }
         else if(e.target->getName() == "MIDI CONTROLLER")
         {
-            ofxDarkKnightMidi * controller = static_cast<ofxDarkKnightMidi*>(it->second);
+            ofxDarkKnightMidi * controller = static_cast<ofxDarkKnightMidi*>(newModule);
             ofAddListener(controller->sendMidi, this, &ofxDarkKnight::newMidiMessage);
-            modules.insert({it->first, controller});
+            modules.insert({it->first + ofToString(ofGetElapsedTimef()), controller});
         }
         else
         {
-            modules.insert({it->first, it->second});
+            modules.insert({it->first + ofToString(ofGetElapsedTimef()), newModule});
         }
         
         if(it->second->getModuleHasChild())
@@ -362,10 +364,11 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                 DarkKnightHap * hapPlayer = new DarkKnightHap;
                 
                 for(pair<string, Module*> module : modules )
+                    //this is true only for Media Pool modules
                     if(module.second->getModuleHasChild())
                     {
                         MediaPool * mp = static_cast<MediaPool*>(module.second);
-                        hapPlayer->setupModule("video player", theme, resolution, true);
+                        hapPlayer->setupModule("HAP: " + file.getFileName(), theme, resolution, true);
                         hapPlayer->loadFile(file.getAbsolutePath());
                         mp->addItem(hapPlayer, "thumbnails/terrain.jpg", "video player");
                         mediaPoolFounded = true;
@@ -377,7 +380,7 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                     newPool->setCollectionName("Collection 1");
                     newPool->collection = {
                         {
-                            "HAP VIDEO PLAYER",
+                            "HAP: " + file.getFileName(),
                             hapPlayer,
                             "thumbnails/terrain.jpg",
                             new ofImage
@@ -515,10 +518,10 @@ void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
         deleteFocusedModule();
     }
     
+    //cmd + 's' to save the project
     if( cmdKey && keyboard.key == 19)
     {
         saveProject();
-        cout << "save project"<< endl;
     }
 }
 
@@ -577,14 +580,14 @@ void ofxDarkKnight::saveProject()
     xml.pushTag("MODULES");
     for(pair<string, Module*> module : modules )
     {
+        int mod = xml.addTag("MODULE");
+        string mName = module.second->getName();
+        std::transform(mName.begin(),mName.end(),mName.begin(), [](char ch){
+            return ch == ' ' ? '_' : ch;
+        });
+        xml.setValue("MODULE:NAME", mName, mod);
         if(module.second->moduleIsChild)
         {
-            int mod = xml.addTag("MODULE");
-            string mName = module.second->getName();
-            std::transform(mName.begin(),mName.end(),mName.begin(), [](char ch){
-                return ch == ' ' ? '_' : ch;
-            });
-            xml.setValue("MODULE:NAME", mName, mod);
             xml.addTag("MODULE:PARAMS");
             for(ofxDatGuiComponent * component : module.second->params->children)
             {
@@ -599,6 +602,20 @@ void ofxDarkKnight::saveProject()
     }
     xml.popTag();
     
-    cout << xml.saveFile("mySettings.xml") << endl;
+    xml.saveFile("mySettings.xml");
 }
+
+Module * ofxDarkKnight::createModule(string name)
+{
+    if(name == "PREVIEW") return new Preview;
+    if(name == "MAPPING TOOLS") return new ofxDarkKnightMapping;
+    if(name == "MIDI CONTROLLER") return new ofxDarkKnightMidi;
+    if(name == "OSC CONTROLLER") return new ofxDarkKnightOsc;
+    
+    return nullptr;
+}
+
+
 //   ofxDarkKnightMidi /
+
+

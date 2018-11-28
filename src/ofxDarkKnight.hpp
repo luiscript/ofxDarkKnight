@@ -35,6 +35,9 @@
 #include "mediaPool.hpp"
 #include "screenOutput.hpp"
 #include "ofxDarkKnightMidi.hpp"
+#include "ofxDarkKnightOsc.hpp"
+#include "ofxDarkKnightSyphon.hpp"
+#include "ofxDarkKnightMapping.hpp"
 #include "ofxXmlSettings.h"
 #include "DarkKnightHap.hpp"
 
@@ -97,7 +100,7 @@ public:
     void onResolutionChange(ofVec2f &);
     void onComponentListChange(ofxDatGuiScrollViewEvent e);
     void newMidiMessage(ofxMidiMessage &);
-    
+    Module * createModule(string);
     
     void saveProject();
     
