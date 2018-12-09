@@ -85,6 +85,7 @@ public:
     void toggleMappingMode();
     
     void addModule(string, Module *);
+    Module * addModule(string);
     void deleteModule(string);
     void deleteComponentWires(ofxDatGuiComponent *);
     void deleteFocusedModule();

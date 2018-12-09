@@ -67,6 +67,7 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
     ofAddListener(ofEvents().keyReleased, this, &ofxDarkKnight::handleKeyReleased);
     ofAddListener(ofEvents().fileDragEvent, this, &ofxDarkKnight::handleDragEvent);
     
+    loadProject("mySettings.batmapp");
 }
 
 
@@ -128,47 +129,7 @@ void ofxDarkKnight::toggleMappingMode()
 
 void ofxDarkKnight::onComponentListChange(ofxDatGuiScrollViewEvent e)
 {
-    unordered_map<string, Module*>::iterator it;
-    it = modules.find(e.target->getName());
-    if (it == modules.end())
-    {
-    
-        it = modulesPool.find(e.target->getName());
-        Module * newModule = createModule(it->first);
-        if(newModule == nullptr) newModule = it->second;
-    
-        newModule->setupModule(it->first, theme, resolution);
-        newModule->gui->setPosition(ofGetMouseX() + 15, ofGetMouseY() + 15);
-  
-        if(e.target->getName() == "SCREEN OUTPUT")
-        {
-            ScreenOutput * so = static_cast<ScreenOutput*>(newModule);
-            so->mainWindow = mainWindow;
-            modules.insert({it->first + ofToString(ofGetElapsedTimef()), so});
-        }
-        else if(e.target->getName() == "MIDI CONTROLLER")
-        {
-            ofxDarkKnightMidi * controller = static_cast<ofxDarkKnightMidi*>(newModule);
-            ofAddListener(controller->sendMidi, this, &ofxDarkKnight::newMidiMessage);
-            modules.insert({it->first + ofToString(ofGetElapsedTimef()), controller});
-        }
-        else
-        {
-            modules.insert({it->first + ofToString(ofGetElapsedTimef()), newModule});
-        }
-        
-        if(it->second->getModuleHasChild())
-        {
-            MediaPool * mp = static_cast<MediaPool*>(it->second);
-            mp->setModulesReference(&modules);
-            mp->setTranslationReferences(&translation);
-            Module * m = it->second->getChildModule();
-            string childName = it->second->getName() + "/" + m->getName();
-            modules.insert({childName, m});
-        }
-
-    }
-
+    addModule(e.target->getName());
     toggleList();
 }
 
@@ -346,8 +307,8 @@ void ofxDarkKnight::handleMouseReleased(ofMouseEventArgs & mouse)
 void ofxDarkKnight::handleMouseScrolled(ofMouseEventArgs & mouse)
 {
     //translation is not fully supported with ofxDarkKnightMapping, be careful.
-    translation.x += 2*mouse.scrollX;
-    translation.y += 2*mouse.scrollY;
+    //translation.x += 2*mouse.scrollX;
+    //translation.y += 2*mouse.scrollY;
 }
 
 void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
@@ -368,30 +329,25 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                     if(module.second->getModuleHasChild())
                     {
                         MediaPool * mp = static_cast<MediaPool*>(module.second);
-                        hapPlayer->setupModule("HAP: " + file.getFileName(), theme, resolution, true);
-                        hapPlayer->loadFile(file.getAbsolutePath());
                         mp->addItem(hapPlayer, "thumbnails/terrain.jpg", "video player");
                         mediaPoolFounded = true;
+                        
+//                        hapPlayer->setupModule("HAP: " + file.getFileName(), theme, resolution, true);
+                        hapPlayer->loadFile(file.getAbsolutePath());
                     }
+                
                 if(!mediaPoolFounded)
                 {
                     MediaPool * newPool = new MediaPool;
                     
                     newPool->setCollectionName("Collection 1");
-                    newPool->collection = {
-                        {
-                            "HAP: " + file.getFileName(),
-                            hapPlayer,
-                            "thumbnails/terrain.jpg",
-                            new ofImage
-                        }
-                    };
-                    
                     newPool->setupModule("SKETCH POOL 1", theme, resolution, false);
+                    newPool->addItem(hapPlayer, "thumbnails/terrain.jpg", "HAP: " + file.getFileName());
                     newPool->init();
-                    hapPlayer->loadFile(file.getAbsolutePath());
+                    
                     hapPlayer->gui->setTheme(theme);
                     hapPlayer->gui->setWidth(450);
+                    hapPlayer->loadFile(file.getAbsolutePath());
                     
                     newPool->gui->setPosition(ofGetMouseX() + 15, ofGetMouseY() + 15);
                     newPool->setModulesReference(&modules);
@@ -408,6 +364,53 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
 void ofxDarkKnight::addModule(string moduleName, Module * module)
 {
     modules.insert({moduleName, module});
+}
+
+Module * ofxDarkKnight::addModule(string moduleName)
+{
+    unordered_map<string, Module*>::iterator it;
+    it = modules.find(moduleName);
+    if (it == modules.end())
+    {
+        
+        it = modulesPool.find(moduleName);
+        Module * newModule = createModule(it->first);
+        if(newModule == nullptr) newModule = it->second;
+        
+        newModule->setupModule(it->first, theme, resolution);
+        newModule->gui->setPosition(ofGetMouseX() + 15, ofGetMouseY() + 15);
+        
+        if(moduleName == "SCREEN OUTPUT")
+        {
+            ScreenOutput * so = static_cast<ScreenOutput*>(newModule);
+            so->mainWindow = mainWindow;
+            modules.insert({it->first + ofToString(ofGetElapsedTimef()), so});
+        }
+        else if(moduleName == "MIDI CONTROLLER")
+        {
+            ofxDarkKnightMidi * controller = static_cast<ofxDarkKnightMidi*>(newModule);
+            ofAddListener(controller->sendMidi, this, &ofxDarkKnight::newMidiMessage);
+            modules.insert({it->first + ofToString(ofGetElapsedTimef()), controller});
+        }
+        else
+        {
+            modules.insert({it->first + ofToString(ofGetElapsedTimef()), newModule});
+        }
+        
+        if(it->second->getModuleHasChild())
+        {
+            MediaPool * mp = static_cast<MediaPool*>(it->second);
+            mp->setModulesReference(&modules);
+            mp->setTranslationReferences(&translation);
+            Module * m = it->second->getChildModule();
+            string childName = it->second->getName() + "/" + m->getName();
+            modules.insert({childName, m});
+        }
+        
+        return newModule;
+    }
+    
+    return nullptr;
 }
 
 void ofxDarkKnight::deleteModule(string moduleName)
@@ -643,14 +646,32 @@ void ofxDarkKnight::saveProject()
     xml.popTag();
     xml.popTag();
     
-    xml.saveFile("mySettings.xml");
+    xml.saveFile("mySettings.batmapp");
 }
 
 void ofxDarkKnight::loadProject(string file)
 {
     if ( xml.loadFile(file) )
     {
-        cout << "file loaded" <<endl;
+        xml.pushTag("PROJECT");
+        xml.pushTag("MODULES");
+        int numModules = xml.getNumTags("MODULE");
+     
+        for (int i=0; i<numModules; i++)
+        {
+            xml.pushTag("MODULE", i);
+            string module = xml.getValue("NAME", "");
+            int x = xml.getValue("X", 0);
+            int y = xml.getValue("Y", 0);
+            
+            std::transform(module.begin(), module.end(), module.begin(), [](char ch){
+                return ch == '_' ? ' ' : ch;
+            });
+            addModule(module)->gui->setPosition(x, y);
+            xml.popTag();
+        }
+        xml.popTag();
+        xml.popTag();
     } else
     {
         cout << "file not loaded" <<endl;
