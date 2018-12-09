@@ -390,27 +390,11 @@ class Basic : public MediaPool{
 public:
     void setup(){
         setCollectionName("Basic");
+
+        addItem(new Terrain, "thumbnails/terrain.jpg", "TERRAIN");
+        addItem(new Constellation, "thumbnails/constellation.jpg", "CONSTELLATION");
+        addItem(new ofxDarkKnightEllipse, "thumbnails/ellipse.jpg", "ELLIPSE");
         
-        collection = {
-            {
-                "TERRAIN",
-                new Terrain,
-                "thumbnails/terrain.jpg",
-                new ofImage
-            },
-            {
-                "CONSTELLATION",
-                new Constellation,
-                "thumbnails/constellation.jpg",
-                new ofImage
-            },
-            {
-              "ELLIPSE",
-              new ofxDarkKnightEllipse,
-              "thumbnails/ellipse.jpg",
-              new ofImage
-            }
-        };
         init();
     }
 };

@@ -46,12 +46,12 @@ void MediaPool::init()
     
     ofVec2f resolution = { getModuleWidth(), getModuleHeight() };
     
-    for (auto collectionItem : collection)
-    {
-        collectionItem.thumbnail->load(collectionItem.fileName);
-        collectionItem.canvas->setupModule(collectionItem.collectionName, this->getGuiTheme(), resolution, true);
-        collectionItem.canvas->gui->setVisible(false);
-    }
+//    for (auto collectionItem : collection)
+//    {
+//        collectionItem.thumbnail->load(collectionItem.fileName);
+//        collectionItem.canvas->setupModule(collectionItem.collectionName, this->getGuiTheme(), resolution, true);
+//        collectionItem.canvas->gui->setVisible(false);
+//    }
     
     translation = nullptr;
     nextIndex = index = 0;
@@ -275,8 +275,10 @@ void MediaPool::addCustomParameters()
 
 void MediaPool::addItem(Module * module, string fileName, string name)
 {
-    CollectionItem item = { name, module, fileName, new ofImage };
+    vector<Preset> modulePresets;
+    CollectionItem item = { name, module, fileName, new ofImage, modulePresets };
     item.thumbnail->load(item.fileName);
+    item.canvas->setupModule(name, getGuiTheme(), {getModuleWidth(), getModuleHeight()}, true);
     item.canvas->gui->setVisible(false);
     collection.push_back(item);
 }
@@ -378,4 +380,15 @@ void MediaPool::setModulesReference(unordered_map<string, Module *> * m)
 void MediaPool::setTranslationReferences(ofVec2f * t)
 {
     translation = t;
+}
+
+void MediaPool::savePreset()
+{
+    unordered_map<string, float> preset;
+    for(ofxDatGuiComponent * param : currentCanvas->params->children)
+    {
+        preset.insert({param->getName(), param->getComponentScale()});
+    }
+    string name = "preset-"+ofToString(collection[index].presets.size());
+    collection[index].presets.push_back({name, preset});
 }

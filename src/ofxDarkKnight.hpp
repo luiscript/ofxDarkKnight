@@ -103,6 +103,8 @@ public:
     Module * createModule(string);
     
     void saveProject();
+    void loadProject(string);
+    void savePreset();
     
 };
 

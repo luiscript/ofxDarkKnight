@@ -26,16 +26,21 @@
 #include "module.hpp"
 #include <math.h>
 
-//include this with ofxDarkKnightMidi
 #include "ofxMidi.h"
 
 
+struct Preset{
+    string name;
+    unordered_map<string, float> presetValues;
+};
+
 class CollectionItem{
 public:
-    string collectionName;
+    string name;
     Module * canvas;
     string fileName;
     ofImage * thumbnail;
+    vector<Preset> presets;
 };
 
 
@@ -124,6 +129,8 @@ public:
     void mousePressed(ofMouseEventArgs & mouse);
     
     void enableLighting(bool);
+    
+    void savePreset();
 };
 
 #endif /* canvasCollection_hpp */

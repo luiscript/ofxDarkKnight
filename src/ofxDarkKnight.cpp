@@ -36,7 +36,7 @@ ofxDarkKnight::~ofxDarkKnight()
 void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
 {
     theme = new ofxDatGuiThemeCharcoal();
-    altKey = cmdKey = midiMapMode = drawing = showExplorer = false;
+    shiftKey = altKey = cmdKey = midiMapMode = drawing = showExplorer = false;
     translation = { 0, 0 };
     resolution = { 1920, 1080 };
     
@@ -523,6 +523,12 @@ void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
     {
         saveProject();
     }
+    
+    //cmd + shift + 's' to save preset
+    if( shiftKey && cmdKey && keyboard.key == 19)
+    {
+        savePreset();
+    }
 }
 
 void ofxDarkKnight::handleKeyReleased(ofKeyEventArgs &keyboard)
@@ -576,33 +582,93 @@ void ofxDarkKnight::newMidiMessage(ofxMidiMessage & msg)
 void ofxDarkKnight::saveProject()
 {
     xml.clear();
+    
+    xml.addTag("PROJECT");
+    xml.pushTag("PROJECT");
+    
     xml.addTag("MODULES");
     xml.pushTag("MODULES");
+    int moduleIndex = 0;
     for(pair<string, Module*> module : modules )
     {
-        int mod = xml.addTag("MODULE");
-        string mName = module.second->getName();
-        std::transform(mName.begin(),mName.end(),mName.begin(), [](char ch){
-            return ch == ' ' ? '_' : ch;
-        });
-        xml.setValue("MODULE:NAME", mName, mod);
-        if(module.second->moduleIsChild)
+        if(!module.second->moduleIsChild)
         {
-            xml.addTag("MODULE:PARAMS");
-            for(ofxDatGuiComponent * component : module.second->params->children)
+            xml.addTag("MODULE");
+            xml.pushTag("MODULE", moduleIndex);
+            string mName = module.second->getName();
+            std::transform(mName.begin(),mName.end(),mName.begin(), [](char ch){
+                return ch == ' ' ? '_' : ch;
+            });
+            xml.setValue("NAME", mName, moduleIndex);
+            xml.setValue("X", module.second->gui->getPosition().x, moduleIndex);
+            xml.setValue("Y", module.second->gui->getPosition().y, moduleIndex);
+            
+            moduleIndex++;
+            if(module.second->getModuleHasChild())
             {
-                ofxDatGuiSlider * slider =  static_cast<ofxDatGuiSlider*>(component);
-                string sName = slider->getName();
-                std::transform(sName.begin(), sName.end(), sName.begin(), [](char ch){
-                    return ch == ' ' ? '_' : ch;
-                });
-                xml.setValue("MODULE:PARAMS:" + sName, slider->getValue(), mod);
+                MediaPool * mediaPool = static_cast<MediaPool*>(module.second);
+                xml.addTag("ITEMS");
+                xml.pushTag("ITEMS");
+                int itemIndex = 0;
+                for(CollectionItem item : mediaPool->collection)
+                {
+                    string sName = item.name;
+                    std::transform(sName.begin(), sName.end(), sName.begin(), [](char ch){
+                        return ch == ' ' ? '_' : ch;
+                    });
+                    xml.addTag("ITEM");
+                    xml.pushTag("ITEM", itemIndex);
+                    xml.setValue("NAME", sName, itemIndex);
+                    
+                    xml.addTag("PARAMS");
+                    xml.pushTag("PARAMS");
+                    for(ofxDatGuiComponent * component : item.canvas->params->children)
+                    {
+                        string compName = component->getName();
+                        std::transform(compName.begin(), compName.end(), compName.begin(), [](char ch){
+                            return ch == ' ' ? '_' : ch;
+                        });
+                        xml.setValue(compName, component->getComponentScale(), itemIndex);
+                    }
+                    itemIndex++;
+                    xml.popTag();
+                    xml.popTag();
+                }
+                
+                xml.popTag();
             }
+            xml.popTag();
         }
     }
     xml.popTag();
+    xml.popTag();
     
     xml.saveFile("mySettings.xml");
+}
+
+void ofxDarkKnight::loadProject(string file)
+{
+    if ( xml.loadFile(file) )
+    {
+        cout << "file loaded" <<endl;
+    } else
+    {
+        cout << "file not loaded" <<endl;
+    }
+}
+
+void ofxDarkKnight::savePreset()
+{
+    for(pair<string, Module*> module : modules)
+    {
+        if(module.second->getModuleHasChild())
+        {
+            MediaPool * mediaPool = static_cast<MediaPool*>(module.second);
+            mediaPool->savePreset();
+        }
+    }
+    
+    cout << "Preset saved " << endl;
 }
 
 Module * ofxDarkKnight::createModule(string name)
@@ -614,6 +680,7 @@ Module * ofxDarkKnight::createModule(string name)
     
     return nullptr;
 }
+
 
 
 //   ofxDarkKnightMidi /

@@ -33,20 +33,9 @@ public:
     void setup(){
         setCollectionName("Example");
         
-        collection = {
-            {
-                "TERRAIN",
-                new Terrain,
-                "thumbnails/terrain.jpg",
-                new ofImage
-            },
-            {
-                "CONSTELLATION",
-                new Constellation,
-                "thumbnails/constellation.jpg",
-                new ofImage
-            },
-        };
+        addItem(new Terrain, "thumbnails/terrain.jpg", "TERRAIN");
+        addItem(new Constellation, "thumbnails/constellation.jpg", "CONSTELLATION");
+        
         init();
     }
 };
