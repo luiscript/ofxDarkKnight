@@ -135,9 +135,6 @@ void ofxDarkKnight::onComponentListChange(ofxDatGuiScrollViewEvent e)
 
 void ofxDarkKnight::handleMousePressed(ofMouseEventArgs &mouse)
 {
-    WireConnection * output;
-    WireConnection * input;
-    
     int x = (int) mouse.x - translation.x;
     int y = (int) mouse.y - translation.y;
     
@@ -149,8 +146,57 @@ void ofxDarkKnight::handleMousePressed(ofMouseEventArgs &mouse)
             MediaPool * mp = static_cast<MediaPool*>(module.second);
             mp->mousePressed(mouse);
         }
+    }
+    
+    checkOutputConnection(x, y);
+    
+    //right click?
+    if(mouse.button == 2)
+    {
+        toggleList();
+    }
+    
+    //middle click
+    if(mouse.button == 1)
+    {
+        toggleMappingMode();
+    }
+    
+}
+
+void ofxDarkKnight::handleMouseDragged(ofMouseEventArgs & mouse)
+{
+    if(drawing)
+    {
+        pointer.x = mouse.x - translation.x;
+        pointer.y = mouse.y - translation.y;
+    }
+}
+
+void ofxDarkKnight::handleMouseReleased(ofMouseEventArgs & mouse)
+{
+    int x = (int) mouse.x - translation.x;
+    int y = (int) mouse.y - translation.y;
+
+    checkInputConnection(x, y);
+}
+
+void ofxDarkKnight::handleMouseScrolled(ofMouseEventArgs & mouse)
+{
+    //translation is not fully supported with ofxDarkKnightMapping, be careful.
+    //translation.x += 2*mouse.scrollX;
+    //translation.y += 2*mouse.scrollY;
+}
+
+void ofxDarkKnight::checkOutputConnection(int x, int y)
+{
+    WireConnection * output;
+    WireConnection * input;
+    
+    for(pair<string, Module*> module : modules )
+    {
         output = module.second->getOutputConnection(x, y);
-        
+
         //true if we click on output node
         if(output != nullptr)
         {
@@ -177,7 +223,7 @@ void ofxDarkKnight::handleMousePressed(ofMouseEventArgs &mouse)
                     currentWire->type = "scale";
                     currentWire->setOutput(it->getOutput());
                     currentWire->outputModule = it->outputModule;
-
+                    
                     pointer.x = x;
                     pointer.y = y;
                     
@@ -223,7 +269,7 @@ void ofxDarkKnight::handleMousePressed(ofMouseEventArgs &mouse)
                         currentWire->setOutput(it->getOutput());
                         currentWire->type = "fbo";
                         currentWire->fbo = it->outputModule->getFbo();
-
+                        
                         //currentWire->setInput(it->getInput());
                         currentWire->setInput(nullptr);
                         module.second->setFbo(nullptr);
@@ -240,36 +286,12 @@ void ofxDarkKnight::handleMousePressed(ofMouseEventArgs &mouse)
         }
         
     }
-    
-    //right click?
-    if(mouse.button == 2)
-    {
-        toggleList();
-    }
-    
-    //middle click
-    if(mouse.button == 1)
-    {
-        toggleMappingMode();
-    }
-    
 }
 
-void ofxDarkKnight::handleMouseDragged(ofMouseEventArgs & mouse)
-{
-    if(drawing)
-    {
-        pointer.x = mouse.x - translation.x;
-        pointer.y = mouse.y - translation.y;
-    }
-}
-
-void ofxDarkKnight::handleMouseReleased(ofMouseEventArgs & mouse)
+void ofxDarkKnight::checkInputConnection(int x, int y)
 {
     WireConnection * input;
-    int x = (int) mouse.x - translation.x;
-    int y = (int) mouse.y - translation.y;
-    
+
     for(pair<string, Module*> module : modules )
     {
         input = module.second->getInputConnection(x, y);
@@ -304,13 +326,6 @@ void ofxDarkKnight::handleMouseReleased(ofMouseEventArgs & mouse)
     drawing = false;
 }
 
-void ofxDarkKnight::handleMouseScrolled(ofMouseEventArgs & mouse)
-{
-    //translation is not fully supported with ofxDarkKnightMapping, be careful.
-    //translation.x += 2*mouse.scrollX;
-    //translation.y += 2*mouse.scrollY;
-}
-
 void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
 {
     bool mediaPoolFounded = false;
@@ -331,8 +346,6 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                         MediaPool * mp = static_cast<MediaPool*>(module.second);
                         mp->addItem(hapPlayer, "thumbnails/terrain.jpg", "video player");
                         mediaPoolFounded = true;
-                        
-//                        hapPlayer->setupModule("HAP: " + file.getFileName(), theme, resolution, true);
                         hapPlayer->loadFile(file.getAbsolutePath());
                     }
                 
@@ -644,6 +657,23 @@ void ofxDarkKnight::saveProject()
         }
     }
     xml.popTag();
+    
+    xml.addTag("WIRES");
+    xml.pushTag("WIRES");
+    int wIndex = 0;
+    for (auto wire : wires)
+    {
+        xml.addTag("WIRE");
+        xml.pushTag("WIRE", wIndex);
+        ofPoint po = wire.getOutput()->getWireConnectionPos();
+        ofPoint pi = wire.getInput()->getWireConnectionPos();
+        xml.setValue("XO",  po.x, wIndex);
+        xml.setValue("YO",  po.y, wIndex);
+        xml.setValue("XI",  pi.x, wIndex);
+        xml.setValue("YI",  pi.y, wIndex);
+        xml.popTag();
+        wIndex++;
+    }
     xml.popTag();
     
     xml.saveFile("mySettings.batmapp");
@@ -671,6 +701,25 @@ void ofxDarkKnight::loadProject(string file)
             xml.popTag();
         }
         xml.popTag();
+        
+        xml.pushTag("WIRES");
+        int numWires = xml.getNumTags("WIRE");
+        
+        for (int i=0; i<numWires; i++)
+        {
+            xml.pushTag("WIRE", i);
+            int xo = xml.getValue("XO",0);
+            int yo = xml.getValue("YO",0);
+            int xi = xml.getValue("XI",0);
+            int yi = xml.getValue("YI",0);
+            checkOutputConnection(xo, yo);
+            checkInputConnection(xi, yi);
+            xml.popTag();
+        }
+        //wires
+        xml.popTag();
+        
+        
         xml.popTag();
     } else
     {

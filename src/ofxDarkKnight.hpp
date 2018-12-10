@@ -107,6 +107,9 @@ public:
     void loadProject(string);
     void savePreset();
     
+    void checkInputConnection(int, int);
+    void checkOutputConnection(int, int);
+    
 };
 
 #endif /* modulesManager_hpp */
