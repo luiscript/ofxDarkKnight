@@ -46,6 +46,7 @@ string WireConnection::getName()
 
 WireConnection * WireConnection::testWireConnection(int x, int y)
 {
+    
     ofPoint p = getWireConnectionPos();
     float dist = ofDist(p.x, p.y, x, y);
     return dist < 15 ? this : nullptr;

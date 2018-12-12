@@ -54,6 +54,7 @@ private:
     bool cmdKey;
     bool shiftKey;
     bool altKey;
+    bool loadWires;
     
     Wire * currentWire;
     vector<Wire> wires;
@@ -105,6 +106,7 @@ public:
     
     void saveProject();
     void loadProject(string);
+    void loadProjectWires();
     void savePreset();
     
     void checkInputConnection(int, int);

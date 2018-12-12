@@ -254,19 +254,20 @@ void MediaPool::addCustomParameters()
         lightParams->addSlider("y", -ofGetHeight(), 2*ofGetHeight()/2, ofGetHeight()/2)->bind(lightPositionY);
         lightParams->addSlider("z", -2000, 2000, 0)->bind(lightPositionZ);
         
+        lightParams->expand();
         
         ofxDatGuiFolder* diffuseColorParams = currentCanvas->gui->addFolder("DIFFUSE COLOR", ofColor::white);
         diffuseColorParams->addSlider("r", 0,255,255)->bind(diffuseR);
         diffuseColorParams->addSlider("g", 0,255,255)->bind(diffuseG);
         diffuseColorParams->addSlider("b", 0,255,255)->bind(diffuseB);
-        
+        diffuseColorParams->expand();
         
         ofxDatGuiFolder* ambientColorParams = currentCanvas->gui->addFolder("AMBIENT COLOR", ofColor::white);
         
         ambientColorParams->addSlider("r", 0,255,255)->bind(ambientR);
         ambientColorParams->addSlider("g", 0,255,255)->bind(ambientG);
         ambientColorParams->addSlider("b", 0,255,255)->bind(ambientB);
-        
+        ambientColorParams->expand();
         
         currentCanvas->customParams = true;
     }

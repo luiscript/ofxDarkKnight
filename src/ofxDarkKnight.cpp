@@ -76,7 +76,13 @@ void ofxDarkKnight::update()
     for(pair<string, Module*> module : modules )
         if(module.second->getModuleEnabled())
             module.second->updateModule(translation.x, translation.y);
-
+    
+    if(loadWires)
+    {
+        loadProjectWires();
+        loadWires = false;
+    }
+    
     for (auto wire : wires)
         if(wire.inputModule->getModuleEnabled() && wire.outputModule->getModuleEnabled())
             wire.update();
@@ -148,7 +154,8 @@ void ofxDarkKnight::handleMousePressed(ofMouseEventArgs &mouse)
         }
     }
     
-    checkOutputConnection(x, y);
+    if( midiMapMode )
+        checkOutputConnection(x, y);
     
     //right click?
     if(mouse.button == 2)
@@ -178,7 +185,7 @@ void ofxDarkKnight::handleMouseReleased(ofMouseEventArgs & mouse)
     int x = (int) mouse.x - translation.x;
     int y = (int) mouse.y - translation.y;
 
-    checkInputConnection(x, y);
+    if( midiMapMode ) checkInputConnection(x, y);
 }
 
 void ofxDarkKnight::handleMouseScrolled(ofMouseEventArgs & mouse)
@@ -295,7 +302,6 @@ void ofxDarkKnight::checkInputConnection(int x, int y)
     for(pair<string, Module*> module : modules )
     {
         input = module.second->getInputConnection(x, y);
-        
         //true if user released the wire on input connection
         if(input != nullptr && currentWire != nullptr)
         {
@@ -407,7 +413,7 @@ Module * ofxDarkKnight::addModule(string moduleName)
         }
         else
         {
-            modules.insert({it->first + ofToString(ofGetElapsedTimef()), newModule});
+            modules.insert({it->first, newModule});
         }
         
         if(it->second->getModuleHasChild())
@@ -675,6 +681,7 @@ void ofxDarkKnight::saveProject()
         wIndex++;
     }
     xml.popTag();
+    xml.popTag();
     
     xml.saveFile("mySettings.batmapp");
 }
@@ -702,29 +709,37 @@ void ofxDarkKnight::loadProject(string file)
         }
         xml.popTag();
         
-        xml.pushTag("WIRES");
-        int numWires = xml.getNumTags("WIRE");
-        
-        for (int i=0; i<numWires; i++)
-        {
-            xml.pushTag("WIRE", i);
-            int xo = xml.getValue("XO",0);
-            int yo = xml.getValue("YO",0);
-            int xi = xml.getValue("XI",0);
-            int yi = xml.getValue("YI",0);
-            checkOutputConnection(xo, yo);
-            checkInputConnection(xi, yi);
-            xml.popTag();
-        }
-        //wires
         xml.popTag();
         
-        
-        xml.popTag();
+        //wires needs to be loaded after all modules are "updated"
+        loadWires = true;
     } else
     {
         cout << "file not loaded" <<endl;
     }
+}
+
+void ofxDarkKnight::loadProjectWires()
+{
+    xml.pushTag("PROJECT");
+    xml.pushTag("WIRES");
+    int numWires = xml.getNumTags("WIRE");
+    
+    for (int i=0; i<numWires; i++)
+    {
+        xml.pushTag("WIRE", i);
+        int xo = xml.getValue("XO",0);
+        int yo = xml.getValue("YO",0);
+        int xi = xml.getValue("XI",0);
+        int yi = xml.getValue("YI",0);
+        
+        checkOutputConnection(xo, yo);
+        checkInputConnection(xi, yi);
+        xml.popTag();
+    }
+    //wires
+    xml.popTag();
+    xml.popTag();
 }
 
 void ofxDarkKnight::savePreset()
@@ -737,8 +752,6 @@ void ofxDarkKnight::savePreset()
             mediaPool->savePreset();
         }
     }
-    
-    cout << "Preset saved " << endl;
 }
 
 Module * ofxDarkKnight::createModule(string name)
