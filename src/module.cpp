@@ -27,7 +27,6 @@ void Module::setupModule(string name, ofxDatGuiTheme * themePtr, ofVec2f resolut
 {
     moduleIsChild = child;
     setupCommon(name, themePtr, resolution);
-    
 }
 
 void Module::setupModule(string name, ofxDatGuiTheme * themePtr, ofVec2f resolution)
@@ -39,6 +38,7 @@ void Module::setupCommon(string name, ofxDatGuiTheme * themePtr, ofVec2f resolut
 {
     moduleName = name;
     theme = themePtr;
+    moduleIndex = -1;
     
     moduleMidiMapMode = false;
     moduleEnabled = true;
@@ -261,6 +261,12 @@ void Module::setModuleEnabled(bool e)
 void Module::setModuleHasChild(bool c)
 {
     moduleHasChild = c;
+}
+
+void Module::setModuleIndex(int index)
+{
+    
+    moduleIndex = index;
 }
 
 void Module::setResolution(int w, int h)

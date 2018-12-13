@@ -217,31 +217,7 @@ void Constellation::draw()
 }
 
 void Constellation::addModuleParameters()
-{
-    
-   /* ofxDatGuiFolder * patternsParams = gui->addFolder("PATTERNS", ofColor::cyan);
-    
-    ofxDatGuiMatrix * matrix = patternsParams->addMatrix("", 8, true);
-    matrix->onMatrixEvent(this, &Constellation::onDrawingModeChange);
-    matrix->setRadioMode(true);
-    matrix->getChildAt(0)->setSelected(false);
-    patternsParams->expand();
-
-    ofxDatGuiFolder * particlesParams = gui->addFolder("PARTICLES", ofColor::cyan);
-    
-    particlesParams->addSlider("count", 0, 2000, 200)->bind(numParticles);
-    particlesParams->addSlider("size", 0, 50, 5)->bind(particleSize);
-    particlesParams->addSlider("vel x", 0, 50, 1)->bind(velocityMultx);
-    particlesParams->addSlider("vel y", 0, 50, 1)->bind(velocityMulty);
-    particlesParams->addSlider("vel z", 0, 50, 1)->bind(velocityMultz);
-    particlesParams->expand();
-    
-    ofxDatGuiFolder * connectionParams = gui->addFolder("CONNECTION", ofColor::white);
-    connectionParams->addSlider("distance", 50, 500, 100)->bind(connectionDistance);
-    connectionParams->addSlider("line width", 0, 10, 1)->bind(lineWidth);
-    connectionParams->expand();
-    */
-    
+{    
     addSlider("count", numParticles, 0, 2000, 500);
     addSlider("size", particleSize, 0, 50, 5);
     addSlider("vel x", velocityMultx, 0, 50, 1);

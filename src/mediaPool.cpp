@@ -35,6 +35,7 @@ void MediaPool::init()
     alpha = 255;
     yOffsetGui = 30;
     gui->setWidth(450);
+    numItems = 0;
     showMediaPool = false;
     lightPositionX = getModuleWidth()/2;
     lightPositionY = getModuleHeight()/2;
@@ -45,13 +46,6 @@ void MediaPool::init()
     ambientR = ambientG = ambientB = 255;
     
     ofVec2f resolution = { getModuleWidth(), getModuleHeight() };
-    
-//    for (auto collectionItem : collection)
-//    {
-//        collectionItem.thumbnail->load(collectionItem.fileName);
-//        collectionItem.canvas->setupModule(collectionItem.collectionName, this->getGuiTheme(), resolution, true);
-//        collectionItem.canvas->gui->setVisible(false);
-//    }
     
     translation = nullptr;
     nextIndex = index = 0;
@@ -199,23 +193,10 @@ void MediaPool::triggerPoolMedia(int ind)
     if(ind < collection.size())
     {
         currentCanvas->disable();
-        string moduleName = getName() + "/" + currentCanvas->getName();
-        
-        if(modules != nullptr) {
-            unordered_map<string, Module*>::iterator it = modules->find(moduleName);
-            if(it != modules->end()) modules->erase(moduleName);
-        }
-        
-        currentCanvas = collection[ind].canvas;
         collection[ind].canvas->gui->setPosition(gui->getPosition().x - 400, gui->getPosition().y + 450 );
         currentCanvas = collection[ind].canvas;
-        
-        moduleName = getName() + "/" + currentCanvas->getName();
-    
+        string moduleName = getName() + "/" + currentCanvas->getName();
         currentCanvas->moduleIsChild = true;
-        if (modules != nullptr) modules->insert({moduleName, currentCanvas});
-        
-        
         currentCanvas->enable();
         
         if(nextIndex != index) currentCanvas->triggerMidiEvent();
@@ -225,7 +206,6 @@ void MediaPool::triggerPoolMedia(int ind)
         mainFbo.begin();
         ofClear(0,0,0,0);
         mainFbo.end();
-
     }
 }
     
@@ -277,11 +257,15 @@ void MediaPool::addCustomParameters()
 void MediaPool::addItem(Module * module, string fileName, string name)
 {
     vector<Preset> modulePresets;
+    
     CollectionItem item = { name, module, fileName, new ofImage, modulePresets };
     item.thumbnail->load(item.fileName);
     item.canvas->setupModule(name, getGuiTheme(), {getModuleWidth(), getModuleHeight()}, true);
     item.canvas->gui->setVisible(false);
+    item.canvas->moduleIsChild = true;
+    item.canvas->setModuleIndex(numItems);
     collection.push_back(item);
+    numItems++;
 }
 
 
@@ -344,6 +328,10 @@ ofFbo * MediaPool::getFbo()
     return &mainFbo;
 }
 
+int MediaPool::getCurrentIndex()
+{
+    return index;
+}
 void MediaPool::setFbo(ofFbo * fboptr)
 {
     inputFbo = fboptr;

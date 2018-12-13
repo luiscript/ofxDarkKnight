@@ -109,8 +109,8 @@ public:
     void loadProjectWires();
     void savePreset();
     
-    void checkInputConnection(int, int);
-    void checkOutputConnection(int, int);
+    void checkInputConnection(int, int, string);
+    void checkOutputConnection(int, int, string);
     
 };
 

@@ -108,6 +108,7 @@ public:
     void setModuleHeight(float);
     void setModuleEnabled(bool);
     void setModuleHasChild(bool);
+    void setModuleIndex(int);
     
     ofxDatGuiComponent * getOutputComponent(int, int);
     ofxDatGuiComponent * getInputComponent(int, int);

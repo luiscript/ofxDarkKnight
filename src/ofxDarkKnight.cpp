@@ -93,14 +93,13 @@ void ofxDarkKnight::update()
 
 void ofxDarkKnight::draw()
 {
-
     ofPushMatrix();
-    
     ofTranslate(translation.x, translation.y);
     
     for(pair<string, Module*> module : modules )
         if(!module.second->moduleIsChild)
-            module.second->drawModule();
+            if(module.second->getModuleEnabled())
+                module.second->drawModule();
 
     if(midiMapMode)
     {
@@ -155,7 +154,7 @@ void ofxDarkKnight::handleMousePressed(ofMouseEventArgs &mouse)
     }
     
     if( midiMapMode )
-        checkOutputConnection(x, y);
+        checkOutputConnection(x, y, "*");
     
     //right click?
     if(mouse.button == 2)
@@ -185,7 +184,7 @@ void ofxDarkKnight::handleMouseReleased(ofMouseEventArgs & mouse)
     int x = (int) mouse.x - translation.x;
     int y = (int) mouse.y - translation.y;
 
-    if( midiMapMode ) checkInputConnection(x, y);
+    if( midiMapMode ) checkInputConnection(x, y, "*");
 }
 
 void ofxDarkKnight::handleMouseScrolled(ofMouseEventArgs & mouse)
@@ -195,7 +194,7 @@ void ofxDarkKnight::handleMouseScrolled(ofMouseEventArgs & mouse)
     //translation.y += 2*mouse.scrollY;
 }
 
-void ofxDarkKnight::checkOutputConnection(int x, int y)
+void ofxDarkKnight::checkOutputConnection(int x, int y, string moduleName)
 {
     WireConnection * output;
     WireConnection * input;
@@ -205,7 +204,8 @@ void ofxDarkKnight::checkOutputConnection(int x, int y)
         output = module.second->getOutputConnection(x, y);
 
         //true if we click on output node
-        if(output != nullptr)
+        if(output != nullptr &&
+           (module.second->getName() == moduleName || moduleName == "*" ))
         {
             currentWire = new Wire;
             currentWire->setOutput(output);
@@ -295,7 +295,7 @@ void ofxDarkKnight::checkOutputConnection(int x, int y)
     }
 }
 
-void ofxDarkKnight::checkInputConnection(int x, int y)
+void ofxDarkKnight::checkInputConnection(int x, int y, string moduleName)
 {
     WireConnection * input;
 
@@ -303,7 +303,8 @@ void ofxDarkKnight::checkInputConnection(int x, int y)
     {
         input = module.second->getInputConnection(x, y);
         //true if user released the wire on input connection
-        if(input != nullptr && currentWire != nullptr)
+        if(input != nullptr && currentWire != nullptr &&
+           (module.second->getName() == moduleName || moduleName == "*"))
         {
             currentWire->setInput(input);
             currentWire->slider = static_cast<ofxDatGuiSlider*>(module.second->getInputComponent(x, y));
@@ -421,9 +422,16 @@ Module * ofxDarkKnight::addModule(string moduleName)
             MediaPool * mp = static_cast<MediaPool*>(it->second);
             mp->setModulesReference(&modules);
             mp->setTranslationReferences(&translation);
-            Module * m = it->second->getChildModule();
-            string childName = it->second->getName() + "/" + m->getName();
-            modules.insert({childName, m});
+            int mIndex = 0;
+            for(CollectionItem item : mp->collection)
+            {
+                Module * m = item.canvas;
+                if(mIndex > 0) m->disable();
+                string childName = it->second->getName() + "/" + m->getName();
+                modules.insert({childName, m});
+                mIndex ++;
+            }
+            
         }
         
         return newModule;
@@ -625,10 +633,10 @@ void ofxDarkKnight::saveProject()
             xml.setValue("X", module.second->gui->getPosition().x, moduleIndex);
             xml.setValue("Y", module.second->gui->getPosition().y, moduleIndex);
             
-            moduleIndex++;
             if(module.second->getModuleHasChild())
             {
                 MediaPool * mediaPool = static_cast<MediaPool*>(module.second);
+                xml.setValue("INDEX", mediaPool->getCurrentIndex(), moduleIndex);
                 xml.addTag("ITEMS");
                 xml.pushTag("ITEMS");
                 int itemIndex = 0;
@@ -659,6 +667,7 @@ void ofxDarkKnight::saveProject()
                 
                 xml.popTag();
             }
+            moduleIndex++;
             xml.popTag();
         }
     }
@@ -673,8 +682,10 @@ void ofxDarkKnight::saveProject()
         xml.pushTag("WIRE", wIndex);
         ofPoint po = wire.getOutput()->getWireConnectionPos();
         ofPoint pi = wire.getInput()->getWireConnectionPos();
+        xml.setValue("OINDEX", wire.outputModule->getModuleIndex(), wIndex);
         xml.setValue("XO",  po.x, wIndex);
         xml.setValue("YO",  po.y, wIndex);
+        xml.setValue("IINDEX", wire.inputModule->getModuleIndex(), wIndex);
         xml.setValue("XI",  pi.x, wIndex);
         xml.setValue("YI",  pi.y, wIndex);
         xml.popTag();
@@ -728,13 +739,15 @@ void ofxDarkKnight::loadProjectWires()
     for (int i=0; i<numWires; i++)
     {
         xml.pushTag("WIRE", i);
+        int output = xml.getValue("OINDEX", -1);
         int xo = xml.getValue("XO",0);
         int yo = xml.getValue("YO",0);
+        int input = xml.getValue("IINDEX", -1);
         int xi = xml.getValue("XI",0);
         int yi = xml.getValue("YI",0);
         
-        checkOutputConnection(xo, yo);
-        checkInputConnection(xi, yi);
+        checkOutputConnection(xo, yo, "*");
+        checkInputConnection(xi, yi, "*");
         xml.popTag();
     }
     //wires

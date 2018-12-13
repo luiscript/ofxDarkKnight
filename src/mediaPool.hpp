@@ -50,6 +50,7 @@ private:
     string collectionName;
     int index;
     int nextIndex;
+    int numItems;
     bool showMediaPool;
     bool drawFbo = false;
     bool hasInput = false;
@@ -120,6 +121,8 @@ public:
     void unMount();
     
     ofFbo * getFbo();
+    int getCurrentIndex();
+    
     void setFbo(ofFbo *);
     
     void setCollectionName(string);
