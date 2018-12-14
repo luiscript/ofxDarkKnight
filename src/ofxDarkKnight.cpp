@@ -353,7 +353,10 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                         MediaPool * mp = static_cast<MediaPool*>(module.second);
                         mp->addItem(hapPlayer, "thumbnails/terrain.jpg", "video player");
                         mediaPoolFounded = true;
+                        hapPlayer->gui->setTheme(theme);
+                        hapPlayer->gui->setWidth(450);
                         hapPlayer->loadFile(file.getAbsolutePath());
+                        modules.insert({"HAP: " + file.getFileName(), hapPlayer});
                     }
                 
                 if(!mediaPoolFounded)
@@ -364,17 +367,15 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                     newPool->setupModule("SKETCH POOL 1", theme, resolution, false);
                     newPool->addItem(hapPlayer, "thumbnails/terrain.jpg", "HAP: " + file.getFileName());
                     newPool->init();
+                    newPool->gui->setPosition(ofGetMouseX() + 15, ofGetMouseY() + 15);
+                    newPool->setModulesReference(&modules);
+                    newPool->setTranslationReferences(&translation);
+                    modules.insert({"SKETCH POOL 1", newPool});
                     
                     hapPlayer->gui->setTheme(theme);
                     hapPlayer->gui->setWidth(450);
                     hapPlayer->loadFile(file.getAbsolutePath());
-                    
-                    newPool->gui->setPosition(ofGetMouseX() + 15, ofGetMouseY() + 15);
-                    newPool->setModulesReference(&modules);
-                    newPool->setTranslationReferences(&translation);
-                    
-                    modules.insert({"SKETCH POOL 1", newPool});
-                    modules.insert({"SKETCH POOL 1/HAP VIDEO PLAYER", hapPlayer});
+                    modules.insert({"HAP: " + file.getFileName(), hapPlayer});
                 }
             }
         }
