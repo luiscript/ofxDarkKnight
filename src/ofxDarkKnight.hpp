@@ -104,8 +104,8 @@ public:
     void newMidiMessage(ofxMidiMessage &);
     Module * createModule(string);
     
-    void saveProject();
-    void loadProject(string);
+    void saveProject(string, string);
+    void loadProject(string, string);
     void loadProjectWires();
     void savePreset();
     

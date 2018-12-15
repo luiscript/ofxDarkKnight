@@ -66,8 +66,6 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
     ofAddListener(ofEvents().keyPressed, this, &ofxDarkKnight::handleKeyPressed);
     ofAddListener(ofEvents().keyReleased, this, &ofxDarkKnight::handleKeyReleased);
     ofAddListener(ofEvents().fileDragEvent, this, &ofxDarkKnight::handleDragEvent);
-    
-    loadProject("mySettings.batmapp");
 }
 
 
@@ -201,6 +199,8 @@ void ofxDarkKnight::checkOutputConnection(int x, int y, string moduleName)
     
     for(pair<string, Module*> module : modules )
     {
+       // if(!module.second->getModuleEnabled()) return;
+        
         output = module.second->getOutputConnection(x, y);
 
         //true if we click on output node
@@ -301,6 +301,7 @@ void ofxDarkKnight::checkInputConnection(int x, int y, string moduleName)
 
     for(pair<string, Module*> module : modules )
     {
+        //if(!module.second->getModuleEnabled()) return;
         input = module.second->getInputConnection(x, y);
         //true if user released the wire on input connection
         if(input != nullptr && currentWire != nullptr &&
@@ -342,7 +343,7 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
         if(file.exists())
         {
             string fileExtension = ofToUpper(file.getExtension());
-            if(fileExtension == "MOV")
+            if(fileExtension == "MOV" || fileExtension == "MP4")
             {
                 DarkKnightHap * hapPlayer = new DarkKnightHap;
                 
@@ -544,7 +545,7 @@ void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
         toggleMappingMode();
     }
 
-    if (keyboard.key == OF_KEY_BACKSPACE)
+    if (cmdKey && keyboard.key == OF_KEY_BACKSPACE)
     {
         deleteFocusedModule();
     }
@@ -552,8 +553,23 @@ void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
     //cmd + 's' to save the project
     if( cmdKey && keyboard.key == 19)
     {
-        saveProject();
+        ofFileDialogResult saveFileResult =
+            ofSystemSaveDialog("project.batmapp", "Save project");
+        
+        if (saveFileResult.bSuccess){
+            saveProject(saveFileResult.getPath(), saveFileResult.getName());
+        }
     }
+    
+    //cmd + o
+   if(cmdKey && keyboard.key == 15)
+   {
+       ofFileDialogResult loadFileResult = ofSystemLoadDialog("Open batmapp project");
+       if(loadFileResult.bSuccess)
+       {
+           loadProject(loadFileResult.getPath(), loadFileResult.getName());
+       }
+   }
     
     //cmd + shift + 's' to save preset
     if( shiftKey && cmdKey && keyboard.key == 19)
@@ -610,7 +626,7 @@ void ofxDarkKnight::newMidiMessage(ofxMidiMessage & msg)
     
 }
 
-void ofxDarkKnight::saveProject()
+void ofxDarkKnight::saveProject(string fileName, string path)
 {
     xml.clear();
     
@@ -695,11 +711,14 @@ void ofxDarkKnight::saveProject()
     xml.popTag();
     xml.popTag();
     
-    xml.saveFile("mySettings.batmapp");
+    xml.save(path);
+    xml.saveFile(fileName);
+    
 }
 
-void ofxDarkKnight::loadProject(string file)
+void ofxDarkKnight::loadProject(string path, string file)
 {
+    xml.load(path);
     if ( xml.loadFile(file) )
     {
         xml.pushTag("PROJECT");
