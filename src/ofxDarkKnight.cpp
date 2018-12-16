@@ -36,7 +36,7 @@ ofxDarkKnight::~ofxDarkKnight()
 void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
 {
     theme = new ofxDatGuiThemeCharcoal();
-    shiftKey = altKey = cmdKey = midiMapMode = drawing = showExplorer = false;
+    loadWires = shiftKey = altKey = cmdKey = midiMapMode = drawing = showExplorer = false;
     translation = { 0, 0 };
     resolution = { 1920, 1080 };
     
@@ -400,7 +400,7 @@ Module * ofxDarkKnight::addModule(string moduleName)
         if(newModule == nullptr) newModule = it->second;
         
         newModule->setupModule(it->first, theme, resolution);
-        newModule->gui->setPosition(ofGetMouseX() + 15, ofGetMouseY() + 15);
+        newModule->gui->setPosition(ofGetMouseX() - 100, ofGetMouseY() - 15);
         
         if(moduleName == "SCREEN OUTPUT")
         {
@@ -541,7 +541,7 @@ void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
     }
     
     // cmd+shift+m || cmd+shift+<  -> Toggle midiMap on all layers
-    if(shiftKey && (keyboard.key == 109 || keyboard.key == 77)){
+    if(shiftKey && (keyboard.key == 'm' || keyboard.key == '<')){
         toggleMappingMode();
     }
 
@@ -551,7 +551,7 @@ void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
     }
     
     //cmd + 's' to save the project
-    if( cmdKey && keyboard.key == 19)
+    if( cmdKey && keyboard.key == 's')
     {
         ofFileDialogResult saveFileResult =
             ofSystemSaveDialog("project.batmapp", "Save project");
@@ -562,17 +562,17 @@ void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
     }
     
     //cmd + o
-   if(cmdKey && keyboard.key == 15)
-   {
-       ofFileDialogResult loadFileResult = ofSystemLoadDialog("Open batmapp project");
-       if(loadFileResult.bSuccess)
-       {
-           loadProject(loadFileResult.getPath(), loadFileResult.getName());
-       }
-   }
+    if(cmdKey && keyboard.key == 'o')
+    {
+            ofFileDialogResult loadFileResult = ofSystemLoadDialog("Open batmapp project");
+            if(loadFileResult.bSuccess)
+            {
+               loadProject(loadFileResult.getPath(), loadFileResult.getName());
+            }
+    }
     
     //cmd + shift + 's' to save preset
-    if( shiftKey && cmdKey && keyboard.key == 19)
+    if( shiftKey && cmdKey && keyboard.key == 's')
     {
         savePreset();
     }
