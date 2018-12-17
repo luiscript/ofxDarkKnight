@@ -49,9 +49,6 @@ private:
     //ofPoint translation;
     
     ofxDatGuiComponent * selectedComponent;
-    ofxDatGuiTheme * theme;
-    
-    
     unordered_map<string, ofxDatGuiComponent *> midiMappings;
 public:
     
@@ -78,10 +75,10 @@ public:
     virtual Module * getChildModule() { return nullptr; };
     
     void init();
-    void setupModule(string, ofxDatGuiTheme *, ofVec2f, bool);
-    void setupModule(string, ofxDatGuiTheme *, ofVec2f);
-    void setupCommon(string, ofxDatGuiTheme *, ofVec2f);
-    void setupGui(ofxDatGuiTheme *);
+    void setupModule(string, ofVec2f, bool);
+    void setupModule(string, ofVec2f);
+    void setupCommon(string, ofVec2f);
+    void setupGui();
     void updateModule();
     void updateModule(float, float);
     void drawModule();

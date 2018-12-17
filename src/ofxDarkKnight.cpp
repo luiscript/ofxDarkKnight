@@ -35,7 +35,6 @@ ofxDarkKnight::~ofxDarkKnight()
 
 void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
 {
-    theme = new ofxDatGuiThemeCharcoal();
     loadWires = shiftKey = altKey = cmdKey = midiMapMode = drawing = showExplorer = false;
     translation = { 0, 0 };
     resolution = { 1920, 1080 };
@@ -49,7 +48,6 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
     poolNames.sort();
     
     componentsList = new ofxDatGuiScrollView("Modules list", 10);
-    componentsList->setTheme(theme);
     componentsList->setWidth(800);
     componentsList->setHeight(600);
     componentsList->setPosition(ofGetScreenWidth() - 400, ofGetScreenHeight() - 300);
@@ -354,7 +352,6 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                         MediaPool * mp = static_cast<MediaPool*>(module.second);
                         mp->addItem(hapPlayer, "thumbnails/terrain.jpg", "video player");
                         mediaPoolFounded = true;
-                        hapPlayer->gui->setTheme(theme);
                         hapPlayer->gui->setWidth(450);
                         hapPlayer->loadFile(file.getAbsolutePath());
                         modules.insert({"HAP: " + file.getFileName(), hapPlayer});
@@ -365,7 +362,7 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                     MediaPool * newPool = new MediaPool;
                     
                     newPool->setCollectionName("Collection 1");
-                    newPool->setupModule("SKETCH POOL 1", theme, resolution, false);
+                    newPool->setupModule("SKETCH POOL 1", resolution, false);
                     newPool->addItem(hapPlayer, "thumbnails/terrain.jpg", "HAP: " + file.getFileName());
                     newPool->init();
                     newPool->gui->setPosition(ofGetMouseX() + 15, ofGetMouseY() + 15);
@@ -373,7 +370,6 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                     newPool->setTranslationReferences(&translation);
                     modules.insert({"SKETCH POOL 1", newPool});
                     
-                    hapPlayer->gui->setTheme(theme);
                     hapPlayer->gui->setWidth(450);
                     hapPlayer->loadFile(file.getAbsolutePath());
                     modules.insert({"HAP: " + file.getFileName(), hapPlayer});
@@ -399,7 +395,7 @@ Module * ofxDarkKnight::addModule(string moduleName)
         Module * newModule = createModule(it->first);
         if(newModule == nullptr) newModule = it->second;
         
-        newModule->setupModule(it->first, theme, resolution);
+        newModule->setupModule(it->first, resolution);
         newModule->gui->setPosition(ofGetMouseX() - 100, ofGetMouseY() - 15);
         
         if(moduleName == "SCREEN OUTPUT")
@@ -416,7 +412,7 @@ Module * ofxDarkKnight::addModule(string moduleName)
         }
         else
         {
-            modules.insert({it->first, newModule});
+            modules.insert({it->first + ofToString(ofGetElapsedTimef()), newModule});
         }
         
         if(it->second->getModuleHasChild())
@@ -669,13 +665,21 @@ void ofxDarkKnight::saveProject(string fileName, string path)
                     
                     xml.addTag("PARAMS");
                     xml.pushTag("PARAMS");
+                    int compIndex = 0;
                     for(ofxDatGuiComponent * component : item.canvas->params->children)
                     {
+                        xml.addTag("PARAM");
+                        xml.pushTag("PARAM", compIndex);
+                        
                         string compName = component->getName();
                         std::transform(compName.begin(), compName.end(), compName.begin(), [](char ch){
                             return ch == ' ' ? '_' : ch;
                         });
-                        xml.setValue(compName, component->getComponentScale(), itemIndex);
+                        xml.setValue("NAME", compName, compIndex);
+                        xml.setValue("SCALE", component->getComponentScale(), compIndex);
+                        
+                        xml.popTag();
+                        compIndex++;
                     }
                     itemIndex++;
                     xml.popTag();
@@ -735,7 +739,47 @@ void ofxDarkKnight::loadProject(string path, string file)
             std::transform(module.begin(), module.end(), module.begin(), [](char ch){
                 return ch == '_' ? ' ' : ch;
             });
-            addModule(module)->gui->setPosition(x, y);
+            
+            Module * tempModule = addModule(module);
+            if (tempModule != nullptr)
+            {
+                tempModule->gui->setPosition(x, y);
+                if(tempModule->getModuleHasChild())
+                {
+                    MediaPool * mediaPool = static_cast<MediaPool*>(tempModule);
+                    xml.pushTag("ITEMS");
+                    int numItems = xml.getNumTags("ITEM");
+                    for(int i=0; i < numItems; i++)
+                    {
+                        xml.pushTag("ITEM", i);
+                        xml.pushTag("PARAMS");
+                        int numParams = xml.getNumTags("PARAM");
+                        for(int p=0; p < numParams; p++)
+                        {
+                            xml.pushTag("PARAM", p);
+                            string name = xml.getValue("NAME","");
+                            std::transform(name.begin(), name.end(), name.begin(), [](char ch){
+                                return ch == '_' ? ' ' : ch;
+                            });
+                            double scale = xml.getValue("SCALE", 0.0);
+                        
+                            for(ofxDatGuiComponent * comp : mediaPool->collection[i].canvas->params->children)
+                            {
+                                if(comp->getName() == name)
+                                {
+                                    comp->setComponentScale(scale);
+                                }
+                            }
+                            xml.popTag();
+                        }
+                        xml.popTag();
+                        xml.popTag();
+                    }
+                    xml.popTag();
+                }
+            }
+            
+            
             xml.popTag();
         }
         xml.popTag();
@@ -790,9 +834,11 @@ void ofxDarkKnight::savePreset()
 Module * ofxDarkKnight::createModule(string name)
 {
     if(name == "PREVIEW") return new Preview;
-    if(name == "MAPPING TOOLS") return new ofxDarkKnightMapping;
-    if(name == "MIDI CONTROLLER") return new ofxDarkKnightMidi;
-    if(name == "OSC CONTROLLER") return new ofxDarkKnightOsc;
+    else if(name == "MAPPING TOOLS") return new ofxDarkKnightMapping;
+    else if(name == "MIDI CONTROLLER") return new ofxDarkKnightMidi;
+    else if(name == "OSC CONTROLLER") return new ofxDarkKnightOsc;
+    else if(name == "SYPHON SERVER") return new ofxDarkKnightSyphon;
+    else if(name == "SYPHON CLIENT") return new DarkKnightSyphonClient;
     
     return nullptr;
 }

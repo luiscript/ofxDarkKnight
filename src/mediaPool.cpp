@@ -260,7 +260,7 @@ void MediaPool::addItem(Module * module, string fileName, string name)
     
     CollectionItem item = { name, module, fileName, new ofImage, modulePresets };
     item.thumbnail->load(item.fileName);
-    item.canvas->setupModule(name, getGuiTheme(), {getModuleWidth(), getModuleHeight()}, true);
+    item.canvas->setupModule(name, {getModuleWidth(), getModuleHeight()}, true);
     item.canvas->gui->setVisible(false);
     item.canvas->moduleIsChild = true;
     item.canvas->setModuleIndex(numItems);

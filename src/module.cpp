@@ -23,21 +23,20 @@
 #include "module.hpp"
 
 
-void Module::setupModule(string name, ofxDatGuiTheme * themePtr, ofVec2f resolution, bool child = false)
+void Module::setupModule(string name, ofVec2f resolution, bool child = false)
 {
     moduleIsChild = child;
-    setupCommon(name, themePtr, resolution);
+    setupCommon(name, resolution);
 }
 
-void Module::setupModule(string name, ofxDatGuiTheme * themePtr, ofVec2f resolution)
+void Module::setupModule(string name, ofVec2f resolution)
 {
-    setupCommon(name, themePtr, resolution);
+    setupCommon(name, resolution);
 }
 
-void Module::setupCommon(string name, ofxDatGuiTheme * themePtr, ofVec2f resolution)
+void Module::setupCommon(string name, ofVec2f resolution)
 {
     moduleName = name;
-    theme = themePtr;
     moduleIndex = -1;
     
     moduleMidiMapMode = false;
@@ -46,7 +45,7 @@ void Module::setupCommon(string name, ofxDatGuiTheme * themePtr, ofVec2f resolut
     moduleHeight = resolution.y;
     
     selectedComponent = nullptr;
-    setupGui(theme);
+    setupGui();
     setup();
     
     float x = gui->getPosition().x + gui->getWidth() + 17;
@@ -65,28 +64,18 @@ void Module::setupCommon(string name, ofxDatGuiTheme * themePtr, ofVec2f resolut
     moduleInitialized = true;
 }
 
-void Module::setupGui(ofxDatGuiTheme * themePtr)
+void Module::setupGui()
 {
-    theme = themePtr;
     gui = new ofxDatGui();
-    
-    gui->setTheme(theme);
     gui->addHeader(moduleName);
     
-//    ofxDatGuiToggle * toggle = gui->addToggle("enable");
-//    toggle->setChecked(moduleEnabled);
-//    toggle->onToggleEvent(this, &Module::onEnableChange);
-//
     if(moduleIsChild) {
         params = gui->addFolder("PARAMS");
         params->expand();
     }
     
     addModuleParameters();
-
-    gui->setPosition(0, 0);
     gui->setWidth(450);
-    
 }
 
 void Module::updateModule()
@@ -175,7 +164,7 @@ WireConnection * Module::getInputConnection(int x , int y)
 
 ofxDatGuiTheme * Module::getGuiTheme()
 {
-    return theme;
+    return nullptr;
 }
 
 
