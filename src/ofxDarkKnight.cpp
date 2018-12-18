@@ -355,6 +355,7 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                         hapPlayer->gui->setWidth(450);
                         hapPlayer->loadFile(file.getAbsolutePath());
                         modules.insert({"HAP: " + file.getFileName(), hapPlayer});
+                        return;
                     }
                 
                 if(!mediaPoolFounded)
@@ -373,6 +374,7 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                     hapPlayer->gui->setWidth(450);
                     hapPlayer->loadFile(file.getAbsolutePath());
                     modules.insert({"HAP: " + file.getFileName(), hapPlayer});
+                    return;
                 }
             }
         }

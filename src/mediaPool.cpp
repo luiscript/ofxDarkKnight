@@ -104,6 +104,13 @@ void MediaPool::draw()
     ofDisableLighting();
     ofPopStyle();
     
+    if(hasInput)
+    {
+        ofEnableBlendMode(OF_BLENDMODE_ADD);
+        inputFbo->draw(0, 0);
+        ofDisableBlendMode();   
+    }
+    
     mainFbo.end();
 
     drawMediaPool();

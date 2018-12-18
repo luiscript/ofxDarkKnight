@@ -8,9 +8,9 @@
 # Getting started
 
 ## Download openFrameworks
-ofxDarkKnight it's built on top of [openframeworks](https://openframeworks.cc/) v0.10.0 and is tested on Mac OS and Windows. 
+ofxDarkKnight it's built on top of [openframeworks](https://openframeworks.cc/) v0.10.1 and is tested on Mac OS and Windows. 
 
-Download [openFrameworks v0.10.0](https://openframeworks.cc/download) for your development platform. Open an example and run it to make sure that everything is working correctly.
+Download [openFrameworks v0.10.1](https://openframeworks.cc/download) for your development platform. Open an example and run it to make sure that everything is working correctly.
 
 If your having problems running the examples please [read this guide](https://openframeworks.cc/ofBook/chapters/setup_and_project_structure.html#runningexamples)
 

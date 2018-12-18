@@ -40,6 +40,7 @@
 #include "ofxDarkKnightMapping.hpp"
 #include "ofxXmlSettings.h"
 #include "DarkKnightHap.hpp"
+#include "basic.hpp"
 
 
 class ofxDarkKnight : public ofxMidiListener{
