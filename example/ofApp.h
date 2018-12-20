@@ -12,6 +12,7 @@
 #include "ofxDarkKnightOsc.hpp"
 #include "ofxDarkKnightSyphon.hpp"
 #include "ofxDarkKnightMapping.hpp"
+#include "DarkKnightPostProcessing.h"
 
 
 class ofApp : public ofBaseApp{

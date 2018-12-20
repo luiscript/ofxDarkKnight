@@ -19,3 +19,6 @@
 [submodule "libs/DarkKnightHap"]
 	path = libs/DarkKnightHap
 	url = https://github.com/luiscript/DarkKnightHap
+[submodule "libs/DarkKnightPostProcessing"]
+	path = libs/DarkKnightPostProcessing
+	url = https://github.com/luiscript/DarkKnightPostProcessing

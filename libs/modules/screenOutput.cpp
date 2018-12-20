@@ -52,6 +52,7 @@ void ScreenOutput::addModuleParameters()
 
     ofxDatGuiComponent * component = gui->addDropdown("Output", monitorsName);
     component->onDropdownEvent(this, &ScreenOutput::onVideoOutputChange);
+    monitorsName.clear();
 }
 
 void ScreenOutput::onVideoOutputChange(ofxDatGuiDropdownEvent e)

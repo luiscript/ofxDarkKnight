@@ -36,6 +36,7 @@ Download and install [ofxDarkKnight](https://github.com/luiscript/ofxDarkKnight/
 
 [bangnoise: ](https://github.com/bangnoise)[ofxHapPlayer](https://github.com/bangnoise/ofxHapPlayer)
 
+[neilmendoza: ](https://github.com/neilmendoza)[ofxPostProcessing](https://github.com/luiscript/ofxPostProcessing)(Fork)
 
 ofxOsc (included in openframeworks)
 
