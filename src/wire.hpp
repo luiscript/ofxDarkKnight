@@ -25,7 +25,6 @@
 #include "ofMain.h"
 #include "module.hpp"
 #include "wireConnection.hpp"
-//#include "ofxVectorGraphics.h"
 
 class Wire{
 public:
@@ -42,8 +41,6 @@ public:
     void drawWire(ofPoint, ofPoint, ofPoint);
     ofPoint getWireControlPoint(ofPoint, ofPoint, float);
     
-    
-    
     WireConnection * getInput();
     WireConnection * getOutput();
     
@@ -51,12 +48,12 @@ public:
     WireConnection * output;
     
     string type;
+    void * data;
     ofFbo * fbo;
     double * scale;
     ofxDatGuiSlider * slider;
     bool active;
     
-   // ofxVectorGraphics wireGraphics;
     float connectionRadius;
     float wiresTension;
     

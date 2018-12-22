@@ -92,7 +92,7 @@ void Module::updateModule()
     x = gui->getPosition().x - 17;
     y = gui->getPosition().y + 13;
     fboInput->setWireConnectionPos(ofPoint(x,y));
-    fboInput->setup(ofPoint(x,y), "fboInput");
+    //fboInput->setup(ofPoint(x,y), "fboInput");
 }
 
 void Module::updateModule(float tx, float ty)

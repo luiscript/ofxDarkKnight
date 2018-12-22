@@ -219,7 +219,7 @@ void ofxDarkKnight::checkOutputConnection(int x, int y, string moduleName)
         //true if we click on input node
         if(input != nullptr)
         {
-            for(vector<Wire>::iterator it = wires.begin(); it != wires.end(); it++)
+            for(auto it = wires.begin(); it != wires.end(); it++)
             {
                 if(it->getInput() == input)
                 {

@@ -25,23 +25,40 @@
 
 #include "ofMain.h"
 
+enum class ConnectionType {
+    DK_TEXTURE = 0,
+    DK_FBO = 1,
+    DK_SCALE = 2,
+    DK_INT = 3
+};
+
 class WireConnection{
 private:
     ofPoint wireConnectionPos;
     string name;
-    string connectionType;
+    //string connectionType;
+    ConnectionType connectionType;
     double * scale;
 public:
     void setup(ofPoint, string);
-    void setWireConnectionPos(ofPoint);
+    void setup(ofPoint, ConnectionType);
+    
+    void updateWireConnectionPos(int, int);
+    
+    void draw();
+    
     float getDist(WireConnection *);
     string getName();
     ofPoint getWireConnectionPos();
-    void updateWireConnectionPos(int, int);
-    WireConnection * testWireConnection(int, int);
-    
     double * getScale();
+    ConnectionType getConnectionType();
+    
     void setScale(double *);
+    void setWireConnectionType(ConnectionType);
+    void setWireConnectionPos(ofPoint);
+    
+    void checkConnectionOnDrag(ConnectionType);
+    WireConnection * testWireConnection(int, int);
     
     ofFbo * getFbo();
     void setFbo(ofFbo *);

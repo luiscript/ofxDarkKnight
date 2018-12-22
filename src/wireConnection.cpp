@@ -29,6 +29,28 @@ void WireConnection::setup(ofPoint p, string n)
     name = n;
 }
 
+void WireConnection::setup(ofPoint p, ConnectionType type)
+{
+    wireConnectionPos = p;
+    connectionType = type;
+}
+
+void WireConnection::updateWireConnectionPos(int x, int y)
+{
+    wireConnectionPos.x = x;
+    wireConnectionPos.y = y;
+}
+
+void WireConnection::draw()
+{
+    ofPushStyle();
+    ofSetColor(255);
+    ofDrawCircle(wireConnectionPos.x, wireConnectionPos.y, 10);
+    ofSetColor(0);
+    ofDrawCircle(wireConnectionPos.x, wireConnectionPos.y, 6);
+    ofPopStyle();
+}
+
 void WireConnection::setWireConnectionPos(ofPoint p)
 {
     wireConnectionPos = p;
@@ -44,6 +66,11 @@ string WireConnection::getName()
     return name;
 }
 
+ConnectionType WireConnection::getConnectionType()
+{
+    return connectionType;
+}
+
 WireConnection * WireConnection::testWireConnection(int x, int y)
 {
     
@@ -57,11 +84,7 @@ float WireConnection::getDist(WireConnection * wire)
     return ofDist(wireConnectionPos.x, wireConnectionPos.y, wire->wireConnectionPos.x, wire->wireConnectionPos.y);
 }
 
-void WireConnection::updateWireConnectionPos(int x, int y)
-{
-    wireConnectionPos.x = x;
-    wireConnectionPos.y = y;
-}
+
 
 
 void WireConnection::setScale(double * sc)
@@ -79,7 +102,20 @@ void WireConnection::setFbo(ofFbo * fboPtr)
     //fbo = fboPtr;
 }
 
+void WireConnection::setWireConnectionType(ConnectionType type)
+{
+    connectionType = type;
+}
+
 ofFbo * WireConnection::getFbo()
 {
     return nullptr;
+}
+
+void WireConnection::checkConnectionOnDrag(ConnectionType type)
+{
+    if(connectionType == type)
+    {
+        //change color of connection to indicate that you can connect
+    }
 }
