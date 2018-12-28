@@ -27,6 +27,9 @@ void Preview::setup()
     drawFbo = false;
     fbo = nullptr;
     scaleX = scaleY = 0.5;
+    
+    addOutputConnection(ConnectionType::DK_FBO);
+    addInputConnection(ConnectionType::DK_FBO);
 }
 
 void Preview::update()
@@ -54,7 +57,6 @@ void Preview::setFbo(ofFbo * fboPtr)
     
     if(drawFbo)
     {
-        //setModuleWidth(fbo->getWidth()/4);
         gui->setWidth(getModuleWidth()/2);
     }
     
@@ -66,15 +68,3 @@ ofFbo * Preview::getFbo()
 {
     return fbo;
 }
-
-
-void Preview::drawMasterOutput()
-{
-    drawOutputConnection();
-}
-
-void Preview::drawMasterInput()
-{
-    drawInputConnection();
-}
-

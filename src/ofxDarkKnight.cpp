@@ -80,7 +80,8 @@ void ofxDarkKnight::update()
     }
     
     for (auto wire : wires)
-        if(wire.inputModule->getModuleEnabled() && wire.outputModule->getModuleEnabled())
+        if(wire.inputModule->getModuleEnabled() &&
+           wire.outputModule->getModuleEnabled())
             wire.update();
     
     if (showExplorer) componentsList->update();
@@ -190,25 +191,28 @@ void ofxDarkKnight::handleMouseScrolled(ofMouseEventArgs & mouse)
     //translation.y += 2*mouse.scrollY;
 }
 
-void ofxDarkKnight::checkOutputConnection(int x, int y, string moduleName)
+void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
 {
     WireConnection * output;
     WireConnection * input;
     
     for(pair<string, Module*> module : modules )
     {
-       // if(!module.second->getModuleEnabled()) return;
-        
         output = module.second->getOutputConnection(x, y);
-
-        //true if we click on output node
+        
+        //true if we click on output connection
         if(output != nullptr &&
            (module.second->getName() == moduleName || moduleName == "*" ))
         {
+            currentWireConnectionType = output->getConnectionType();
             currentWire = new Wire;
-            currentWire->setOutput(output);
-            currentWire->type = "scale";
+            currentWire->setOutputConnection(output);
+            currentWire->setConnectionType(currentWireConnectionType);
             currentWire->outputModule = module.second;
+            if(currentWireConnectionType == ConnectionType::DK_FBO)
+            {
+                currentWire->fbo = module.second->getFbo();
+            }
             pointer.x = x;
             pointer.y = y;
             drawing = true;
@@ -219,14 +223,16 @@ void ofxDarkKnight::checkOutputConnection(int x, int y, string moduleName)
         //true if we click on input node
         if(input != nullptr)
         {
+            //loop all the wires to find an input match
             for(auto it = wires.begin(); it != wires.end(); it++)
             {
+                //true if the input clicked is on the list
+                // we need to disconect the wire and delete it from the list
                 if(it->getInput() == input)
                 {
-                    //disconect the wire and delete it from the list
                     currentWire = new Wire;
-                    currentWire->type = "scale";
-                    currentWire->setOutput(it->getOutput());
+                    currentWire->setConnectionType(input->getConnectionType());
+                    currentWire->setOutputConnection(it->getOutput());
                     currentWire->outputModule = it->outputModule;
                     
                     pointer.x = x;
@@ -238,65 +244,13 @@ void ofxDarkKnight::checkOutputConnection(int x, int y, string moduleName)
                 }
             }
         }
-        //check if we clicked on a main output
-        else
-        {
-            output = module.second->getMainOutput(x, y);
-            input = module.second->getMainInput(x, y);
-            
-            //true if user clicked in main output
-            if(output != nullptr)
-            {
-                currentWire = new Wire;
-                currentWire->setOutput(output);
-                currentWire->type = "fbo";
-                currentWire->fbo = module.second->getFbo();
-                currentWire->outputModule = module.second;
-                
-                pointer.x = x;
-                pointer.y = y;
-                drawing = true;
-                break;
-            }
-            //true if user clicked in main input
-            else if(input != nullptr)
-            {
-                //check if we already have this input on the wires list
-                for(vector<Wire>::iterator it = wires.begin(); it != wires.end(); it++)
-                {
-                    
-                    //true if wire is listed
-                    if(it->getInput() == input)
-                    {
-                        //disconect the wire and delete it from the list
-                        
-                        currentWire = new Wire;
-                        currentWire->setOutput(it->getOutput());
-                        currentWire->type = "fbo";
-                        currentWire->fbo = it->outputModule->getFbo();
-                        
-                        //currentWire->setInput(it->getInput());
-                        currentWire->setInput(nullptr);
-                        module.second->setFbo(nullptr);
-                        
-                        pointer.x = x;
-                        pointer.y = y;
-                        
-                        wires.erase(it);
-                        drawing = true;
-                        break;
-                    }
-                }
-            }
-        }
-        
     }
 }
 
-void ofxDarkKnight::checkInputConnection(int x, int y, string moduleName)
+void ofxDarkKnight::checkInputConnection(float x, float y, string moduleName)
 {
     WireConnection * input;
-
+    
     for(pair<string, Module*> module : modules )
     {
         //if(!module.second->getModuleEnabled()) return;
@@ -305,22 +259,19 @@ void ofxDarkKnight::checkInputConnection(int x, int y, string moduleName)
         if(input != nullptr && currentWire != nullptr &&
            (module.second->getName() == moduleName || moduleName == "*"))
         {
-            currentWire->setInput(input);
-            currentWire->slider = static_cast<ofxDatGuiSlider*>(module.second->getInputComponent(x, y));
-            currentWire->inputModule = module.second;
-            wires.push_back(*currentWire);
-            drawing = false;
-            currentWire = nullptr;
-            break;
-        }
-        
-        input = module.second->getMainInput(x,y);
-        //true if user released the cable in main input connection
-        if(input != nullptr)
-        {
-            currentWire->setInput(input);
-            module.second->setFbo(currentWire->fbo);
-            currentWire->inputModule = module.second;
+            currentWire->setInputConnection(input);
+            currentWire->setInputModule(module.second);
+            
+            if (currentWire->getConnectionType() == ConnectionType::DK_SLIDER)
+            {
+                currentWire->slider = static_cast<ofxDatGuiSlider*>(module.second->getInputComponent(x, y));
+            }
+            else if(currentWire->getConnectionType() == ConnectionType::DK_FBO)
+            {
+                module.second->setFbo(currentWire->fbo);
+            }
+            
+            
             wires.push_back(*currentWire);
             drawing = false;
             currentWire = nullptr;
@@ -478,7 +429,8 @@ void ofxDarkKnight::deleteFocusedModule()
             vector<Wire>::iterator itw = wires.begin();
             while(itw != wires.end())
             {
-                if(module.second->fboOutput == itw->getOutput() || module.second->fboInput == itw->getInput())
+//                if(module.second->fboOutput == itw->getOutput() || module.second->fboInput == itw->getInput())
+                if(module.second == itw->outputModule || module.second == itw->inputModule)
                 {
                     wires.erase(itw);
                     itw = wires.begin();
@@ -838,6 +790,7 @@ Module * ofxDarkKnight::createModule(string name)
     if(name == "PREVIEW") return new Preview;
     else if(name == "MAPPING TOOLS") return new ofxDarkKnightMapping;
     else if(name == "MIDI CONTROLLER") return new ofxDarkKnightMidi;
+    else if(name == "MIXER") return new Mixer;
     else if(name == "OSC CONTROLLER") return new ofxDarkKnightOsc;
     else if(name == "SYPHON SERVER") return new ofxDarkKnightSyphon;
     else if(name == "SYPHON CLIENT") return new DarkKnightSyphonClient;

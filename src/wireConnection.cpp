@@ -44,7 +44,7 @@ void WireConnection::updateWireConnectionPos(int x, int y)
 void WireConnection::draw()
 {
     ofPushStyle();
-    ofSetColor(255);
+    ofSetColor(getWireConnectionColor());
     ofDrawCircle(wireConnectionPos.x, wireConnectionPos.y, 10);
     ofSetColor(0);
     ofDrawCircle(wireConnectionPos.x, wireConnectionPos.y, 6);
@@ -71,12 +71,11 @@ ConnectionType WireConnection::getConnectionType()
     return connectionType;
 }
 
-WireConnection * WireConnection::testWireConnection(int x, int y)
+WireConnection * WireConnection::testWireConnection(float x, float y)
 {
-    
     ofPoint p = getWireConnectionPos();
     float dist = ofDist(p.x, p.y, x, y);
-    return dist < 15 ? this : nullptr;
+    return dist < 15.0 ? this : nullptr;
 }
 
 float WireConnection::getDist(WireConnection * wire)
@@ -118,4 +117,10 @@ void WireConnection::checkConnectionOnDrag(ConnectionType type)
     {
         //change color of connection to indicate that you can connect
     }
+}
+
+ofColor WireConnection::getWireConnectionColor()
+{
+    if(connectionType == ConnectionType::DK_FBO) return ofColor(180, 180, 0);
+    if(connectionType == ConnectionType::DK_SLIDER) return ofColor(255, 255, 255);
 }

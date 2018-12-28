@@ -97,8 +97,6 @@ public:
     void setup();
     void update();
     void draw();
-    void drawMasterOutput();
-    void drawMasterInput();
     void addModuleParameters();
     void addCustomParameters();
     void addItem(Module *, string, string);

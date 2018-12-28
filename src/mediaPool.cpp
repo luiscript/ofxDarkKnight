@@ -68,6 +68,8 @@ void MediaPool::init()
     //use this:
     //midiMappings.insert({"16/0", 0});
 
+    addInputConnection(ConnectionType::DK_FBO);
+    addOutputConnection(ConnectionType::DK_FBO);
 }
 
 
@@ -312,16 +314,6 @@ void MediaPool::gotMidiMapping(string mapping)
 void MediaPool::gotMidiMessage(ofxMidiMessage * msg)
 {
     currentCanvas->triggerMidiMessage(msg);
-}
-
-void MediaPool::drawMasterInput()
-{
-    drawInputConnection();
-}
-
-void MediaPool::drawMasterOutput()
-{
-    drawOutputConnection();
 }
 
 void MediaPool::setCollectionName(string name)

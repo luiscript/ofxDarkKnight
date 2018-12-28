@@ -242,8 +242,6 @@ class ofxDarkNightTemplate : public Module
     void update();
     void draw();
     void addModuleParameters();
-    void drawMasterInput();
-    void drawMasterOutput();
     void setFbo(ofFbo *);
     ofFbo * getFbo();
     void unMount();
@@ -258,8 +256,6 @@ void setup() | Runs once at the begining of the sketch.
 void update() | Runs every frame to update data.
 void draw() | Runs every frame to draw something on the screen.
 void addModuleParameters() | Runs once after setup, here you will add all the parameters that your module needs. ofxDarkKnight uses ofxDatGui, to learn how to add paramemeters please read the [ofxDatGui docs](https://braitsch.github.io/ofxDatGui/). Right now only sliders are supported.
-void drawMasterInput() | You should implement this function when your module needs an input in order to work, for example a video FX.
-void drawMasterOutput() | If your module returns something, then you should implement this function.
 void setFbo(ofFbo *) | This function will be called when an external module conects it's main output with the current module's input and it will recieve a pointer to an ofFbo that contains the graphics.
 ofFbo getFbo() | This function will be called when you try to connect the current module's output to an external module's input. It should return an ofFbo pointer that contains the drawing.
 void unMount() | Runs once when the app closes.
@@ -291,7 +287,6 @@ class ofxDarkKnightEllipse : public Module
     void setup();
     void draw();
     void addModuleParameters();
-    void drawMasterOutput();
     ofFbo * getFbo();
     
     private:
@@ -320,6 +315,9 @@ void ofxDarkKnightEllipse::setup()
   radius = 30;
   fillColorR = 255;
   fillColorG = fillColorB = 0;
+
+  //this will add a FBO output connection to the module
+  addOutputConnection(ConnectionType::DK_FBO);
 }
 
 void ofxDarkKnightEllipse::draw()
@@ -409,7 +407,7 @@ Since we're not using the Ellipse module as a stand alone module we can skip som
 
 1. You don't need to declare and allocate the fbo, the media pool does it for you in an efficient way that only 1 fbo will be needed to draw any of the 16 drawer modules.
 
-2. You don't need the `drawMainOutput()` function because we will not return nothing from the drawers, only the collection will have a single output and the `MediaPool` class will handle it for you.
+2. You don't need to add a connection `addOutputConnection(DK:FBO)` function because we will not return nothing from the drawers, only the collection will have a single output and the `MediaPool` class will handle it for you.
 
 3. Since we're not returning anything you should skip the `ofFbo * getFbo()` function from your module.
 
@@ -471,6 +469,8 @@ MIT
 
  # Credits
 
-This repo includes a fork from [ofxDatGui](https://github.com/braitsch/ofxDatGui) as internal dependency that was created by [Stephen Braitsch](https://github.com/braitsch).
+Created and maintained by [Luis Fer García](https://github.com/luiscript)
 
-ofxDarkKnight was created and maintained by [Luis Fer García](https://github.com/luiscript)
+This repository includes a fork from [ofxDatGui](https://github.com/braitsch/ofxDatGui) as internal dependency that was created by [Stephen Braitsch](https://github.com/braitsch).
+
+

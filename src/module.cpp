@@ -51,14 +51,14 @@ void Module::setupCommon(string name, ofVec2f resolution)
     float x = gui->getPosition().x + gui->getWidth() + 17;
     float y = gui->getPosition().y + 13;
     
-    fboOutput = new WireConnection;
-    fboOutput->setup(ofPoint(x,y), "fboOutput");
-    
-    x = gui->getPosition().x - 17;
-    y = gui->getPosition().y + 13;
-    
-    fboInput = new WireConnection;
-    fboInput->setup(ofPoint(x,y), "fboInput");
+//    fboOutput = new WireConnection;
+//    fboOutput->setup(ofPoint(x,y), "fboOutput");
+//
+//    x = gui->getPosition().x - 17;
+//    y = gui->getPosition().y + 13;
+//
+//    fboInput = new WireConnection;
+//    fboInput->setup(ofPoint(x,y), "fboInput");
     
     moduleIsChild = false;
     moduleInitialized = true;
@@ -78,6 +78,14 @@ void Module::setupGui()
     gui->setWidth(450);
 }
 
+void Module::updateModule(float tx, float ty)
+{
+    //translation.x = tx;
+    //translation.y = ty;
+    gui->setTranslation(tx, ty);
+    updateModule();
+}
+
 void Module::updateModule()
 {
     gui->update();
@@ -88,26 +96,37 @@ void Module::updateModule()
     float x = gui->getPosition().x + gui->getWidth() + 17;
     float y = gui->getPosition().y + 13;
 
-    fboOutput->setWireConnectionPos(ofPoint(x,y));
+    for (int o=0; o<outputs.size(); o++) {
+        outputs[o]->setWireConnectionPos(ofPoint(x,y + o*30));
+    }
+    
+    
+    
+    //fboOutput->setWireConnectionPos(ofPoint(x,y));
     x = gui->getPosition().x - 17;
     y = gui->getPosition().y + 13;
-    fboInput->setWireConnectionPos(ofPoint(x,y));
-    //fboInput->setup(ofPoint(x,y), "fboInput");
-}
-
-void Module::updateModule(float tx, float ty)
-{
-    //translation.x = tx;
-    //translation.y = ty;
-    gui->setTranslation(tx, ty);
-    updateModule();
+    
+    for (int i=0; i<inputs.size(); i++) {
+        inputs[i]->setWireConnectionPos(ofPoint(x,y + i*30));
+    }
+    
+    
+    //fboInput->setWireConnectionPos(ofPoint(x,y));
+    
+    
 }
 
 void Module::drawModule()
 {
     gui->draw();
-    drawMasterInput();
-    drawMasterOutput();
+    //drawMasterInput();
+    //drawMasterOutput();
+    
+    if(getModuleMidiMapMode())
+    {
+        for(auto out : outputs) out->draw();
+        for(auto inp : inputs ) inp->draw();
+    }
     if (moduleEnabled) draw();
 }
 
@@ -152,13 +171,31 @@ ofxDatGuiComponent * Module::getInputComponent(int x, int y)
     return gui->getInputComponent(x, y);
 }
 
-WireConnection * Module::getOutputConnection(int x , int y)
+WireConnection * Module::getOutputConnection(float x , float y)
 {
+    WireConnection * foundedWireConnection = nullptr;
+    for(auto out : outputs)
+    {
+        foundedWireConnection = out->testWireConnection(x, y);
+        if(foundedWireConnection != nullptr)
+        {
+            return foundedWireConnection;
+        }
+    }
     return gui->testOutputConnection(x, y);
 }
 
-WireConnection * Module::getInputConnection(int x , int y)
+WireConnection * Module::getInputConnection(float x , float y)
 {
+    WireConnection * foundedWireConnection = nullptr;
+    for(auto inp : inputs)
+    {
+        foundedWireConnection = inp->testWireConnection(x, y);
+        if(foundedWireConnection != nullptr)
+        {
+            return foundedWireConnection;
+        }
+    }
     return gui->testInputConnection(x, y);
 }
 
@@ -172,9 +209,10 @@ WireConnection * Module::getMainOutput(int x, int y)
 {
     float xC = gui->getPosition().x + gui->getWidth() + 17;
     float yC = gui->getPosition().y + 13;
-    fboOutput->setWireConnectionPos(ofPoint(xC, yC));
-    
-    return ofDist(x, y, xC, yC) <= 15.0 ? fboOutput : nullptr;
+//    fboOutput->setWireConnectionPos(ofPoint(xC, yC));
+//
+//    return ofDist(x, y, xC, yC) <= 15.0 ? fboOutput : nullptr;
+    return nullptr;
 }
 
 WireConnection * Module::getMainInput(int x, int y)
@@ -182,9 +220,10 @@ WireConnection * Module::getMainInput(int x, int y)
     float xC = gui->getPosition().x - 17;
     float yC = gui->getPosition().y + 13;
     
-    fboInput->setWireConnectionPos(ofPoint(xC, yC));
-    
-    return ofDist(x, y, xC, yC) <= 15.0 ? fboInput : nullptr;
+//    fboInput->setWireConnectionPos(ofPoint(xC, yC));
+//
+//    return ofDist(x, y, xC, yC) <= 15.0 ? fboInput : nullptr;
+    return nullptr;
 }
 
 bool Module::getModuleInitialized()
@@ -324,4 +363,17 @@ void Module::addSlider(string name, float & add, float min, float max, float val
     params->addSlider(name, min, max, val)->bind(add);
 }
 
+void Module::addInputConnection(ConnectionType t)
+{
+    WireConnection * input = new WireConnection;
+    input->setWireConnectionType(t);
+    inputs.push_back(input);
+}
+
+void Module::addOutputConnection(ConnectionType t)
+{
+    WireConnection * output = new WireConnection;
+    output->setWireConnectionType(t);
+    outputs.push_back(output);
+}
 

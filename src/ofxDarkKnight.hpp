@@ -34,6 +34,7 @@
 #include "preview.hpp"
 #include "mediaPool.hpp"
 #include "screenOutput.hpp"
+#include "mixer.hpp"
 #include "ofxDarkKnightMidi.hpp"
 #include "ofxDarkKnightOsc.hpp"
 #include "ofxDarkKnightSyphon.hpp"
@@ -56,6 +57,7 @@ private:
     bool shiftKey;
     bool altKey;
     bool loadWires;
+    ConnectionType currentWireConnectionType;
     
     Wire * currentWire;
     vector<Wire> wires;
@@ -78,9 +80,7 @@ public:
     
     void setup(unordered_map<string, Module*> *);
     void update();
-    
     void draw();
-    
     void close();
     
     void toggleList();
@@ -92,12 +92,16 @@ public:
     void deleteComponentWires(ofxDatGuiComponent *);
     void deleteFocusedModule();
     
+    //mouse event handlers
     void handleMousePressed(ofMouseEventArgs&);
     void handleMouseDragged(ofMouseEventArgs&);
     void handleMouseReleased(ofMouseEventArgs&);
+
     void handleMouseScrolled(ofMouseEventArgs&);
+    
     void handleKeyPressed(ofKeyEventArgs & keyboard);
     void handleKeyReleased(ofKeyEventArgs & keyboard);
+    
     void handleDragEvent(ofDragInfo&);
     
     void onResolutionChange(ofVec2f &);
@@ -110,8 +114,8 @@ public:
     void loadProjectWires();
     void savePreset();
     
-    void checkInputConnection(int, int, string);
-    void checkOutputConnection(int, int, string);
+    void checkInputConnection(float, float, string);
+    void checkOutputConnection(float, float, string);
     
 };
 

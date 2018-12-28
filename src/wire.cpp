@@ -37,7 +37,7 @@ void Wire::update()
 {
     if(input != nullptr && output != nullptr)
     {
-        if(type == "scale")
+        if(getConnectionType() == ConnectionType::DK_SLIDER)
         {
             slider->setComponentScale(*output->getScale());
         }
@@ -99,19 +99,37 @@ WireConnection * Wire::getOutput()
     return output;
 }
 
-void Wire::setInput(WireConnection * in)
+void Wire::setInputConnection(WireConnection * in)
 {
     input = in;
 }
 
-void Wire::setOutput(WireConnection * out)
+void Wire::setOutputConnection(WireConnection * out)
 {
     output = out;
 }
 
+void Wire::setOutputModule(Module * m)
+{
+    outputModule = m;
+}
+
+void Wire::setInputModule(Module * m)
+{
+    inputModule = m;
+}
+
+void Wire::setConnectionType(ConnectionType connType)
+{
+    connectionType = connType;
+}
 
 float Wire::getDistance()
 {
     return ofDist(input->getWireConnectionPos().x, input->getWireConnectionPos().y, output->getWireConnectionPos().x, output->getWireConnectionPos().y);
 }
 
+ConnectionType Wire::getConnectionType()
+{
+    return connectionType;
+}

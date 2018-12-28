@@ -1,9 +1,24 @@
-//
-//  mixer.hpp
-//  batmapp
-//
-//  Created by luiscript on 20/12/18.
-//
+/*
+ Copyright (C) 2018 Luis Fernando García [http://luiscript.com]
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+ */
 
 #ifndef mixer_h
 #define mixer_h
@@ -15,22 +30,14 @@
 class Mixer : public Module
 {
 private:
-    int blendMode;
+    ofBlendMode blendMode;
     ofFbo compositionFbo;
-    ofFbo * fboA;
-    ofFbo * fboB;
-    WireConnection * extraInput;
-    unordered_map<string, int> blendModes;
+    vector<ofFbo*> fbos;
+    unordered_map<string, ofBlendMode> blendModes;
     bool drawOutput;
 public:
     void setup()
     {
-        int x = gui->getPosition().x - 17;
-        int y = gui->getPosition().y + 43;
-        
-        extraInput = new WireConnection;
-        extraInput->setup(ofPoint(x,y), "fboInputB");
-        
         blendModes.insert({"DISABLED" , OF_BLENDMODE_DISABLED});
         blendModes.insert({"ALPHA" , OF_BLENDMODE_ALPHA});
         blendModes.insert({"ADD" , OF_BLENDMODE_ADD});
@@ -44,32 +51,76 @@ public:
         compositionFbo.begin();
         ofClear(0,0,0,0);
         compositionFbo.end();
-    };
+        
+        addInputConnection(ConnectionType::DK_FBO);
+        addInputConnection(ConnectionType::DK_FBO);
+        addOutputConnection(ConnectionType::DK_FBO);
+        
+        fbos.clear();
+        
+        gui->setWidth(250);
+        blendMode = OF_BLENDMODE_DISABLED;
+    }
+    
     void update()
     {
-        int x = gui->getPosition().x - 17;
-        int y = gui->getPosition().y + 43;
-        extraInput->setWireConnectionPos(ofPoint(x,y));
-    };
+        
+    }
+    
     void draw()
     {
+
         if (drawOutput) {
             compositionFbo.begin();
-            fboA.draw();
-            ofEnableBlendMode(blendMode);
-            fboB.draw();
+            ofClear(0,0,0,0);
+            
+            
+            for(auto fbo : fbos)
+            {
+                fbo->draw(0,0);
+                ofEnableBlendMode(blendMode);
+            }
             ofDisableBlendMode();
             compositionFbo.end();
         }
-    };
+    }
+    
     void addModuleParameters()
     {
+        vector<string> blendModesLabels;
+        blendModesLabels.push_back("DISABLED");
+        blendModesLabels.push_back("ALPHA");
+        blendModesLabels.push_back("ADD");
+        blendModesLabels.push_back("SUBTRACT");
+        blendModesLabels.push_back("MULTIPLY");
+        blendModesLabels.push_back("SCREEN");
         
-    };
-    void drawMasterOutput()
+        ofxDatGuiComponent * component = gui->addDropdown("BLEND MODE", blendModesLabels);
+        component->onDropdownEvent(this, &Mixer::onBlendModeChanges);
+    }
+    
+    ofFbo * getFbo()
     {
-        
-    };
-}
+        return &compositionFbo;
+    }
+    
+    void setFbo(ofFbo * fboPtr)
+    {
+        fbos.push_back(fboPtr);
+        drawOutput = fbos.size() > 0;
+    }
+    
+    void onBlendModeChanges(ofxDatGuiDropdownEvent e )
+    {
+        string mode =  e.target->getSelected()->getName();
+        unordered_map<string, ofBlendMode>::iterator it;
+        it = blendModes.find(mode);
+        if(it != blendModes.end())
+        {
+            blendMode = blendModes[mode];
+        }
+    }
+
+};
 
 #endif /* mixer_h */

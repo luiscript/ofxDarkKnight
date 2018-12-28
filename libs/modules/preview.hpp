@@ -36,8 +36,6 @@ public:
     void setup();
     void update();
     void draw();
-    void drawMasterOutput();
-    void drawMasterInput();
     void setFbo(ofFbo *);
     ofFbo * getFbo();
 };

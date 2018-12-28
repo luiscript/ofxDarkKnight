@@ -32,22 +32,27 @@ public:
     
     void update();
 
-    float getDistance();
-    
-    void setInput(WireConnection *);
-    void setOutput(WireConnection *);
     void draw();
     void drawCurrentWire(ofPoint);
     void drawWire(ofPoint, ofPoint, ofPoint);
-    ofPoint getWireControlPoint(ofPoint, ofPoint, float);
     
+    float getDistance();
+    ofPoint getWireControlPoint(ofPoint, ofPoint, float);
     WireConnection * getInput();
     WireConnection * getOutput();
+    ConnectionType getConnectionType();
     
+    void setInputConnection(WireConnection *);
+    void setOutputConnection(WireConnection *);
+    void setInputModule(Module *);
+    void setOutputModule(Module *);
+    void setConnectionType(ConnectionType);
+
     WireConnection * input;
     WireConnection * output;
     
     string type;
+    
     void * data;
     ofFbo * fbo;
     double * scale;
@@ -64,6 +69,7 @@ private:
     ofPoint inputPoint;
     ofPoint outputPoint;
     string name;
+    ConnectionType connectionType;
 };
 
 #endif /* wires_hpp */

@@ -28,7 +28,7 @@
 enum class ConnectionType {
     DK_TEXTURE = 0,
     DK_FBO = 1,
-    DK_SCALE = 2,
+    DK_SLIDER = 2,
     DK_INT = 3
 };
 
@@ -39,6 +39,7 @@ private:
     //string connectionType;
     ConnectionType connectionType;
     double * scale;
+    ofFbo * fboPtr;
 public:
     void setup(ofPoint, string);
     void setup(ofPoint, ConnectionType);
@@ -52,13 +53,14 @@ public:
     ofPoint getWireConnectionPos();
     double * getScale();
     ConnectionType getConnectionType();
+    ofColor getWireConnectionColor();
     
     void setScale(double *);
     void setWireConnectionType(ConnectionType);
     void setWireConnectionPos(ofPoint);
     
     void checkConnectionOnDrag(ConnectionType);
-    WireConnection * testWireConnection(int, int);
+    WireConnection * testWireConnection(float, float);
     
     ofFbo * getFbo();
     void setFbo(ofFbo *);

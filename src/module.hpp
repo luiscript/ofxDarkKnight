@@ -56,18 +56,17 @@ public:
     bool moduleIsChild = false;
     ofxDatGui * gui;
     ofxDatGuiFolder * params;
-    
-    WireConnection * fboOutput;
-    WireConnection * fboInput;
+
+    vector<WireConnection*> inputs;
+    vector<WireConnection*> outputs;
     
     virtual void setup() { };
     virtual void update() { };
     virtual void draw() { };
-    virtual void drawMasterInput(){ };
-    virtual void drawMasterOutput(){ };
     virtual void addModuleParameters() { };
     virtual void unMount() { };
     virtual void setFbo(ofFbo *){ };
+    virtual void setFbo(ofFbo *, int) { };
     virtual void onMouseMove(int, int) { };
     virtual void triggerMidiEvent(){ };
     virtual void triggerMidiMessage(ofxMidiMessage *) { };
@@ -111,8 +110,8 @@ public:
     ofxDatGuiComponent * getInputComponent(int, int);
     ofxDatGuiTheme * getGuiTheme();
     
-    WireConnection * getOutputConnection(int, int);
-    WireConnection * getInputConnection(int, int);
+    WireConnection * getOutputConnection(float, float);
+    WireConnection * getInputConnection(float, float);
     
     void setMidiMapping(string);
     void setMidiScale(string, double);
@@ -127,6 +126,9 @@ public:
     
     void addSlider(string, int &, int, int, int);
     void addSlider(string, float &, float, float, float);
+    
+    void addInputConnection(ConnectionType);
+    void addOutputConnection(ConnectionType);
 
     string getName();
 };
