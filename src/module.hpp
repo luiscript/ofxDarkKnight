@@ -85,9 +85,6 @@ public:
     void enable();
     void disable();
     
-    void drawOutputConnection();
-    void drawInputConnection();
-    
     int getModuleIndex();
     float getModuleWidth();
     float getModuleHeight();
@@ -96,9 +93,6 @@ public:
     bool getModuleEnabled();
     bool getModuleHasChild();
     //ofPoint getTranslation();
-    
-    WireConnection * getMainOutput(int, int);
-    WireConnection * getMainInput(int, int);
     
     void setModuleWidth(float);
     void setModuleHeight(float);

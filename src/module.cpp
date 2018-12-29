@@ -48,18 +48,6 @@ void Module::setupCommon(string name, ofVec2f resolution)
     setupGui();
     setup();
     
-    float x = gui->getPosition().x + gui->getWidth() + 17;
-    float y = gui->getPosition().y + 13;
-    
-//    fboOutput = new WireConnection;
-//    fboOutput->setup(ofPoint(x,y), "fboOutput");
-//
-//    x = gui->getPosition().x - 17;
-//    y = gui->getPosition().y + 13;
-//
-//    fboInput = new WireConnection;
-//    fboInput->setup(ofPoint(x,y), "fboInput");
-    
     moduleIsChild = false;
     moduleInitialized = true;
 }
@@ -99,10 +87,7 @@ void Module::updateModule()
     for (int o=0; o<outputs.size(); o++) {
         outputs[o]->setWireConnectionPos(ofPoint(x,y + o*30));
     }
-    
-    
-    
-    //fboOutput->setWireConnectionPos(ofPoint(x,y));
+
     x = gui->getPosition().x - 17;
     y = gui->getPosition().y + 13;
     
@@ -110,18 +95,12 @@ void Module::updateModule()
         inputs[i]->setWireConnectionPos(ofPoint(x,y + i*30));
     }
     
-    
-    //fboInput->setWireConnectionPos(ofPoint(x,y));
-    
-    
 }
 
 void Module::drawModule()
 {
     gui->draw();
-    //drawMasterInput();
-    //drawMasterOutput();
-    
+
     if(getModuleMidiMapMode())
     {
         for(auto out : outputs) out->draw();
@@ -205,27 +184,6 @@ ofxDatGuiTheme * Module::getGuiTheme()
 }
 
 
-WireConnection * Module::getMainOutput(int x, int y)
-{
-    float xC = gui->getPosition().x + gui->getWidth() + 17;
-    float yC = gui->getPosition().y + 13;
-//    fboOutput->setWireConnectionPos(ofPoint(xC, yC));
-//
-//    return ofDist(x, y, xC, yC) <= 15.0 ? fboOutput : nullptr;
-    return nullptr;
-}
-
-WireConnection * Module::getMainInput(int x, int y)
-{
-    float xC = gui->getPosition().x - 17;
-    float yC = gui->getPosition().y + 13;
-    
-//    fboInput->setWireConnectionPos(ofPoint(xC, yC));
-//
-//    return ofDist(x, y, xC, yC) <= 15.0 ? fboInput : nullptr;
-    return nullptr;
-}
-
 bool Module::getModuleInitialized()
 {
     return moduleInitialized;
@@ -250,7 +208,7 @@ void Module::onSliderEventParent(ofxDatGuiSliderEvent e)
 {
     if(e.target->getMidiMode())
     {
-        //reset midiMapMode for all compoenents and set current component to midiMapMode
+        //reset midiMapMode for all components and set current component to midiMapMode
         gui->resetMidiMap();
         e.target->toggleMidiMap(true);
         selectedComponent = e.target;
@@ -303,41 +261,6 @@ void Module::setResolution(int w, int h)
     setModuleHeight(h);
 }
 
-void Module::drawOutputConnection()
-{
-    if(getModuleMidiMapMode())
-    {
-        
-        float x = gui->getPosition().x + gui->getWidth() + 17;
-        float y = gui->getPosition().y + 13;
-        
-        ofPushStyle();
-        ofSetColor(180,180,0);
-        ofDrawCircle(x, y, 10);
-        ofSetColor(0);
-        ofDrawCircle(x, y, 6);
-        ofPopStyle();
-    }
-}
-
-void Module::drawInputConnection()
-{
-    if(getModuleMidiMapMode())
-    {
-        
-        float x = gui->getPosition().x - 17;
-        float y = gui->getPosition().y + 13;
-
-        ofPushStyle();
-        ofSetColor(180,180,0);
-        ofDrawCircle(x, y, 10);
-        ofSetColor(0);
-        ofDrawCircle(x, y, 6);
-        ofPopStyle();
-        
-    }
-
-}
 
 void Module::enable()
 {

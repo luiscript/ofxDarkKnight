@@ -198,10 +198,11 @@ void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
     
     for(pair<string, Module*> module : modules )
     {
+        if(!module.second->getModuleEnabled()) continue;
         output = module.second->getOutputConnection(x, y);
         
         //true if we click on output connection
-        if(output != nullptr &&
+        if(output != nullptr && module.second->getModuleEnabled() &&
            (module.second->getName() == moduleName || moduleName == "*" ))
         {
             currentWireConnectionType = output->getConnectionType();
@@ -253,7 +254,7 @@ void ofxDarkKnight::checkInputConnection(float x, float y, string moduleName)
     
     for(pair<string, Module*> module : modules )
     {
-        //if(!module.second->getModuleEnabled()) return;
+        if(!module.second->getModuleEnabled()) continue;
         input = module.second->getInputConnection(x, y);
         //true if user released the wire on input connection
         if(input != nullptr && currentWire != nullptr &&
