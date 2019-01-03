@@ -37,13 +37,6 @@ void MediaPool::init()
     gui->setWidth(450);
     numItems = 0;
     showMediaPool = false;
-    lightPositionX = getModuleWidth()/2;
-    lightPositionY = getModuleHeight()/2;
-    lightPositionZ = 0;
-    diffuseR = 0;
-    diffuseG = 0;
-    diffuseB = 0;
-    ambientR = ambientG = ambientB = 255;
     
     ofVec2f resolution = { getModuleWidth(), getModuleHeight() };
     
@@ -55,6 +48,13 @@ void MediaPool::init()
     mainFbo.begin();
     ofClear(0, 0, 0,0);
     mainFbo.end();
+    
+    mediaPoolFbo.allocate(gui->getWidth(), gui->getWidth() * 0.5615);
+    mediaPoolFbo.begin();
+    ofClear(0, 0, 0, 0);
+    mediaPoolFbo.end();
+    
+    drawMediaPool();
     
     currentCanvas = collection[index].canvas;
     currentCanvas->moduleIsChild = true;
@@ -89,21 +89,10 @@ void MediaPool::update()
 
 void MediaPool::draw()
 {
-
     mainFbo.begin();
     
     ofPushStyle();
-    ofEnableLighting();
-    light.enable();
-    light.setPosition(lightPositionX, lightPositionY, lightPositionZ);
-    
-    light.setDiffuseColor(ofColor(diffuseR, diffuseG, diffuseB));
-    light.setAmbientColor(ofColor(ambientR, ambientG, ambientB));
-
     currentCanvas->draw();
-    
-    light.disable();
-    ofDisableLighting();
     ofPopStyle();
     
     if(hasInput)
@@ -115,26 +104,26 @@ void MediaPool::draw()
     
     mainFbo.end();
 
-    drawMediaPool();
+    //drawMediaPool();
+    ofPoint pos = gui->getPosition();
+    mediaPoolFbo.draw(pos.x, pos.y + yOffsetGui);
     currentCanvas->gui->draw();
 }
 
 
 void MediaPool::drawMediaPool()
 {
+    mediaPoolFbo.begin();
+    ofClear(0,0,0,0);
     int width = gui->getWidth();
     float x = gui->getPosition().x;
     float y = 0.25 * width;
     float cellWidth = width/4;
     float cellHeight = cellWidth * 0.5615;
 
-    ofPushMatrix();
     ofPushStyle();
-
     ofSetColor(255, 180);
 
-    ofPoint pos = gui->getPosition();
-    ofTranslate(pos.x, pos.y + yOffsetGui);
     for(int i = 0; i < 4; i++)
     {
         for (int j = 0; j < 4; j++)
@@ -174,8 +163,7 @@ void MediaPool::drawMediaPool()
         }
     }
     ofPopStyle();
-    ofPopMatrix();
-
+    mediaPoolFbo.end();
 }
 
 
@@ -192,8 +180,9 @@ void MediaPool::updatePoolIndex(int mouseX, int mouseY)
         int xIndex = (int)  ofMap(mouseX, pos.x, pos.x + gui->getWidth(), 0,4);
         int yIndex = (int)  ofMap(mouseY, pos.y + yOffsetGui, pos.y + offset, 0 ,4);
         
-        int ind = 4 * yIndex + xIndex;
-        triggerPoolMedia(ind);
+        index = 4 * yIndex + xIndex;
+        drawMediaPool();
+        triggerPoolMedia(index);
     }
 }
 
@@ -238,26 +227,6 @@ void MediaPool::addCustomParameters()
 {
     if(!currentCanvas->customParams)
     {
-        ofxDatGuiFolder* lightParams = currentCanvas->gui->addFolder("LIGHT POSITION", ofColor::white);
-        lightParams->addSlider("x", -ofGetWidth(), 2*ofGetWidth(), ofGetWidth()/2)->bind(lightPositionX);
-        lightParams->addSlider("y", -ofGetHeight(), 2*ofGetHeight()/2, ofGetHeight()/2)->bind(lightPositionY);
-        lightParams->addSlider("z", -2000, 2000, 0)->bind(lightPositionZ);
-        
-        lightParams->expand();
-        
-        ofxDatGuiFolder* diffuseColorParams = currentCanvas->gui->addFolder("DIFFUSE COLOR", ofColor::white);
-        diffuseColorParams->addSlider("r", 0,255,255)->bind(diffuseR);
-        diffuseColorParams->addSlider("g", 0,255,255)->bind(diffuseG);
-        diffuseColorParams->addSlider("b", 0,255,255)->bind(diffuseB);
-        diffuseColorParams->expand();
-        
-        ofxDatGuiFolder* ambientColorParams = currentCanvas->gui->addFolder("AMBIENT COLOR", ofColor::white);
-        
-        ambientColorParams->addSlider("r", 0,255,255)->bind(ambientR);
-        ambientColorParams->addSlider("g", 0,255,255)->bind(ambientG);
-        ambientColorParams->addSlider("b", 0,255,255)->bind(ambientB);
-        ambientColorParams->expand();
-        
         currentCanvas->customParams = true;
     }
     
@@ -348,11 +317,6 @@ void MediaPool::mousePressed(ofMouseEventArgs & mouse)
 void MediaPool::unMount()
 {
     currentCanvas->unMount();
-}
-
-void MediaPool::enableLighting(bool enable)
-{
-    enableLight = enable;
 }
 
 Module * MediaPool::getChildModule()

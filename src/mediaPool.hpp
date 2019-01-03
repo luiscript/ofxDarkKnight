@@ -58,23 +58,10 @@ private:
     Module * currentCanvas;
 
     ofFbo mainFbo;
+    ofFbo mediaPoolFbo;
     ofFbo *inputFbo;
-    ofLight light;
     
     int alpha;
-    
-    int diffuseR;
-    int diffuseG;
-    int diffuseB;
-    
-    int ambientR;
-    int ambientG;
-    int ambientB;
-    
-    float lightPositionX;
-    float lightPositionY;
-    float lightPositionZ;
-    bool enableLight = true;
     
     ofVec2f * translation;
     
@@ -128,8 +115,6 @@ public:
     void setTranslationReferences(ofVec2f *);
     
     void mousePressed(ofMouseEventArgs & mouse);
-    
-    void enableLighting(bool);
     
     void savePreset();
 };

@@ -27,6 +27,7 @@ void ScreenOutput::setup()
 {
     addInputConnection(ConnectionType::DK_FBO);
     addOutputConnection(ConnectionType::DK_FBO);
+    display = nullptr;
 }
 
 void ScreenOutput::setFbo(ofFbo * fboPtr)
@@ -70,11 +71,8 @@ void ScreenOutput::onVideoOutputChange(ofxDatGuiDropdownEvent e)
     int index = e.child;
     
     if(index > 0){
-
         int monitorCount;
-
         GLFWmonitor** monitors = glfwGetMonitors(&monitorCount);
-
         vector<string> monitorsName;
 
         GLFWvidmode *mode;
@@ -95,8 +93,15 @@ void ScreenOutput::onVideoOutputChange(ofxDatGuiDropdownEvent e)
         ofAddListener(display->events().draw, this, &ScreenOutput::drawDisplay);
         display->setFullscreen(true);
     } else {
-        display->setFullscreen(false);
-        display->setWindowShouldClose();
+        if(display != nullptr)
+        {
+            display->setFullscreen(false);
+            display->setWindowShouldClose();
+            ofRemoveListener(display->events().draw, this, &ScreenOutput::drawDisplay);
+            display.reset();
+            display = nullptr;
+        }
+       
     }
 }
 

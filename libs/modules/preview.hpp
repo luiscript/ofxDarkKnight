@@ -24,7 +24,6 @@
 #define preview_hpp
 
 #include "module.hpp"
-#include "wireConnection.hpp"
 
 class Preview : public Module{
 private:
