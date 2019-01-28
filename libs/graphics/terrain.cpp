@@ -112,9 +112,9 @@ void Terrain::addModuleParameters()
     
     addSlider("rotate", rotate, 0, 180, 0);
     addSlider("scale", scl, 0, 100, 100);
-    addSlider("translate x", translateX, -3000, 3000, 0);
+    addSlider("translate x", translateX, -1545, -45, 0);
     addSlider("translate y", translateY, -1500, 0, 0);
-    addSlider("translate z", translateZ, -500, 300, 0);
+    addSlider("translate z", translateZ, -1500, 1500, 0);
     addSlider("noise", noiseX, 0, 1, 0);
     addSlider("direction", direction, -1, 1, 0);
     addSlider("particle size", lineWidth, 0, 10, 1);

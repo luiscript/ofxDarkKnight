@@ -70,7 +70,7 @@ void Module::updateModule(float tx, float ty)
 {
     //translation.x = tx;
     //translation.y = ty;
-    gui->setTranslation(tx, ty);
+    //gui->setTranslation(tx, ty);
     updateModule();
 }
 

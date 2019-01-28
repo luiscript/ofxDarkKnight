@@ -37,7 +37,7 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
 {
     loadWires = shiftKey = altKey = cmdKey = midiMapMode = drawing = showExplorer = false;
     translation = { 0, 0 };
-    resolution = { 1920, 1080 };
+    resolution = { 1920, 1200 };
     
     modulesPool = *pool;
     const int s = modulesPool.size();
@@ -91,9 +91,8 @@ void ofxDarkKnight::update()
 void ofxDarkKnight::draw()
 {
     ofPushMatrix();
-    ofTranslate(translation.x, translation.y);
-    
-    for(pair<string, Module*> module : modules )
+   // ofTranslate(translation.x, translation.y);
+    for(auto module : modules )
         if(!module.second->moduleIsChild)
             if(module.second->getModuleEnabled())
                 module.second->drawModule();
@@ -307,6 +306,7 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                         hapPlayer->gui->setWidth(450);
                         hapPlayer->loadFile(file.getAbsolutePath());
                         modules.insert({"HAP: " + file.getFileName(), hapPlayer});
+                        mp->drawMediaPool();
                         return;
                     }
                 
@@ -326,6 +326,7 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                     hapPlayer->gui->setWidth(450);
                     hapPlayer->loadFile(file.getAbsolutePath());
                     modules.insert({"HAP: " + file.getFileName(), hapPlayer});
+                    newPool->drawMediaPool();
                     return;
                 }
             }
@@ -515,11 +516,19 @@ void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
     //cmd + o
     if(cmdKey && keyboard.key == 'o')
     {
-            ofFileDialogResult loadFileResult = ofSystemLoadDialog("Open batmapp project");
-            if(loadFileResult.bSuccess)
-            {
-               loadProject(loadFileResult.getPath(), loadFileResult.getName());
-            }
+        if(modules.size() > 0)
+        {
+            modules.clear();
+        }
+        
+        ofFileDialogResult loadFileResult = ofSystemLoadDialog("Open batmapp project");
+        if(loadFileResult.bSuccess)
+        {
+            loadProject(loadFileResult.getPath(), loadFileResult.getName());
+        }
+      
+        
+       
     }
     
     //cmd + shift + 's' to save preset

@@ -73,12 +73,7 @@ void ScreenOutput::onVideoOutputChange(ofxDatGuiDropdownEvent e)
     if(index > 0){
         int monitorCount;
         GLFWmonitor** monitors = glfwGetMonitors(&monitorCount);
-        vector<string> monitorsName;
-
-        GLFWvidmode *mode;
         monitors = monitors + (index - 1);
-        mode = (GLFWvidmode*)glfwGetVideoMode(*monitors);
-
         int xpos, ypos;
         glfwGetMonitorPos(*monitors, &xpos, &ypos);
         ofGLFWWindowSettings settings;

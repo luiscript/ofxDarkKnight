@@ -196,6 +196,7 @@ void MediaPool::triggerPoolMedia(int ind)
         string moduleName = getName() + "/" + currentCanvas->getName();
         currentCanvas->moduleIsChild = true;
         currentCanvas->enable();
+        currentCanvas->reset();
         
         if(nextIndex != index) currentCanvas->triggerMidiEvent();
         nextIndex = index = ind;

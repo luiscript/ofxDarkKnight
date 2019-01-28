@@ -70,6 +70,7 @@ public:
     virtual void onMouseMove(int, int) { };
     virtual void triggerMidiEvent(){ };
     virtual void triggerMidiMessage(ofxMidiMessage *) { };
+    virtual void reset() { };
     virtual ofFbo * getFbo(){ return nullptr; };
     virtual Module * getChildModule() { return nullptr; };
     
