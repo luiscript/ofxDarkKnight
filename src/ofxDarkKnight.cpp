@@ -50,8 +50,12 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
     componentsList = new ofxDatGuiScrollView("Modules list", 10);
     componentsList->setWidth(800);
     componentsList->setHeight(600);
+#ifdef TARGET_WIN32
+	componentsList->setPosition(ofGetWidth() - 400, ofGetHeight() - 300);
+#endif
+#ifdef TARGET_OSX
     componentsList->setPosition(ofGetScreenWidth() - 400, ofGetScreenHeight() - 300);
-    
+#endif
     for(list<string>::iterator it = poolNames.begin(); it != poolNames.end(); it++)
         componentsList->add(*it);
     
@@ -516,19 +520,13 @@ void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
     //cmd + o
     if(cmdKey && keyboard.key == 'o')
     {
-        if(modules.size() > 0)
-        {
-            modules.clear();
-        }
-        
         ofFileDialogResult loadFileResult = ofSystemLoadDialog("Open batmapp project");
         if(loadFileResult.bSuccess)
         {
+            modules.clear();
+            wires.clear();
             loadProject(loadFileResult.getPath(), loadFileResult.getName());
         }
-      
-        
-       
     }
     
     //cmd + shift + 's' to save preset
@@ -553,8 +551,6 @@ void ofxDarkKnight::close()
     }
     modules.clear();
 }
-
-//  comment this when ofxDarkKnightMidi is not included
 
 void ofxDarkKnight::newMidiMessage(ofxMidiMessage & msg)
 {
