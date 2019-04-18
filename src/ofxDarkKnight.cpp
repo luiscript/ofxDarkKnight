@@ -37,7 +37,7 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
 {
     loadWires = shiftKey = altKey = cmdKey = midiMapMode = drawing = showExplorer = false;
     translation = { 0, 0 };
-    resolution = { 1920, 1200 };
+    resolution = { 1920, 1080 };
     
     modulesPool = *pool;
     const int s = modulesPool.size();
@@ -97,9 +97,8 @@ void ofxDarkKnight::draw()
     ofPushMatrix();
    // ofTranslate(translation.x, translation.y);
     for(auto module : modules )
-        if(!module.second->moduleIsChild)
-            if(module.second->getModuleEnabled())
-                module.second->drawModule();
+        if(!module.second->moduleIsChild && module.second->getModuleEnabled())
+            module.second->drawModule();
 
     if(midiMapMode)
     {
@@ -109,7 +108,8 @@ void ofxDarkKnight::draw()
 
     ofPopMatrix();
     
-    if (showExplorer) {
+    if (showExplorer)
+    {
         componentsList->setVisible(true);
         componentsList->draw();
     }
@@ -797,6 +797,7 @@ Module * ofxDarkKnight::createModule(string name)
     else if(name == "MAPPING TOOLS") return new ofxDarkKnightMapping;
     else if(name == "MIDI CONTROLLER") return new ofxDarkKnightMidi;
     else if(name == "MIXER") return new Mixer;
+    else if(name == "NOISE") return new NoiseSlider;
     else if(name == "OSC CONTROLLER") return new ofxDarkKnightOsc;
     else if(name == "SYPHON SERVER") return new ofxDarkKnightSyphon;
     else if(name == "SYPHON CLIENT") return new DarkKnightSyphonClient;

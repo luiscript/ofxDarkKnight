@@ -24,7 +24,6 @@
 #define mixer_h
 
 #include "module.hpp"
-#include "wireConnection.hpp"
 #include "unordered_map"
 
 class Mixer : public Module

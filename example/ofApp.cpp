@@ -11,6 +11,7 @@ void ofApp::setup()
         { "ABLETON LINK", new ofxDarkKnightAbletonLink },
         { "MAPPING TOOLS", new ofxDarkKnightMapping },
         { "MIDI CONTROLLER", new ofxDarkKnightMidi },
+        { "NOISE", new NoiseSlider},
         { "OSC CONTROLLER", new ofxDarkKnightOsc },
         { "SYPHON SERVER", new ofxDarkKnightSyphon },
         { "SYPHON CLIENT", new DarkKnightSyphonClient },

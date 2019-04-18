@@ -42,6 +42,7 @@
 #include "ofxXmlSettings.h"
 #include "DarkKnightHap.hpp"
 #include "basic.hpp"
+#include "NoiseSlider.hpp"
 
 
 class ofxDarkKnight : public ofxMidiListener{

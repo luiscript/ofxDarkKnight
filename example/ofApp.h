@@ -6,6 +6,7 @@
 #include "mediaPool.hpp"
 #include "basic.hpp"
 #include "screenOutput.hpp"
+#include "NoiseSlider.hpp"
 
 #include "ofxDarkKnightAbletonLink.hpp"
 #include "ofxDarkKnightMidi.hpp"
