@@ -11,15 +11,15 @@ void ofApp::setup()
         { "ABLETON LINK", new ofxDarkKnightAbletonLink },
         { "MAPPING TOOLS", new ofxDarkKnightMapping },
         { "MIDI CONTROLLER", new ofxDarkKnightMidi },
-        { "NOISE", new NoiseSlider},
         { "OSC CONTROLLER", new ofxDarkKnightOsc },
-        { "SYPHON SERVER", new ofxDarkKnightSyphon },
-        { "SYPHON CLIENT", new DarkKnightSyphonClient },
+        { "PERLIN NOISE", new NoiseSlider},
         { "POST PROCESSING FX", new DarkKnightPostProcessing },
         { "PREVIEW", new Preview },
         { "SCREEN OUTPUT", new ScreenOutput },
         { "SKETCH POOL 1", new Basic },
-        { "SKETCH POOL 2", new Basic }
+        { "SKETCH POOL 2", new Basic },
+        { "SYPHON SERVER", new ofxDarkKnightSyphon },
+        { "SYPHON CLIENT", new DarkKnightSyphonClient },
     };
     manager.setup(&modulesPool);
 }

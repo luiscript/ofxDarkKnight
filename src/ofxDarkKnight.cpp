@@ -797,7 +797,7 @@ Module * ofxDarkKnight::createModule(string name)
     else if(name == "MAPPING TOOLS") return new ofxDarkKnightMapping;
     else if(name == "MIDI CONTROLLER") return new ofxDarkKnightMidi;
     else if(name == "MIXER") return new Mixer;
-    else if(name == "NOISE") return new NoiseSlider;
+    else if(name == "PERLIN NOISE") return new NoiseSlider;
     else if(name == "OSC CONTROLLER") return new ofxDarkKnightOsc;
     else if(name == "SYPHON SERVER") return new ofxDarkKnightSyphon;
     else if(name == "SYPHON CLIENT") return new DarkKnightSyphonClient;
