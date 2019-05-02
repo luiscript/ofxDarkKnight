@@ -9,9 +9,11 @@ void ofApp::setup()
     unordered_map<string, Module*> modulesPool;
     modulesPool = {
         { "ABLETON LINK", new ofxDarkKnightAbletonLink },
-        { "MAPPING TOOLS", new ofxDarkKnightMapping },
-        { "MIDI CONTROLLER", new ofxDarkKnightMidi },
-        { "OSC CONTROLLER", new ofxDarkKnightOsc },
+        { "MAPPING GRID", new ofxDarkKnightMapping },
+        { "MIDI CONTROL IN", new DarkKnightMidiControlIn },
+        { "MIDI CONTROL OUT", new DarkKnightMidiControlOut },
+        { "MIXER", new Mixer },
+        { "OSC CLIENT", new ofxDarkKnightOsc },
         { "PERLIN NOISE", new NoiseSlider},
         { "POST PROCESSING FX", new DarkKnightPostProcessing },
         { "PREVIEW", new Preview },

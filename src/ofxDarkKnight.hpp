@@ -35,10 +35,15 @@
 #include "mediaPool.hpp"
 #include "screenOutput.hpp"
 #include "mixer.hpp"
-#include "ofxDarkKnightMidi.hpp"
-#include "ofxDarkKnightOsc.hpp"
-#include "ofxDarkKnightSyphon.hpp"
+#include "NoiseSlider.hpp"
+
+#include "DarkKnightMidi.hpp"
+#include "ofxDarkKnightAbletonLink.hpp"
 #include "ofxDarkKnightMapping.hpp"
+#include "ofxDarkKnightOsc.hpp"
+#include "DarkKnightPostProcessing.h"
+#include "ofxDarkKnightSyphon.hpp"
+
 #include "ofxXmlSettings.h"
 #include "DarkKnightHap.hpp"
 #include "basic.hpp"
@@ -72,10 +77,13 @@ private:
     list<string> poolNames;
     
     ofxXmlSettings xml;
+    
+    ofxMidiOut darkKnightMidiOut;
 public:
     
     ofxDarkKnight();
     ~ofxDarkKnight();
+    
     
     shared_ptr<ofAppBaseWindow> mainWindow;
     
@@ -117,6 +125,8 @@ public:
     
     void checkInputConnection(float, float, string);
     void checkOutputConnection(float, float, string);
+    
+    void sendMidiMessage(ofxMidiMessage &);
     
 };
 

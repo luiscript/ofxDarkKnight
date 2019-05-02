@@ -20,7 +20,7 @@ Download and install [ofxDarkKnight](https://github.com/luiscript/ofxDarkKnight/
   
   `git clone https://github.com/luiscript/ofxDarkKnight/`
 
-## Add ofxDarkKnight modules
+## Add DarkKnight modules
 
  `cd ofxDarkKnight && git submodule update --init --recursive`
 
@@ -100,24 +100,6 @@ class ofApp : public ofBaseApp
 }
 ```
 
-## Adding existing modules
-
-This are the modules that you want to use in your project, here you need to include the base DK modules, your custom modules and the third party DK modules.
-
-> ofApp.h:
-
-```c++
-#include "ofxDarkNight.hpp"
-#include "ofMain.h"
-
-// this module draws a preview on the gui
-#include "preview.hpp"
-
-//this is the basic sketch pool collection
-#include "basic.hpp"
-```
-
-
 ## Config the manager
 
 The `setup` function of ofxDarkKnight class is expecting an `unordered_map<string, Module*>` pointer with a collection of pairs `moduleName-module` objects of type `string-Module*`.
@@ -129,6 +111,7 @@ Then just call `manager.update()` in the main `update()`function and `manager.dr
 <aside class="notice">
 You may need to add <code>#include "unordered_map"</code> in your <code>ofApp.h</code> file.
 </aside>
+
 
 > ofApp.cpp:
 
@@ -235,7 +218,7 @@ To create a new module follow the steps:
 ```c++
 #include "module.hpp"
 
-class ofxDarkNightTemplate : public Module
+class DarkNightTemplate : public Module
 {
     public:
     void setup();
@@ -276,12 +259,12 @@ In this particular case, we will need to allocate an fbo because the drawing is 
 Implement the `ofFbo * getFbo()` to pass it's drawing to the output.
 
 
-> Simple Ellipse module ofxDarkKnightEllipse.hpp
+> Simple Ellipse module DarkKnightEllipse.hpp
 
 ```c++
 #include "module.hpp"
 
-class ofxDarkKnightEllipse : public Module
+class DarkKnightEllipse : public Module
 {
     public:
     void setup();
@@ -298,12 +281,12 @@ class ofxDarkKnightEllipse : public Module
 }
 ```
 
-> Simple Ellipse module ofxDarkKnightEllipse.cpp
+> Simple Ellipse module DarkKnightEllipse.cpp
 
 ```c++
-#include "ofxDarkKnightEllipse.hpp"
+#include "DarkKnightEllipse.hpp"
 
-void ofxDarkKnightEllipse::setup()
+void DarkKnightEllipse::setup()
 {
   //allocate the fbo
   fbo->allocate(1920, 1080, GL_RGBA);
@@ -320,14 +303,14 @@ void ofxDarkKnightEllipse::setup()
   addOutputConnection(ConnectionType::DK_FBO);
 }
 
-void ofxDarkKnightEllipse::draw()
+void DarkKnightEllipse::draw()
 {
   ofFill();
   ofSetColor(fillColorR,fillColorG, fillColorB);
   ofDrawEllipse(ofGetWidth()/2, ofGetHeight()/2, radius, raduis);
 }
 
-void ofxDarkKnightEllipse::addModuleParameters()
+void DarkKnightEllipse::addModuleParameters()
 {
   //addSlider("parameterName", yourVariable, min, max, value);
   addSlider("radius", radius, 10, 400, 100);
@@ -336,7 +319,7 @@ void ofxDarkKnightEllipse::addModuleParameters()
   addSlider("B", fillColorB,10, 255, 128);
 }
 
-ofFbo * ofxDarkKnightEllipse::getFbo()
+ofFbo * DarkKnightEllipse::getFbo()
 {
   return fbo;
 }
@@ -349,15 +332,15 @@ Now that we created a new module, we need to add it to the manager, please refer
 Try to run the project and if everything is good you should be able to add your brand new Ellipse module and control it's size and fillColor with the module's parameters.
 
 
-Remember to include the module in the main header file <code>#include "ofxDarkKnightEllipse.hpp"</code>
+Remember to include the module in the main header file <code>#include "DarkKnightEllipse.hpp"</code>
 
 
-> Simple Ellipse module ofxDarkKnightEllipse.cpp
+> Simple Ellipse module DarkKnightEllipse.cpp
 
 ```c++
   ...
   modulesPool = {
-      { "ELLIPSE", new ofxDarkKnightEllipse},
+      { "ELLIPSE", new DarkKnightEllipse},
       { "PREVIEW", new Preview },
       { "SKETCH POOL", new Basic }
   };
@@ -392,7 +375,7 @@ public:
 
         addItem(new Terrain, "thumbnails/terrain.jpg", "TERRAIN");
         addItem(new Constellation, "thumbnails/constellation.jpg", "CONSTELLATION");
-        addItem(new ofxDarkKnightEllipse, "thumbnails/ellipse.jpg", "ELLIPSE");
+        addItem(new DarkKnightEllipse, "thumbnails/ellipse.jpg", "ELLIPSE");
         
         init();
     }
@@ -418,7 +401,7 @@ Do this modifications before runing your project that includes the Ellipse modul
 ```c++
 #include "module.hpp"
 
-class ofxDarkKnightEllipse : public Module
+class DarkKnightEllipse : public Module
 {
     public:
     void setup();
@@ -436,9 +419,9 @@ class ofxDarkKnightEllipse : public Module
 > Modified version of Ellipse module
 
 ```c++
-#include "ofxDarkKnightEllipse.hpp"
+#include "DarkKnightEllipse.hpp"
 
-void ofxDarkKnightEllipse::setup()
+void DarkKnightEllipse::setup()
 {
   //initialize all your parameters
   radius = 30;
@@ -446,14 +429,14 @@ void ofxDarkKnightEllipse::setup()
   fillColorG = fillColorB = 0;
 }
 
-void ofxDarkKnightEllipse::draw()
+void DarkKnightEllipse::draw()
 {
   ofFill();
   ofSetColor(fillColorR,fillColorG, fillColorB);
   ofDrawEllipse(ofGetWidth()/2, ofGetHeight()/2, radius, raduis);
 }
 
-void ofxDarkKnightEllipse::addModuleParameters()
+void DarkKnightEllipse::addModuleParameters()
 {
   addSlider("radius", radius, 10, 400, 100);
   addSlider("R", fillColorR, 0, 255, 128);

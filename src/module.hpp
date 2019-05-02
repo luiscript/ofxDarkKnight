@@ -50,7 +50,9 @@ private:
     
     ofxDatGuiComponent * selectedComponent;
     unordered_map<string, ofxDatGuiComponent *> midiMappings;
+
 public:
+    vector<ofxMidiMessage*> outMidiMessages;
     
     bool customParams = false;
     bool moduleIsChild = false;
@@ -122,8 +124,14 @@ public:
     void addSlider(string, int &, int, int, int);
     void addSlider(string, float &, float, float, float);
     
+    void addSlider(string, int &, int, int, int, int);
+    void addSlider(string, float &, float, float, float, int);
+    
+    
     void addInputConnection(ConnectionType);
     void addOutputConnection(ConnectionType);
+    
+    void sendMidiMessage(ofxMidiMessage *);
 
     string getName();
 };

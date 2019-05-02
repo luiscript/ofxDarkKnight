@@ -68,14 +68,13 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
     ofAddListener(ofEvents().keyPressed, this, &ofxDarkKnight::handleKeyPressed);
     ofAddListener(ofEvents().keyReleased, this, &ofxDarkKnight::handleKeyReleased);
     ofAddListener(ofEvents().fileDragEvent, this, &ofxDarkKnight::handleDragEvent);
+    
+    darkKnightMidiOut.openVirtualPort("ofxDarkKnight");
 }
 
 
 void ofxDarkKnight::update()
 {
-    for(pair<string, Module*> module : modules )
-        if(module.second->getModuleEnabled())
-            module.second->updateModule(translation.x, translation.y);
     
     if(loadWires)
     {
@@ -87,6 +86,19 @@ void ofxDarkKnight::update()
         if(wire.inputModule->getModuleEnabled() &&
            wire.outputModule->getModuleEnabled())
             wire.update();
+    
+    for(pair<string, Module*> module : modules )
+        if(module.second->getModuleEnabled())
+        {
+            module.second->updateModule(translation.x, translation.y);
+            for(auto msg : module.second->outMidiMessages)
+            {
+                sendMidiMessage(*msg);
+                
+            }
+            module.second->outMidiMessages.clear();
+        }
+    
     
     if (showExplorer) componentsList->update();
 }
@@ -363,9 +375,9 @@ Module * ofxDarkKnight::addModule(string moduleName)
             so->mainWindow = mainWindow;
             modules.insert({it->first + ofToString(ofGetElapsedTimef()), so});
         }
-        else if(moduleName == "MIDI CONTROLLER")
+        else if(moduleName == "MIDI CONTROL IN")
         {
-            ofxDarkKnightMidi * controller = static_cast<ofxDarkKnightMidi*>(newModule);
+            DarkKnightMidiControlIn * controller = static_cast<DarkKnightMidiControlIn*>(newModule);
             ofAddListener(controller->sendMidi, this, &ofxDarkKnight::newMidiMessage);
             modules.insert({it->first + ofToString(ofGetElapsedTimef()), controller});
         }
@@ -582,6 +594,11 @@ void ofxDarkKnight::newMidiMessage(ofxMidiMessage & msg)
     
 }
 
+void ofxDarkKnight::sendMidiMessage(ofxMidiMessage & msg)
+{
+    darkKnightMidiOut.sendControlChange(msg.channel, msg.control, msg.value);
+}
+
 void ofxDarkKnight::saveProject(string fileName, string path)
 {
     xml.clear();
@@ -795,7 +812,8 @@ Module * ofxDarkKnight::createModule(string name)
 {
     if(name == "PREVIEW") return new Preview;
     else if(name == "MAPPING TOOLS") return new ofxDarkKnightMapping;
-    else if(name == "MIDI CONTROLLER") return new ofxDarkKnightMidi;
+    else if(name == "MIDI CONTROL IN") return new DarkKnightMidiControlIn;
+    else if(name == "MIDI CONTROL OUT") return new DarkKnightMidiControlOut;
     else if(name == "MIXER") return new Mixer;
     else if(name == "PERLIN NOISE") return new NoiseSlider;
     else if(name == "OSC CONTROLLER") return new ofxDarkKnightOsc;
@@ -807,6 +825,5 @@ Module * ofxDarkKnight::createModule(string name)
 
 
 
-//   ofxDarkKnightMidi /
-
+//   ofxDarkKnight
 

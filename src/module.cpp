@@ -286,6 +286,17 @@ void Module::addSlider(string name, float & add, float min, float max, float val
     params->addSlider(name, min, max, val)->bind(add);
 }
 
+void Module::addSlider(string name, int & add, int min, int max, int val, int precision)
+{
+    params->addSlider(name, min, max, val)->setPrecision(precision)->bind(add);
+}
+
+void Module::addSlider(string name, float & add, float min, float max, float val, int precision)
+{
+    params->addSlider(name, min, max, val)->setPrecision(precision)->bind(add);
+}
+
+
 void Module::addInputConnection(ConnectionType t)
 {
     WireConnection * input = new WireConnection;
@@ -298,5 +309,10 @@ void Module::addOutputConnection(ConnectionType t)
     WireConnection * output = new WireConnection;
     output->setWireConnectionType(t);
     outputs.push_back(output);
+}
+
+void Module::sendMidiMessage(ofxMidiMessage * msg)
+{
+    outMidiMessages.push_back(msg);
 }
 
