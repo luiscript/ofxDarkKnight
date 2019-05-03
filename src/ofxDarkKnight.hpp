@@ -36,6 +36,7 @@
 #include "screenOutput.hpp"
 #include "mixer.hpp"
 #include "NoiseSlider.hpp"
+#include "LfoSlider.hpp"
 
 #include "DarkKnightMidi.hpp"
 #include "ofxDarkKnightAbletonLink.hpp"

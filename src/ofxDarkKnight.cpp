@@ -107,7 +107,7 @@ void ofxDarkKnight::update()
 void ofxDarkKnight::draw()
 {
     ofPushMatrix();
-   // ofTranslate(translation.x, translation.y);
+    ofTranslate(translation.x, translation.y);
     for(auto module : modules )
         if(!module.second->moduleIsChild && module.second->getModuleEnabled())
             module.second->drawModule();
@@ -202,8 +202,8 @@ void ofxDarkKnight::handleMouseReleased(ofMouseEventArgs & mouse)
 void ofxDarkKnight::handleMouseScrolled(ofMouseEventArgs & mouse)
 {
     //translation is not fully supported with ofxDarkKnightMapping, be careful.
-    //translation.x += 2*mouse.scrollX;
-    //translation.y += 2*mouse.scrollY;
+    translation.x += 2*mouse.scrollX;
+    translation.y += 2*mouse.scrollY;
 }
 
 void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
@@ -461,6 +461,7 @@ void ofxDarkKnight::deleteFocusedModule()
             // now that we deleted all the module's wires procede to unmount and delete the module it self
             modules.erase(module.first);
             module.second->unMount();
+            
             break;
         }
         
@@ -811,6 +812,7 @@ void ofxDarkKnight::savePreset()
 Module * ofxDarkKnight::createModule(string name)
 {
     if(name == "PREVIEW") return new Preview;
+    else if(name == "LFO") return new LfoSlider;
     else if(name == "MAPPING TOOLS") return new ofxDarkKnightMapping;
     else if(name == "MIDI CONTROL IN") return new DarkKnightMidiControlIn;
     else if(name == "MIDI CONTROL OUT") return new DarkKnightMidiControlOut;

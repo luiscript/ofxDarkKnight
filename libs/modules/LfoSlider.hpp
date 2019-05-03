@@ -20,30 +20,26 @@
  SOFTWARE.
  */
 
-#include "NoiseSlider.hpp"
+#ifndef LfoSlider_hpp
+#define LfoSlider_hpp
 
+#include "module.hpp"
 
-void NoiseSlider::setup()
+class LfoSlider : public Module
 {
-    noiseValue = 0;
-    randomNoise = ofRandom(0.0001,1.00001);
-    multiplier = 1.0;
-}
+private:
+    ofImage icons;
+    float time;
+    float offset;
+    float amplitude;
+    float result;
+    unsigned int wave;
+public:
+    void setup();
+    void update();
+    void draw();
+    void addModuleParameters();
+    void onWaveSelected(ofxDatGuiMatrixEvent);
+};  
 
-void NoiseSlider::update()
-{
-    noiseValue = ofNoise(ofGetElapsedTimef() * multiplier, randomNoise);
-}
-
-void NoiseSlider::draw()
-{
-    
-}
-
-void NoiseSlider::addModuleParameters()
-{
-    gui->addSlider("velocity", 0, 2)->bind(multiplier);
-    gui->addSlider("noise", 0,1,0)->bind(noiseValue);
-}
-
-
+#endif /* LfoSlider_hpp */

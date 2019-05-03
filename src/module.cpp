@@ -68,9 +68,9 @@ void Module::setupGui()
 
 void Module::updateModule(float tx, float ty)
 {
-    //translation.x = tx;
-    //translation.y = ty;
-    //gui->setTranslation(tx, ty);
+    translation.x = tx;
+    translation.y = ty;
+    gui->setTranslation(tx, ty);
     updateModule();
 }
 
@@ -199,10 +199,10 @@ bool Module::getModuleHasChild()
     return moduleHasChild;
 }
 
-//ofPoint Module::getTranslation()
-//{
-//    return translation;
-//}
+ofPoint Module::getTranslation()
+{
+    return translation;
+}
 
 void Module::onSliderEventParent(ofxDatGuiSliderEvent e)
 {

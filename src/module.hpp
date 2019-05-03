@@ -46,7 +46,7 @@ private:
     float   moduleHeight;
     
     float   moduleGuiOpacity;
-    //ofPoint translation;
+    ofPoint translation;
     
     ofxDatGuiComponent * selectedComponent;
     unordered_map<string, ofxDatGuiComponent *> midiMappings;
@@ -95,7 +95,7 @@ public:
     bool getModuleInitialized();
     bool getModuleEnabled();
     bool getModuleHasChild();
-    //ofPoint getTranslation();
+    ofPoint getTranslation();
     
     void setModuleWidth(float);
     void setModuleHeight(float);

@@ -55,7 +55,7 @@ ofxXmlSettings (included in openframeworks)
 
 5. Repeat the step (3) and click the PREVIEW module.
 
-6. Press `Shift+M` or `middle-click` to enter mapping mode.
+6. Press `CMD+Shift+M` or `middle-click` to enter mapping mode.
 
 7. Connect the output of the SKETCH POOL module into the input of PREVIEW module by dragging the mouse.
 
