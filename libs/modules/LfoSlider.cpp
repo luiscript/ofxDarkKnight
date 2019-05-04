@@ -26,6 +26,10 @@ void LfoSlider::setup()
 {
     icons.load("icons/lfoWaves.png");
     wave = 0;
+    time = 0;
+    amplitude = 1;
+    offset = 0;
+    result = 0;
 }
 
 void LfoSlider::update()
@@ -86,10 +90,10 @@ void LfoSlider::addModuleParameters()
     matrix->setRadioMode(true);
     matrix->getChildAt(0)->setSelected(true);
         
-    gui->addSlider("time", 0, 1, 0)->bind(time);
+    gui->addSlider("time", 0, 1, 0)->setPrecision(4)->bind(time);
     gui->addSlider("amplitude",0, 1,0)->bind(amplitude);
     gui->addSlider("offset", 0, 1, 0)->bind(offset);
-    gui->addSlider("result", 0, 1, 0)->bind(result);
+    gui->addSlider("result", 0, 1, 0)->setPrecision(4)->bind(result);
 }
 
 void LfoSlider::onWaveSelected(ofxDatGuiMatrixEvent e)

@@ -30,8 +30,10 @@ class NoiseSlider : public Module
 {
 public:
     float noiseValue;
-    float randomNoise;
-    float multiplier;
+    float random;
+    float mult;
+    float amplitude;
+    float offset;
     void setup();
     void update();
     void draw();

@@ -26,13 +26,15 @@
 void NoiseSlider::setup()
 {
     noiseValue = 0;
-    randomNoise = ofRandom(0.0001,1.00001);
-    multiplier = 1.0;
+    amplitude = 1;
+    offset = 0;
+    random = ofRandom(0.0001,1.00001);
+    mult = 1.0;
 }
 
 void NoiseSlider::update()
 {
-    noiseValue = ofNoise(ofGetElapsedTimef() * multiplier, randomNoise);
+    noiseValue = ofNoise(ofGetElapsedTimef() * mult, random) * amplitude + offset;
 }
 
 void NoiseSlider::draw()
@@ -42,8 +44,10 @@ void NoiseSlider::draw()
 
 void NoiseSlider::addModuleParameters()
 {
-    gui->addSlider("velocity", 0, 2)->bind(multiplier);
-    gui->addSlider("noise", 0,1,0)->bind(noiseValue);
+    gui->addSlider("amplitude", 0, 1, 1)->bind(amplitude);
+    gui->addSlider("offset", 0,1,0)->bind(offset);
+    gui->addSlider("velocity", 0, 4)->bind(mult);
+    gui->addSlider("noise", 0,1,0)->setPrecision(4)->bind(noiseValue);
 }
 
 
