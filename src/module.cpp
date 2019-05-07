@@ -61,7 +61,7 @@ void Module::setupGui()
         params = gui->addFolder("PARAMS");
         params->expand();
     }
-    
+
     addModuleParameters();
     gui->setWidth(450);
 }

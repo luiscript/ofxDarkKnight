@@ -89,7 +89,8 @@ void LfoSlider::addModuleParameters()
     matrix->onMatrixEvent(this, &LfoSlider::onWaveSelected);
     matrix->setRadioMode(true);
     matrix->getChildAt(0)->setSelected(true);
-        
+    
+    //gui->setLabelAlignment(ofxDatGuiAlignment::RIGHT);
     gui->addSlider("time", 0, 1, 0)->setPrecision(4)->bind(time);
     gui->addSlider("amplitude",0, 1,0)->bind(amplitude);
     gui->addSlider("offset", 0, 1, 0)->bind(offset);

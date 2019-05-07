@@ -38,6 +38,8 @@ Download and install [ofxDarkKnight](https://github.com/luiscript/ofxDarkKnight/
 
 [neilmendoza: ](https://github.com/neilmendoza)[ofxPostProcessing](https://github.com/luiscript/ofxPostProcessing)(Fork)
 
+[andreasmuller: ](https://github.com/andreasmuller)[ofxAutoReloadedShader](https://github.com/andreasmuller/ofxAutoReloadedShader)
+
 ofxOsc (included in openframeworks)
 
 ofxXmlSettings (included in openframeworks)
