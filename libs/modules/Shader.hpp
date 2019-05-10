@@ -38,6 +38,13 @@ private:
     int numParameters;
     ofxAutoReloadedShader autoShader;
     ofFbo fbo;
+    string parameterName;
+    float min;
+    float max;
+    int precision;
+    ofxDatGuiFolder * params;
+    unordered_map<string, float*> floatParameters;
+    unordered_map<string, int*> intParameters;
 public:
     void setup();
     void update();
@@ -45,6 +52,10 @@ public:
     void addModuleParameters();
     ofFbo * getFbo();
     void addParameter(ofxDatGuiButtonEvent);
+    void onParameterNameChange(ofxDatGuiTextInputEvent);
+    void onParameterMinChange(ofxDatGuiTextInputEvent);
+    void onParameterMaxChange(ofxDatGuiTextInputEvent);
+    void onParameterPrecisionChange(ofxDatGuiTextInputEvent);
 //    void onOuputControlChange(ofxDatGuiTextInputEvent);
 //    void onOutputChannelChange(ofxDatGuiTextInputEvent);
 };

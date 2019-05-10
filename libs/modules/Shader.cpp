@@ -30,9 +30,13 @@ void Shader::setup()
     ofClear(0, 0, 0, 0);
     fbo.end();
     
+    parameterName = "";
+    min = 0.0;
+    max = 1.0;
+    precision = 2;
+    
     addOutputConnection(ConnectionType::DK_FBO);
     //addInputConnection(ConnectionType::DK_FBO);
-    
 }
 
 void Shader::update()
@@ -48,6 +52,17 @@ void Shader::draw()
     ofClear(0, 0, 0, 0);
     autoShader.begin();
     autoShader.setUniform1f("u_time", ofGetElapsedTimef() );
+    
+    for(auto &it : floatParameters)
+    {
+        autoShader.setUniform1f(it.first, *it.second);
+    }
+    
+    for (auto &it : intParameters)
+    {
+        autoShader.setUniform1i(it.first, *it.second);
+    }
+    
     ofDrawRectangle(0, 0, getModuleWidth(), getModuleHeight());
     autoShader.end();
     fbo.end();
@@ -58,28 +73,61 @@ void Shader::draw()
 
 void Shader::addModuleParameters()
 {
-//    ofxDatGuiFolder * shaderSettings = gui->addFolder("SHADER SETTINGS");
-//    ofxDatGuiFolder * addParameter = gui->addFolder("ADD PARAMETER");
-//    ofxDatGuiTextInput * parameterName = addParameter->addTextInput("Name", "parameter");
-//    ofxDatGuiTextInput * parameterMin = addParameter->addTextInput("Min value", "0");
-//    ofxDatGuiTextInput * parameterMax = addParameter->addTextInput("Max value", "1");
-//    ofxDatGuiTextInput * parameterPrecision = addParameter->addTextInput("Precision", "2");
-//
-//    ofxDatGuiButton * addParameterButton = addParameter->addButton("ADD");
-//    addParameterButton->setLabelAlignment(ofxDatGuiAlignment::CENTER);
-//    addParameterButton->onButtonEvent(this, &Shader::addParameter);
+    params = gui->addFolder("PARAMETERS");
+    ofxDatGuiFolder * shaderSettings = gui->addFolder("SHADER SETTINGS");
+    ofxDatGuiFolder * addParameter = gui->addFolder("ADD PARAMETER");
+    ofxDatGuiTextInput * parameterName = addParameter->addTextInput("Name", "parameter");
+    parameterName->onTextInputEvent(this, &Shader::onParameterNameChange);
+    ofxDatGuiTextInput * parameterMin = addParameter->addTextInput("Min value", "0");
+    parameterMin->onTextInputEvent(this, &Shader::onParameterMinChange);
+    ofxDatGuiTextInput * parameterMax = addParameter->addTextInput("Max value", "1");
+    parameterMax->onTextInputEvent(this, &Shader::onParameterMaxChange);
+    ofxDatGuiTextInput * parameterPrecision = addParameter->addTextInput("Precision", "2");
+    parameterPrecision->onTextInputEvent(this, &Shader::onParameterPrecisionChange);
     
-//    ofxDatGuiTextInput * channelComponent = config->addTextInput("Channel", "1");
-//    channelComponent->onTextInputEvent(this, &Shader::onOutputChannelChange);
-//    
-//    ofxDatGuiTextInput * controlComponent = config->addTextInput("Control", "0");
-//    controlComponent->onTextInputEvent(this, &Shader::onOuputControlChange);
+    ofxDatGuiButton * addParameterButton = addParameter->addButton("ADD");
+    addParameterButton->setLabelAlignment(ofxDatGuiAlignment::CENTER);
+    addParameterButton->onButtonEvent(this, &Shader::addParameter);
+
 }
 
 
 void Shader::addParameter(ofxDatGuiButtonEvent e)
 {
-    
+    if(parameterName != "")
+    {
+        if(precision > 0)
+        {
+            float * newFloatParam = new float;
+            params->addSlider(parameterName, min, max)->setPrecision(precision)->bind(*newFloatParam);
+            floatParameters.insert({parameterName, newFloatParam});
+        } else {
+            int * newIntParam = new int;
+            params->addSlider(parameterName, (int) min, (int)max, (int)min)->bind(*newIntParam);
+            intParameters.insert({parameterName, newIntParam});
+        }
+        gui->setWidth(450);
+    }
+}
+
+void Shader::onParameterNameChange(ofxDatGuiTextInputEvent e)
+{
+    parameterName = e.target->getText();
+}
+
+void Shader::onParameterMinChange(ofxDatGuiTextInputEvent e)
+{
+    min = ofToFloat(e.target->getText());
+}
+
+void Shader::onParameterMaxChange(ofxDatGuiTextInputEvent e)
+{
+    max = ofToFloat(e.target->getText());
+}
+
+void Shader::onParameterPrecisionChange(ofxDatGuiTextInputEvent e)
+{
+    precision = ofToInt(e.target->getText());
 }
 
 ofFbo * Shader::getFbo()
