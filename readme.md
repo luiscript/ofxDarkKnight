@@ -40,6 +40,8 @@ Download and install [ofxDarkKnight](https://github.com/luiscript/ofxDarkKnight/
 
 [andreasmuller: ](https://github.com/andreasmuller)[ofxAutoReloadedShader](https://github.com/andreasmuller/ofxAutoReloadedShader)
 
+[leozimmerman: ](https://github.com/leozimmerman/)[ofxAudioAnalyzer](https://github.com/leozimmerman/ofxAudioAnalyzer/)
+
 ofxOsc (included in openframeworks)
 
 ofxXmlSettings (included in openframeworks)

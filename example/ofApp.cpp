@@ -9,6 +9,8 @@ void ofApp::setup()
     unordered_map<string, Module*> modulesPool;
     modulesPool = {
         { "ABLETON LINK", new ofxDarkKnightAbletonLink },
+        { "AUDIO ANALYZER", new DarkKnightAudioAnalyzer },
+        { "LIVE SHADER", new Shader},
         { "LFO", new LfoSlider },
         { "MAPPING GRID", new ofxDarkKnightMapping },
         { "MIDI CLOCK IN", new DarkKnightMidiClockIn },

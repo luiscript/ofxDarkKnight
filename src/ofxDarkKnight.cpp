@@ -47,9 +47,9 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
     
     poolNames.sort();
     
-    componentsList = new ofxDatGuiScrollView("Modules list", 10);
+    componentsList = new ofxDatGuiScrollView("MODULES", 11);
     componentsList->setWidth(800);
-    componentsList->setHeight(600);
+    componentsList->setHeight(700);
 #ifdef TARGET_WIN32
 	componentsList->setPosition(ofGetWidth() - 400, ofGetHeight() - 300);
 #endif
@@ -250,6 +250,12 @@ void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
                     currentWire->setConnectionType(input->getConnectionType());
                     currentWire->setOutputConnection(it->getOutput());
                     currentWire->outputModule = it->outputModule;
+                    //if the disconected input is an FBO remove reference
+                    if (currentWire->getConnectionType() == ConnectionType::DK_FBO)
+                    {
+                        it->inputModule->setFbo(nullptr);
+                        currentWire->fbo = it->outputModule->getFbo();
+                    }
                     
                     pointer.x = x;
                     pointer.y = y;
@@ -337,12 +343,15 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                     newPool->gui->setPosition(ofGetMouseX() + 15, ofGetMouseY() + 15);
                     newPool->setModulesReference(&modules);
                     newPool->setTranslationReferences(&translation);
+                    newPool->setModuleMidiMapMode(midiMapMode);
                     modules.insert({"SKETCH POOL 1", newPool});
                     
                     hapPlayer->gui->setWidth(450);
                     hapPlayer->loadFile(file.getAbsolutePath());
+                    hapPlayer->setModuleMidiMapMode(midiMapMode);
                     modules.insert({"HAP: " + file.getFileName(), hapPlayer});
                     newPool->drawMediaPool();
+
                     return;
                 }
             }
@@ -352,6 +361,7 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
 
 void ofxDarkKnight::addModule(string moduleName, Module * module)
 {
+    module->setModuleMidiMapMode(midiMapMode);
     modules.insert({moduleName, module});
 }
 
@@ -368,6 +378,7 @@ Module * ofxDarkKnight::addModule(string moduleName)
         
         newModule->setupModule(it->first, resolution);
         newModule->gui->setPosition(ofGetMouseX() - 100, ofGetMouseY() - 15);
+        newModule->setModuleMidiMapMode(midiMapMode);
         
         if(moduleName == "SCREEN OUTPUT")
         {
@@ -397,6 +408,7 @@ Module * ofxDarkKnight::addModule(string moduleName)
                 Module * m = item.canvas;
                 if(mIndex > 0) m->disable();
                 string childName = it->second->getName() + "/" + m->getName();
+                m->setModuleMidiMapMode(midiMapMode);
                 modules.insert({childName, m});
                 mIndex ++;
             }

@@ -24,7 +24,9 @@
 
 void Shader::setup()
 {
+    gotTexture = false;
     autoShader.load("Shaders/EmptyShader");
+    
     fbo.allocate(getModuleWidth(), getModuleHeight());
     fbo.begin();
     ofClear(0, 0, 0, 0);
@@ -36,7 +38,7 @@ void Shader::setup()
     precision = 2;
     
     addOutputConnection(ConnectionType::DK_FBO);
-    //addInputConnection(ConnectionType::DK_FBO);
+    addInputConnection(ConnectionType::DK_FBO);
 }
 
 void Shader::update()
@@ -51,8 +53,8 @@ void Shader::draw()
     fbo.begin();
     ofClear(0, 0, 0, 0);
     autoShader.begin();
-    autoShader.setUniform1f("u_time", ofGetElapsedTimef() );
-    
+    autoShader.setUniform1f("u_time", ofGetElapsedTimef());
+    autoShader.setUniform2f("resolution", glm::vec2(getModuleWidth(), getModuleHeight()));
     for(auto &it : floatParameters)
     {
         autoShader.setUniform1f(it.first, *it.second);
@@ -63,7 +65,14 @@ void Shader::draw()
         autoShader.setUniform1i(it.first, *it.second);
     }
     
-    ofDrawRectangle(0, 0, getModuleWidth(), getModuleHeight());
+    if(gotTexture)
+    {
+        texture->draw(0,0);
+    } else
+    {
+        ofDrawRectangle(0, 0, getModuleWidth(), getModuleHeight());
+    }
+    
     autoShader.end();
     fbo.end();
     ofDisableAlphaBlending();
@@ -99,7 +108,14 @@ void Shader::addParameter(ofxDatGuiButtonEvent e)
         if(precision > 0)
         {
             float * newFloatParam = new float;
-            params->addSlider(parameterName, min, max)->setPrecision(precision)->bind(*newFloatParam);
+            ofxDatGuiSlider * newSlider;
+            newSlider = params->addSlider(parameterName, min, max);
+            newSlider->setPrecision(precision)->bind(*newFloatParam);
+            if(getModuleMidiMapMode() != newSlider->getMidiMode())
+            {
+                newSlider->toggleMidiMode();
+            }
+            bind(*newFloatParam);
             floatParameters.insert({parameterName, newFloatParam});
         } else {
             int * newIntParam = new int;
@@ -133,4 +149,10 @@ void Shader::onParameterPrecisionChange(ofxDatGuiTextInputEvent e)
 ofFbo * Shader::getFbo()
 {
     return &fbo;
+}
+
+void Shader::setFbo(ofFbo * inFbo)
+{
+    texture = inFbo;
+    gotTexture = inFbo != nullptr;
 }

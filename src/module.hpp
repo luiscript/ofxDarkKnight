@@ -29,6 +29,7 @@
 #include "wireConnection.hpp"
 #include "ofxMidi.h"
 
+
 class Module{
 private:
     int     moduleIndex;

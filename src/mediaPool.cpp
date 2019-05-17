@@ -180,9 +180,15 @@ void MediaPool::updatePoolIndex(int mouseX, int mouseY)
         int xIndex = (int)  ofMap(mouseX, pos.x, pos.x + gui->getWidth(), 0,4);
         int yIndex = (int)  ofMap(mouseY, pos.y + yOffsetGui, pos.y + offset, 0 ,4);
         
-        index = 4 * yIndex + xIndex;
-        drawMediaPool();
-        triggerPoolMedia(index);
+        int newIndex = 4 * yIndex + xIndex;
+        
+        if(newIndex <= collection.size())
+        {
+            index = newIndex;
+            drawMediaPool();
+            triggerPoolMedia(index);
+        }
+        
     }
 }
 

@@ -51,6 +51,7 @@ public:
     void draw();
     void addModuleParameters();
     ofFbo * getFbo();
+    void setFbo(ofFbo *);
     void addParameter(ofxDatGuiButtonEvent);
     void onParameterNameChange(ofxDatGuiTextInputEvent);
     void onParameterMinChange(ofxDatGuiTextInputEvent);

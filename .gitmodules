@@ -22,3 +22,6 @@
 [submodule "libs/DarkKnightPostProcessing"]
 	path = libs/DarkKnightPostProcessing
 	url = https://github.com/luiscript/DarkKnightPostProcessing
+[submodule "libs/DarkKnightAudioAnalyzer"]
+	path = libs/DarkKnightAudioAnalyzer
+	url = https://github.com/luiscript/DarkKnightAudioAnalyzer
