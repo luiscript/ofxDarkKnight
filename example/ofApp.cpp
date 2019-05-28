@@ -26,6 +26,7 @@ void ofApp::setup()
         { "SKETCH POOL 2", new Basic },
         { "SYPHON SERVER", new ofxDarkKnightSyphon },
         { "SYPHON CLIENT", new DarkKnightSyphonClient },
+        { "VIDEO RECORDER", new DarkKnightVideoRecorder},
     };
     manager.setup(&modulesPool);
 }

@@ -42,7 +42,7 @@
 #include "DarkKnightMidi.hpp"
 #include "ofxDarkKnightAbletonLink.hpp"
 #include "DarkKnightAudioAnalyzer.hpp"
-#include "DarkKnightFboRecorder.hpp"
+#include "DarkKnightVideoRecorder.hpp"
 #include "ofxDarkKnightMapping.hpp"
 #include "ofxDarkKnightOsc.hpp"
 #include "DarkKnightPostProcessing.h"
