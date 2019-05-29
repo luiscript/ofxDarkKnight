@@ -34,7 +34,7 @@ Download and install [ofxDarkKnight](https://github.com/luiscript/ofxDarkKnight/
 
 [nariakiiwatani: ](https://github.com/nariakiiwatani)[ofxMeshWarp](https://github.com/nariakiiwatani/ofxMeshWarp)
 
-[bangnoise: ](https://github.com/bangnoise)[ofxHapPlayer](https://github.com/bangnoise/ofxHapPlayer)
+[bangnoise: ](https://github.com/bangnoise)[ofxHapPlayer](https://github.com/luiscript/ofxHapPlayer) (Fork) ( use libavformat branch)
 
 [neilmendoza: ](https://github.com/neilmendoza)[ofxPostProcessing](https://github.com/luiscript/ofxPostProcessing)(Fork)
 
