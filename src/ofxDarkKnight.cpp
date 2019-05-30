@@ -50,12 +50,8 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
     componentsList = new ofxDatGuiScrollView("MODULES", 11);
     componentsList->setWidth(800);
     componentsList->setHeight(700);
-#ifdef TARGET_WIN32
-	componentsList->setPosition(ofGetWidth() - 400, ofGetHeight() - 300);
-#endif
-#ifdef TARGET_OSX
-    componentsList->setPosition(ofGetScreenWidth() - 400, ofGetScreenHeight() - 300);
-#endif
+    
+    componentsList->setPosition(ofGetWidth()/2 - 400, ofGetHeight()/2 - 350);
     for(list<string>::iterator it = poolNames.begin(); it != poolNames.end(); it++)
         componentsList->add(*it);
     
