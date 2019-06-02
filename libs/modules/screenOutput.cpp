@@ -46,21 +46,21 @@ void ScreenOutput::addModuleParameters()
 {
     int monitorCount;
     GLFWmonitor** monitors = glfwGetMonitors(&monitorCount);
-
+    
     monitorsName.push_back("NONE");
-
+    
     GLFWvidmode *mode;
     mode = (GLFWvidmode*)glfwGetVideoMode(glfwGetPrimaryMonitor());
-
+    
     for (int i = 0; i<monitorCount; i++) {
-
+        
         mode = (GLFWvidmode*)glfwGetVideoMode(*monitors);
-
+        
         string fullName = ofToString(glfwGetMonitorName(*monitors)) + " (" + ofToString(mode->width) + " x " + ofToString(mode->height) + ")";
         monitorsName.push_back( fullName );
         monitors++;
     }
-
+    
     ofxDatGuiComponent * component = gui->addDropdown("Output", monitorsName);
     component->onDropdownEvent(this, &ScreenOutput::onVideoOutputChange);
     monitorsName.clear();
@@ -108,3 +108,5 @@ void ScreenOutput::drawDisplay(ofEventArgs & args)
         fbo->draw(0,0);
     }
 }
+
+

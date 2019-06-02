@@ -467,6 +467,9 @@ void ofxDarkKnight::deleteFocusedModule()
             }
             
             // now that we deleted all the module's wires procede to unmount and delete the module it self
+            module.second->inputs.clear();
+            module.second->outputs.clear();
+            module.second->gui->deleteItems();
             modules.erase(module.first);
             module.second->unMount();
             
