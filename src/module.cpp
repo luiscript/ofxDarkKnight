@@ -63,7 +63,7 @@ void Module::setupGui()
     }
 
     addModuleParameters();
-    gui->setWidth(450);
+    gui->setWidth(ofGetWidth()/5);
 }
 
 void Module::updateModule(float tx, float ty)

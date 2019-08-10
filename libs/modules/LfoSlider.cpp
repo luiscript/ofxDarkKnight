@@ -25,6 +25,7 @@
 void LfoSlider::setup()
 {
     icons.load("icons/lfoWaves.png");
+	icons.resize(141, 10);
     wave = 0;
     time = 0;
     amplitude = 1;
@@ -80,7 +81,7 @@ void LfoSlider::update()
 
 void LfoSlider::draw()
 {
-    icons.draw(gui->getPosition().x + 162, gui->getPosition().y + 42);
+    icons.draw(gui->getPosition().x + 137, gui->getPosition().y + 30);
 }
 
 void LfoSlider::addModuleParameters()

@@ -48,10 +48,10 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
     poolNames.sort();
     
     componentsList = new ofxDatGuiScrollView("MODULES", 11);
-    componentsList->setWidth(800);
-    componentsList->setHeight(700);
+    componentsList->setWidth(500);
+    componentsList->setHeight(600);
     
-    componentsList->setPosition(ofGetWidth()/2 - 400, ofGetHeight()/2 - 350);
+    componentsList->setPosition(ofGetWidth()/2 - 250, ofGetHeight()/2 - 300);
     for(list<string>::iterator it = poolNames.begin(); it != poolNames.end(); it++)
         componentsList->add(*it);
     
@@ -65,7 +65,14 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
     ofAddListener(ofEvents().keyReleased, this, &ofxDarkKnight::handleKeyReleased);
     ofAddListener(ofEvents().fileDragEvent, this, &ofxDarkKnight::handleDragEvent);
     
-    darkKnightMidiOut.openVirtualPort("ofxDarkKnight");
+	#ifdef TARGET_OSX
+	darkKnightMidiOut.openVirtualPort("ofxDarkKnight");
+	#else
+	if (darkKnightMidiOut.getNumOutPorts() > 0)
+	{
+		darkKnightMidiOut.openPort(darkKnightMidiOut.getNumOutPorts()-1);
+	}
+	#endif
 }
 
 
@@ -342,7 +349,7 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                     newPool->setModuleMidiMapMode(midiMapMode);
                     modules.insert({"SKETCH POOL 1", newPool});
                     
-                    hapPlayer->gui->setWidth(450);
+                    hapPlayer->gui->setWidth(ofGetWidth()/5);
                     hapPlayer->loadFile(file.getAbsolutePath());
                     hapPlayer->setModuleMidiMapMode(midiMapMode);
                     modules.insert({"HAP: " + file.getFileName(), hapPlayer});
@@ -507,21 +514,19 @@ void ofxDarkKnight::onResolutionChange(ofVec2f & newResolution)
 }
 
 void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
-{
-    
-    if(keyboard.key == OF_KEY_COMMAND) cmdKey = true;
+{	
+    if(keyboard.key == OF_KEY_COMMAND || keyboard.key == OF_KEY_CONTROL) cmdKey = true;
     if(keyboard.key == OF_KEY_SHIFT) shiftKey = true;
     if(keyboard.key == OF_KEY_ALT) altKey = true;
-        
 
     // toggle show explorer
-    if(cmdKey && (keyboard.key == OF_KEY_RETURN))
-    {
-        toggleList();
+	if (cmdKey && keyboard.keycode == 257 && !keyboard.isRepeat)
+	{
+		toggleList();
     }
     
-    // cmd+shift+m || cmd+shift+<  -> Toggle midiMap on all layers
-    if(shiftKey && (keyboard.key == 'm' || keyboard.key == '<')){
+    // cmd+shift+m  -> Toggle midiMap on all layers
+    if(cmdKey && keyboard.keycode == 77 && ! keyboard.isRepeat ){
         toggleMappingMode();
     }
 
@@ -562,7 +567,7 @@ void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
 
 void ofxDarkKnight::handleKeyReleased(ofKeyEventArgs &keyboard)
 {
-    if(keyboard.key == OF_KEY_COMMAND) cmdKey = false;
+    if(keyboard.key == OF_KEY_COMMAND || keyboard.key == OF_KEY_CONTROL) cmdKey = false;
     if(keyboard.key == OF_KEY_SHIFT) shiftKey = false;
     if(keyboard.key == OF_KEY_ALT) altKey = false;
 }

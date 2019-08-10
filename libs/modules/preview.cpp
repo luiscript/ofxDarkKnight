@@ -43,8 +43,8 @@ void Preview::draw()
     if(drawFbo)
     {
         ofPushMatrix();
-        ofTranslate(gui->getPosition().x, gui->getPosition().y + 30);
-        ofDrawBitmapString(fps, gui->getWidth() - 100, -10);
+        ofTranslate(gui->getPosition().x, gui->getPosition().y + 20);
+        ofDrawBitmapString(fps, gui->getWidth() - 100, -5);
         ofScale(scaleX, scaleY);
         fbo->draw(0,0);
         
@@ -60,11 +60,11 @@ void Preview::setFbo(ofFbo * fboPtr)
     
     if(drawFbo)
     {
-        gui->setWidth(getModuleWidth()/2);
+        gui->setWidth(getModuleWidth()/4);
     }
     
-    scaleX = 0.5;
-    scaleY = 0.5;
+    scaleX = 0.25;
+    scaleY = 0.25;
 }
 
 ofFbo * Preview::getFbo()

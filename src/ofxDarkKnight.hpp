@@ -41,7 +41,6 @@
 
 #include "DarkKnightMidi.hpp"
 #include "ofxDarkKnightAbletonLink.hpp"
-#include "DarkKnightAudioAnalyzer.hpp"
 #include "DarkKnightVideoRecorder.hpp"
 #include "ofxDarkKnightMapping.hpp"
 #include "ofxDarkKnightOsc.hpp"
@@ -53,6 +52,9 @@
 #include "basic.hpp"
 #include "NoiseSlider.hpp"
 
+#ifdef TARGET_OSX
+	#include "DarkKnightAudioAnalyzer"
+#endif
 
 class ofxDarkKnight : public ofxMidiListener{
 private:

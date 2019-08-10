@@ -33,8 +33,8 @@ void MediaPool::init()
     font.load("fonts/Roboto-Light.ttf", 15, true, true);
     setModuleHasChild(true);
     alpha = 255;
-    yOffsetGui = 30;
-    gui->setWidth(450);
+    yOffsetGui = 20;
+    gui->setWidth(ofGetWidth()/5);
     numItems = 0;
     showMediaPool = false;
     

@@ -28,6 +28,7 @@ void ScreenOutput::setup()
     addInputConnection(ConnectionType::DK_FBO);
     addOutputConnection(ConnectionType::DK_FBO);
     display = nullptr;
+	drawFbo = false;
 }
 
 void ScreenOutput::setFbo(ofFbo * fboPtr)
@@ -108,5 +109,7 @@ void ScreenOutput::drawDisplay(ofEventArgs & args)
         fbo->draw(0,0);
     }
 }
+
+
 
 
