@@ -58,13 +58,14 @@ void Preview::setFbo(ofFbo * fboPtr)
     fbo  = fboPtr;
     drawFbo = fboPtr != nullptr;
     
-    if(drawFbo)
-    {
-        gui->setWidth(getModuleWidth()/4);
-    }
-    
-    scaleX = 0.25;
-    scaleY = 0.25;
+//    if(drawFbo)
+//    {
+//        gui->setWidth(ofGetWidth()/5);
+//    }
+//
+    float scale = ofGetWidth()/getModuleWidth();
+    scaleX = scale * 0.20;
+    scaleY = scale * 0.20;
 }
 
 ofFbo * Preview::getFbo()

@@ -25,7 +25,16 @@
 void LfoSlider::setup()
 {
     icons.load("icons/lfoWaves.png");
-	icons.resize(141, 10);
+    
+	int pixelDensity = ((ofAppGLFWWindow*)ofGetWindowPtr())->getPixelScreenCoordScale();
+	if (pixelDensity == 1)
+	{
+		icons.resize(141, 10);
+	} else 
+	{
+		icons.resize(130, 10);
+	}
+	
     wave = 0;
     time = 0;
     amplitude = 1;
@@ -81,7 +90,8 @@ void LfoSlider::update()
 
 void LfoSlider::draw()
 {
-    icons.draw(gui->getPosition().x + 137, gui->getPosition().y + 30);
+    float size = ofGetWidth()/5 * 0.35 + 3;
+    icons.draw(gui->getPosition().x + size, gui->getPosition().y + 30);
 }
 
 void LfoSlider::addModuleParameters()
@@ -91,7 +101,6 @@ void LfoSlider::addModuleParameters()
     matrix->setRadioMode(true);
     matrix->getChildAt(0)->setSelected(true);
     
-    //gui->setLabelAlignment(ofxDatGuiAlignment::RIGHT);
     gui->addSlider("time", 0, 1, 0)->setPrecision(4)->bind(time);
     gui->addSlider("amplitude",0, 1,0)->bind(amplitude);
     gui->addSlider("offset", 0, 1, 0)->bind(offset);
