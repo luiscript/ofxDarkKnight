@@ -835,8 +835,8 @@ Module * ofxDarkKnight::createModule(string name)
     else if(name == "MIXER") return new Mixer;
     else if(name == "PERLIN NOISE") return new NoiseSlider;
     else if(name == "OSC CONTROLLER") return new ofxDarkKnightOsc;
-    else if(name == "SYPHON SERVER") return new ofxDarkKnightSyphon;
-    else if(name == "SYPHON CLIENT") return new DarkKnightSyphonClient;
+    else if(name == "TEXTURE SERVER") return new DarkKnightTextureServer;
+    else if(name == "TEXTURE CLIENT") return new DarkKnightTextureClient;
     
     return nullptr;
 }

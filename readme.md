@@ -30,11 +30,11 @@ Download and install [ofxDarkKnight](https://github.com/luiscript/ofxDarkKnight/
 
 [2bbb: ](https://github.com/2bbb/ofxAbletonLink)[ofxAbletonLink](https://github.com/2bbb/ofxAbletonLink)
 
-[astellato: ](https://github.com/astellato)[ofxSyphon](https://github.com/astellato/ofxSyphon)
+[astellato: ](https://github.com/astellato)[ofxSyphon](https://github.com/astellato/ofxSyphon) (Only for MacOS)
 
 [nariakiiwatani: ](https://github.com/nariakiiwatani)[ofxMeshWarp](https://github.com/nariakiiwatani/ofxMeshWarp)
 
-[bangnoise: ](https://github.com/bangnoise)[ofxHapPlayer](https://github.com/luiscript/ofxHapPlayer) (Fork) ( use libavformat branch)
+[bangnoise: ](https://github.com/bangnoise)[ofxHapPlayer](https://github.com/luiscript/ofxHapPlayer) (Fork) (With MacOS use libavformat branch)
 
 [neilmendoza: ](https://github.com/neilmendoza)[ofxPostProcessing](https://github.com/luiscript/ofxPostProcessing)(Fork)
 
@@ -43,6 +43,8 @@ Download and install [ofxDarkKnight](https://github.com/luiscript/ofxDarkKnight/
 [leozimmerman: ](https://github.com/leozimmerman/)[ofxAudioAnalyzer](https://github.com/leozimmerman/ofxAudioAnalyzer/)
 
 [vanderlin: ](https://github.com/vanderlin/)[ofxFboRecorder](https://github.com/vanderlin/ofxFboRecorder)
+
+[Kj1: ](https://github.com/Kj1/)[ofxSpout2](https://github.com/Kj1/ofxSpout2) (only for Windows)
 
 ofxOsc (included in openframeworks)
 

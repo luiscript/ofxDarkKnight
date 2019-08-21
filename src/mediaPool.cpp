@@ -85,25 +85,25 @@ void MediaPool::update()
 
     currentCanvas->gui->setPosition(gui->getPosition().x, gui->getPosition().y + gui->getWidth() * 0.5625 + yOffsetGui);
     currentCanvas->gui->setTranslation(translation->x, translation->y);
+
+	mainFbo.begin();
+
+	ofPushStyle();
+	currentCanvas->draw();
+	ofPopStyle();
+
+	if (hasInput)
+	{
+		ofEnableBlendMode(OF_BLENDMODE_ADD);
+		inputFbo->draw(0, 0);
+		ofDisableBlendMode();
+	}
+
+	mainFbo.end();
 }
 
 void MediaPool::draw()
 {
-    mainFbo.begin();
-    
-    ofPushStyle();
-    currentCanvas->draw();
-    ofPopStyle();
-    
-    if(hasInput)
-    {
-        ofEnableBlendMode(OF_BLENDMODE_ADD);
-        inputFbo->draw(0, 0);
-        ofDisableBlendMode();   
-    }
-    
-    mainFbo.end();
-
     //drawMediaPool();
     ofPoint pos = gui->getPosition();
     mediaPoolFbo.draw(pos.x, pos.y + yOffsetGui);

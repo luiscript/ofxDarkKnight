@@ -45,7 +45,7 @@
 #include "ofxDarkKnightMapping.hpp"
 #include "ofxDarkKnightOsc.hpp"
 #include "DarkKnightPostProcessing.h"
-#include "ofxDarkKnightSyphon.hpp"
+#include "DarkKnightTextureSharing.hpp"
 
 #include "ofxXmlSettings.h"
 #include "DarkKnightHap.hpp"
