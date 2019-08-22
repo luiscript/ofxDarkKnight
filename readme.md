@@ -12,7 +12,7 @@ ofxDarkKnight it's built on top of [openframeworks](https://openframeworks.cc/) 
 
 Download [openFrameworks v0.10.1](https://openframeworks.cc/download) for your development platform. Open an example and run it to make sure that everything is working correctly.
 
-If your having problems running the examples please [read this guide](https://openframeworks.cc/ofBook/chapters/setup_and_project_structure.html#runningexamples)
+If you're having problems running the examples please [read this guide](https://openframeworks.cc/ofBook/chapters/setup_and_project_structure.html#runningexamples)
 
 
 ## Install ofxDarkKnight
@@ -39,8 +39,6 @@ Download and install [ofxDarkKnight](https://github.com/luiscript/ofxDarkKnight/
 [neilmendoza: ](https://github.com/neilmendoza)[ofxPostProcessing](https://github.com/luiscript/ofxPostProcessing)(Fork)
 
 [andreasmuller: ](https://github.com/andreasmuller)[ofxAutoReloadedShader](https://github.com/andreasmuller/ofxAutoReloadedShader)
-
-[leozimmerman: ](https://github.com/leozimmerman/)[ofxAudioAnalyzer](https://github.com/leozimmerman/ofxAudioAnalyzer/)
 
 [vanderlin: ](https://github.com/vanderlin/)[ofxFboRecorder](https://github.com/vanderlin/ofxFboRecorder)
 

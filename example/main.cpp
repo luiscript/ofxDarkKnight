@@ -3,9 +3,6 @@
 
 //========================================================================
 int main( ){
-    CGRect thisMonitorArea = CGDisplayBounds(CGMainDisplayID());
-    int thisWidth = CGRectGetWidth(thisMonitorArea);
-    int thisHeight = CGRectGetHeight(thisMonitorArea);
     
     ofGLFWWindowSettings settings;
     settings.resizable = true;

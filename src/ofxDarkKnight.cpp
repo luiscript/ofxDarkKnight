@@ -828,6 +828,7 @@ void ofxDarkKnight::savePreset()
 Module * ofxDarkKnight::createModule(string name)
 {
     if(name == "PREVIEW") return new Preview;
+	else if(name == "INVERTER") return new ParamInverter;
     else if(name == "LFO") return new LfoSlider;
     else if(name == "MAPPING TOOLS") return new ofxDarkKnightMapping;
     else if(name == "MIDI CONTROL IN") return new DarkKnightMidiControlIn;
