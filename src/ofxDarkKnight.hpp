@@ -52,6 +52,7 @@
 #include "basic.hpp"
 #include "NoiseSlider.hpp"
 #include "inverter.hpp"
+#include "DarkKnightColorShader.hpp"
 
 
 class ofxDarkKnight : public ofxMidiListener{

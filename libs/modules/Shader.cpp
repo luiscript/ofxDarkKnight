@@ -50,6 +50,10 @@ void Shader::draw()
 {
     ofPushStyle();
     ofEnableAlphaBlending();
+	if (gotTexture)
+	{
+		texture->bind();
+	}
     fbo.begin();
     ofClear(0, 0, 0, 0);
     autoShader.begin();
@@ -67,6 +71,8 @@ void Shader::draw()
     
     if(gotTexture)
     {
+		ofTexture tex = texture->getTextureReference();
+		autoShader.setUniformTexture("texture1", tex, 1);
         texture->draw(0,0);
     } else
     {
@@ -77,6 +83,10 @@ void Shader::draw()
     fbo.end();
     ofDisableAlphaBlending();
     ofPopStyle();
+	if (gotTexture)
+	{
+		texture->unbind();
+	}
 }
 
 
@@ -122,7 +132,7 @@ void Shader::addParameter(ofxDatGuiButtonEvent e)
             params->addSlider(parameterName, (int) min, (int)max, (int)min)->bind(*newIntParam);
             intParameters.insert({parameterName, newIntParam});
         }
-        gui->setWidth(450);
+		gui->setWidth(ofGetWidth() / 5);
     }
 }
 

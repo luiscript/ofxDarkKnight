@@ -536,8 +536,9 @@ void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
     }
     
     //cmd + 's' to save the project
-    if( cmdKey && keyboard.key == 's')
+    if( cmdKey && keyboard.keycode == 83)
     {
+		cout << "save file" << endl;
         ofFileDialogResult saveFileResult =
             ofSystemSaveDialog("project.batmapp", "Save project");
         
@@ -547,7 +548,8 @@ void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
     }
     
     //cmd + o
-    if(cmdKey && keyboard.key == 'o')
+
+    if(cmdKey && keyboard.keycode == 79)
     {
         ofFileDialogResult loadFileResult = ofSystemLoadDialog("Open batmapp project");
         if(loadFileResult.bSuccess)
@@ -828,6 +830,7 @@ void ofxDarkKnight::savePreset()
 Module * ofxDarkKnight::createModule(string name)
 {
     if(name == "PREVIEW") return new Preview;
+	else if (name == "COLOR SHADER") return new ColorShader;
 	else if(name == "INVERTER") return new ParamInverter;
     else if(name == "LFO") return new LfoSlider;
     else if(name == "MAPPING TOOLS") return new ofxDarkKnightMapping;
