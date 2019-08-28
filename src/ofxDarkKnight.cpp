@@ -37,7 +37,7 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
 {
     loadWires = shiftKey = altKey = cmdKey = midiMapMode = drawing = showExplorer = false;
     translation = { 0, 0 };
-    resolution = { 1920, 1080 };
+    resolution = { 1024, 768 };
     
     modulesPool = *pool;
     const int s = modulesPool.size();
@@ -838,7 +838,7 @@ Module * ofxDarkKnight::createModule(string name)
     else if(name == "MIDI CONTROL OUT") return new DarkKnightMidiControlOut;
     else if(name == "MIXER") return new Mixer;
     else if(name == "PERLIN NOISE") return new NoiseSlider;
-    else if(name == "OSC CONTROLLER") return new ofxDarkKnightOsc;
+    else if(name == "OSC CLIENT") return new DarkKnightOscClient;
     else if(name == "TEXTURE SERVER") return new DarkKnightTextureServer;
     else if(name == "TEXTURE CLIENT") return new DarkKnightTextureClient;
     

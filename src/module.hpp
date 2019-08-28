@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2018 Luis Fernando Garc’a [http://luiscript.com]
+ Copyright (C) 2018 Luis Fernando Garcï¿½a [http://luiscript.com]
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@
 #include "unordered_map"
 #include "wireConnection.hpp"
 #include "ofxMidi.h"
+//#include "ofxOsc.h"
 
 
 class Module{
@@ -54,6 +55,7 @@ private:
 
 public:
     vector<ofxMidiMessage*> outMidiMessages;
+    
     
     bool customParams = false;
     bool moduleIsChild = false;

@@ -43,7 +43,7 @@
 #include "ofxDarkKnightAbletonLink.hpp"
 #include "DarkKnightVideoRecorder.hpp"
 #include "ofxDarkKnightMapping.hpp"
-#include "ofxDarkKnightOsc.hpp"
+#include "DarkKnightOsc.hpp"
 #include "DarkKnightPostProcessing.h"
 #include "DarkKnightTextureSharing.hpp"
 
