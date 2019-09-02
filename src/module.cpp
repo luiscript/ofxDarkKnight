@@ -311,6 +311,22 @@ void Module::addOutputConnection(ConnectionType t)
     outputs.push_back(output);
 }
 
+void Module::addInputConnection(ConnectionType t, string name)
+{
+	WireConnection* input = new WireConnection;
+	input->setName(name);
+	input->setWireConnectionType(t);
+	inputs.push_back(input);
+}
+
+void Module::addOutputConnection(ConnectionType t, string name)
+{
+	WireConnection* output = new WireConnection;
+	output->setName(name);
+	output->setWireConnectionType(t);
+	outputs.push_back(output);
+}
+
 void Module::sendMidiMessage(ofxMidiMessage * msg)
 {
     outMidiMessages.push_back(msg);

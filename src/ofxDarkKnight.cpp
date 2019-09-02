@@ -37,7 +37,7 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
 {
     loadWires = shiftKey = altKey = cmdKey = midiMapMode = drawing = showExplorer = false;
     translation = { 0, 0 };
-    resolution = { 1024, 768 };
+    resolution = { 1920, 1080 };
     
     modulesPool = *pool;
     const int s = modulesPool.size();
@@ -144,6 +144,11 @@ void ofxDarkKnight::toggleMappingMode()
     for(pair<string, Module*> module : modules )
     {
         module.second->toggleMidiMap();
+		if (module.second->getModuleHasChild())
+		{
+			MediaPool* mp = static_cast<MediaPool*>(module.second);
+			mp->drawMediaPool();
+		}
     }
 }
 
@@ -230,6 +235,7 @@ void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
             currentWire->outputModule = module.second;
             if(currentWireConnectionType == ConnectionType::DK_FBO)
             {
+				output->setFbo(module.second->getFbo());
                 currentWire->fbo = module.second->getFbo();
             }
             pointer.x = x;
@@ -256,6 +262,7 @@ void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
                     //if the disconected input is an FBO remove reference
                     if (currentWire->getConnectionType() == ConnectionType::DK_FBO)
                     {
+						input->setFbo(nullptr);
                         it->inputModule->setFbo(nullptr);
                         currentWire->fbo = it->outputModule->getFbo();
                     }
@@ -293,6 +300,7 @@ void ofxDarkKnight::checkInputConnection(float x, float y, string moduleName)
             }
             else if(currentWire->getConnectionType() == ConnectionType::DK_FBO)
             {
+				module.second->getInputConnection(x, y)->setFbo(currentWire->fbo);
                 module.second->setFbo(currentWire->fbo);
             }
             
@@ -647,7 +655,7 @@ void ofxDarkKnight::saveProject(string fileName, string path)
                 MediaPool * mediaPool = static_cast<MediaPool*>(module.second);
                 xml.setValue("INDEX", mediaPool->getCurrentIndex(), moduleIndex);
                 xml.addTag("ITEMS");
-                xml.pushTag("ITEMS");
+                xml.pushTag("ITEMS"); 
                 int itemIndex = 0;
                 for(CollectionItem item : mediaPool->collection)
                 {

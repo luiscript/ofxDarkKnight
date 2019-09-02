@@ -133,6 +133,9 @@ public:
     
     void addInputConnection(ConnectionType);
     void addOutputConnection(ConnectionType);
+
+	void addInputConnection(ConnectionType, string);
+	void addOutputConnection(ConnectionType, string);
     
     void sendMidiMessage(ofxMidiMessage *);
 

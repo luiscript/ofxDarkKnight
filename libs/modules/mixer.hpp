@@ -51,8 +51,8 @@ public:
         ofClear(0,0,0,0);
         compositionFbo.end();
         
-        addInputConnection(ConnectionType::DK_FBO);
-        addInputConnection(ConnectionType::DK_FBO);
+		addInputConnection(ConnectionType::DK_FBO, "fbo1");
+		addInputConnection(ConnectionType::DK_FBO, "fbo2");
         addOutputConnection(ConnectionType::DK_FBO);
         
         fbos.clear();
@@ -63,25 +63,23 @@ public:
     
     void update()
     {
-        
+		
     }
     
     void draw()
     {
-
-        if (drawOutput) {
-            compositionFbo.begin();
-            ofClear(0,0,0,0);
-            
-            
-            for(auto fbo : fbos)
-            {
-                fbo->draw(0,0);
-                ofEnableBlendMode(blendMode);
-            }
-            ofDisableBlendMode();
-            compositionFbo.end();
+        compositionFbo.begin();
+        ofClear(0,0,0,0); 
+        for(auto fbo : fbos)
+        {
+			if (fbo != nullptr)
+			{
+				fbo->draw(0, 0);
+				ofEnableBlendMode(blendMode);
+			}
         }
+        ofDisableBlendMode();
+        compositionFbo.end();
     }
     
     void addModuleParameters()
@@ -105,8 +103,31 @@ public:
     
     void setFbo(ofFbo * fboPtr)
     {
-        fbos.push_back(fboPtr);
-        drawOutput = fbos.size() > 0;
+		if (fboPtr == nullptr)
+		{
+			vector<ofFbo*> fbosTemp;
+
+			for (int i = 0; i < inputs.size(); i++)
+			{
+				if (inputs[i]->getFbo() != nullptr)
+				{
+					fbosTemp.push_back(inputs[i]->getFbo());
+				}
+			}
+
+			fbos.clear();
+
+			for ( int i = 0; i < fbosTemp.size(); i++)
+			{
+				fbos.push_back(fbosTemp[i]);
+			}
+			
+			fbosTemp.clear();
+		}
+		else 
+		{
+			fbos.push_back(fboPtr);
+		}
     }
     
     void onBlendModeChanges(ofxDatGuiDropdownEvent e )

@@ -36,7 +36,6 @@ class WireConnection{
 private:
     ofPoint wireConnectionPos;
     string name;
-    //string connectionType;
     ConnectionType connectionType;
     double * scale;
     ofFbo * fboPtr;
@@ -58,6 +57,7 @@ public:
     void setScale(double *);
     void setWireConnectionType(ConnectionType);
     void setWireConnectionPos(ofPoint);
+	void setName(string);
     
     void checkConnectionOnDrag(ConnectionType);
     WireConnection * testWireConnection(float, float);

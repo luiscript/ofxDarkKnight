@@ -84,8 +84,6 @@ float WireConnection::getDist(WireConnection * wire)
 }
 
 
-
-
 void WireConnection::setScale(double * sc)
 {
     scale = sc;
@@ -96,9 +94,9 @@ double * WireConnection::getScale()
     return scale;
 }
 
-void WireConnection::setFbo(ofFbo * fboPtr)
+void WireConnection::setFbo(ofFbo * fbo)
 {
-    //fbo = fboPtr;
+    fboPtr = fbo;
 }
 
 void WireConnection::setWireConnectionType(ConnectionType type)
@@ -108,7 +106,12 @@ void WireConnection::setWireConnectionType(ConnectionType type)
 
 ofFbo * WireConnection::getFbo()
 {
-    return nullptr;
+    return fboPtr;
+}
+
+void WireConnection::setName(string n)
+{
+	name = n;
 }
 
 void WireConnection::checkConnectionOnDrag(ConnectionType type)
