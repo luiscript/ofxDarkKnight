@@ -209,7 +209,7 @@ void Constellation::draw()
         }
     }
     
-    ofDisableDepthTest();
+    //ofDisableDepthTest();
 
     ofPopMatrix();
     //cam.end();
