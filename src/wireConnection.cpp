@@ -114,6 +114,16 @@ void WireConnection::setName(string n)
 	name = n;
 }
 
+ofLight* WireConnection::getLight()
+{
+	return light;
+}
+
+void WireConnection::setLight(ofLight* l)
+{
+	light = l;
+}
+
 void WireConnection::checkConnectionOnDrag(ConnectionType type)
 {
     if(connectionType == type)
@@ -124,6 +134,7 @@ void WireConnection::checkConnectionOnDrag(ConnectionType type)
 
 ofColor WireConnection::getWireConnectionColor()
 {
-    if(connectionType == ConnectionType::DK_FBO) return ofColor(180, 180, 0);
-    if(connectionType == ConnectionType::DK_SLIDER) return ofColor(255, 255, 255);
+	if (connectionType == ConnectionType::DK_FBO) return ofColor(180, 180, 0);
+	if (connectionType == ConnectionType::DK_SLIDER) return ofColor(255, 255, 255);
+	if (connectionType == ConnectionType::DK_LIGHT) return ofColor(0, 180, 180);
 }

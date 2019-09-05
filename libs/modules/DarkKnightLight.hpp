@@ -49,22 +49,11 @@ private:
     int rotationDegX;
     int rotationDegY;
     int rotationDegZ;
-    
-    ofFbo* fbo;
-    ofFbo* newFbo;
     ofLight light;
     
 public:
     void setup()
     {
-        fbo = nullptr;
-        
-        newFbo = new ofFbo();
-        newFbo->allocate(getModuleWidth(), getModuleHeight(), GL_RGBA, 4);
-        newFbo->begin();
-        ofClear(0, 0, 0, 0);
-        newFbo->end();
-        
         ambientColorRed = 255;
         ambientColorGreen = 0;
         ambientColorBlue = 0;
@@ -88,13 +77,8 @@ public:
         rotationDegX = 0;
         rotationDegY = 0;
         rotationDegZ = 0;
-        
-        //light.setSpotlightCutOff( 50 );
-        
-        // rate of falloff, illumitation decreases as the angle from the cone axis increases //
-        // range 0 - 128, zero is even illumination, 128 is max falloff //
-        //light.setSpotConcentration( 45 );
-        
+       
+		light.setup();
         light.setPosition(positionX, positionY, positionZ);
         light.setDiffuseColor(ofColor(
                                       diffuseColorRed,
@@ -104,44 +88,26 @@ public:
                                       ambientColorRed,
                                       ambientColorGreen,
                                       ambientColorBlue));
-        //light.setPointLight();
-        // light.setPointLight();
         
-        addInputConnection(ConnectionType::DK_FBO);
-        addOutputConnection(ConnectionType::DK_FBO);
+        addOutputConnection(ConnectionType::DK_LIGHT);
     }
     
     void update()
     {
-        
-        
+		light.setPosition(positionX, positionY, positionZ);
+		light.setDiffuseColor(ofColor(
+			diffuseColorRed,
+			diffuseColorGreen,
+			diffuseColorBlue));
+		light.setAmbientColor(ofColor(
+			ambientColorRed,
+			ambientColorGreen,
+			ambientColorBlue));  
     }
     
     void draw()
     {
-        newFbo->begin();
-        ofClear(0,0,0,0);
-        ofPushStyle();
-        ofEnableLighting();
-        light.enable();
-        
-        ofEnableDepthTest();
        
-        if(fbo != nullptr)
-        {
-            fbo->draw(0,0);
-        }
-        
-        ofDisableDepthTest();
-        light.disable();
-        ofDisableLighting();
-        ofPopStyle();
-        
-        newFbo->end();
-        
-        
-       
-        //ofEnableArbTex();
     }
     
     void addModuleParameters()
@@ -150,25 +116,34 @@ public:
         gui->addSlider("position Y", -getModuleHeight(), getModuleHeight(), getModuleWidth()/2)->bind(positionY);
         gui->addSlider("position Z", 0, getModuleWidth(), getModuleWidth()/2)->bind(positionZ);
         
-        gui->addSlider("ambient color r", 0, 255, 0)->bind(ambientColorRed);
-        gui->addSlider("ambient color g", 0, 255, 0)->bind(ambientColorGreen);
-        gui->addSlider("ambient color b", 0, 255, 0)->bind(ambientColorBlue);
+        gui->addSlider("ambient red", 0, 255, 0)->bind(ambientColorRed);
+        gui->addSlider("ambient green", 0, 255, 0)->bind(ambientColorGreen);
+        gui->addSlider("ambient blue", 0, 255, 0)->bind(ambientColorBlue);
         
-        gui->addSlider("diffuse color r", 0, 255, 0)->bind(diffuseColorRed);
-        gui->addSlider("diffuse color g", 0, 255, 0)->bind(diffuseColorGreen);
-        gui->addSlider("diffuse color b", 0, 255, 0)->bind(diffuseColorBlue);
-        
-        //  gui->add
-        //gui->addButton("update light")->
+        gui->addSlider("diffuse red", 0, 255, 0)->bind(diffuseColorRed);
+        gui->addSlider("diffuse green", 0, 255, 0)->bind(diffuseColorGreen);
+        gui->addSlider("diffuse blue", 0, 255, 0)->bind(diffuseColorBlue);
+   
+		ofxDatGuiButton* updateLightButton = gui->addButton("UPDATE LIGHT");
+		updateLightButton->setLabelAlignment(ofxDatGuiAlignment::CENTER);
+		updateLightButton->onButtonEvent(this, &DarkKnightLight::updateLight);
     }
-    
-    void setFbo(ofFbo* fboptr)
-    {
-        fbo = fboptr;
-    }
-    
-    ofFbo* getFbo()
-    {
-        return  newFbo;
-    }
+
+	void updateLight(ofxDatGuiButtonEvent& e)
+	{
+		light.setPosition(positionX, positionY, positionZ);
+		light.setDiffuseColor(ofColor(
+			diffuseColorRed,
+			diffuseColorGreen,
+			diffuseColorBlue));
+		light.setAmbientColor(ofColor(
+			ambientColorRed,
+			ambientColorGreen,
+			ambientColorBlue));
+	}
+
+	ofLight* getLight()
+	{
+		return &light;
+	}
 };

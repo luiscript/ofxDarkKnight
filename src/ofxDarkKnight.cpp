@@ -237,7 +237,12 @@ void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
             {
 				output->setFbo(module.second->getFbo());
                 currentWire->fbo = module.second->getFbo();
-            }
+			}
+			else if (currentWireConnectionType == ConnectionType::DK_LIGHT)
+			{
+				output->setLight(module.second->getLight());
+				currentWire->light = module.second->getLight();
+			}
             pointer.x = x;
             pointer.y = y;
             drawing = true;
@@ -265,7 +270,13 @@ void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
 						input->setFbo(nullptr);
                         it->inputModule->setFbo(nullptr);
                         currentWire->fbo = it->outputModule->getFbo();
-                    }
+					}
+					else if (currentWire->getConnectionType() == ConnectionType::DK_LIGHT)
+					{
+						input->setLight(nullptr);
+						it->inputModule->setLight(nullptr);
+						currentWire->light = it->output->getLight();
+					}
                     
                     pointer.x = x;
                     pointer.y = y;
@@ -302,7 +313,12 @@ void ofxDarkKnight::checkInputConnection(float x, float y, string moduleName)
             {
 				module.second->getInputConnection(x, y)->setFbo(currentWire->fbo);
                 module.second->setFbo(currentWire->fbo);
-            }
+			}
+			else if (currentWire->getConnectionType() == ConnectionType::DK_LIGHT)
+			{
+				module.second->getInputConnection(x, y)->setLight(currentWire->light);
+				module.second->setLight(currentWire->light);
+			}
             
             
             wires.push_back(*currentWire);

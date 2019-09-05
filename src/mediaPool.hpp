@@ -60,6 +60,8 @@ private:
     ofFbo mainFbo;
     ofFbo mediaPoolFbo;
     ofFbo *inputFbo;
+
+	ofLight* light;
     
     int alpha;
     
@@ -109,6 +111,7 @@ public:
     int getCurrentIndex();
     
     void setFbo(ofFbo *);
+	void setLight(ofLight*);
     
     void setCollectionName(string);
     void setModulesReference(unordered_map<string, Module*> *);

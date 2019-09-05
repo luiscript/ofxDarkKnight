@@ -43,6 +43,7 @@ void MediaPool::init()
     translation = nullptr;
     nextIndex = index = 0;
     modules = nullptr;
+	light = nullptr;
     
     mainFbo.allocate(getModuleWidth(), getModuleHeight(), GL_RGBA, 4);
     mainFbo.begin();
@@ -70,6 +71,8 @@ void MediaPool::init()
 
     addInputConnection(ConnectionType::DK_FBO);
     addOutputConnection(ConnectionType::DK_FBO);
+	addInputConnection(ConnectionType::DK_LIGHT);
+
 }
 
 
@@ -86,6 +89,15 @@ void MediaPool::update()
     currentCanvas->gui->setPosition(gui->getPosition().x, gui->getPosition().y + gui->getWidth() * 0.5625 + yOffsetGui);
     currentCanvas->gui->setTranslation(translation->x, translation->y);
 
+	
+	if (light != nullptr)
+	{
+		ofEnableDepthTest();
+		ofEnableSmoothing();
+		ofEnableLighting();
+		light->enable();
+	}
+	
 	mainFbo.begin();
 
 	ofPushStyle();
@@ -100,6 +112,15 @@ void MediaPool::update()
 	}
 
 	mainFbo.end();
+
+	if (light != nullptr)
+	{
+		light->disable();
+		ofDisableLighting();
+		ofDisableSmoothing();
+		ofDisableDepthTest();
+	}
+	
 }
 
 void MediaPool::draw()
@@ -311,6 +332,11 @@ void MediaPool::setFbo(ofFbo * fboptr)
 {
     inputFbo = fboptr;
     hasInput = fboptr != nullptr;
+}
+
+void MediaPool::setLight(ofLight* l)
+{
+	light = l;
 }
 
 void MediaPool::mousePressed(ofMouseEventArgs & mouse)

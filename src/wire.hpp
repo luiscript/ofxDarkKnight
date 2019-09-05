@@ -55,6 +55,7 @@ public:
     
     void * data;
     ofFbo * fbo;
+	ofLight* light;
     double * scale;
     ofxDatGuiSlider * slider;
     bool active;

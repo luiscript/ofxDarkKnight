@@ -29,7 +29,8 @@ enum class ConnectionType {
     DK_TEXTURE = 0,
     DK_FBO = 1,
     DK_SLIDER = 2,
-    DK_INT = 3
+    DK_INT = 3,
+	DK_LIGHT = 4
 };
 
 class WireConnection{
@@ -39,6 +40,7 @@ private:
     ConnectionType connectionType;
     double * scale;
     ofFbo * fboPtr;
+	ofLight* light;
 public:
     void setup(ofPoint, string);
     void setup(ofPoint, ConnectionType);
@@ -64,6 +66,9 @@ public:
     
     ofFbo * getFbo();
     void setFbo(ofFbo *);
+
+	ofLight* getLight();
+	void setLight(ofLight*);
     
 };
 

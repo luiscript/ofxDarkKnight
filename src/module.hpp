@@ -72,11 +72,13 @@ public:
     virtual void unMount() { };
     virtual void setFbo(ofFbo *){ };
     virtual void setFbo(ofFbo *, int) { };
+	virtual void setLight(ofLight*) { };
     virtual void onMouseMove(int, int) { };
     virtual void triggerMidiEvent(){ };
     virtual void triggerMidiMessage(ofxMidiMessage *) { };
     virtual void reset() { };
     virtual ofFbo * getFbo(){ return nullptr; };
+	virtual ofLight* getLight() { return nullptr; };
     virtual Module * getChildModule() { return nullptr; };
     
     void init();
