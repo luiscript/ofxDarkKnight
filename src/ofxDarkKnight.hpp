@@ -54,6 +54,7 @@
 #include "inverter.hpp"
 #include "DarkKnightColorShader.hpp"
 #include "DarkKnightLight.hpp"
+#include "DarkKnightConfig.hpp"
 
 
 class ofxDarkKnight : public ofxMidiListener{

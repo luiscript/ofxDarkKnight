@@ -73,6 +73,13 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
 		darkKnightMidiOut.openPort(darkKnightMidiOut.getNumOutPorts()-1);
 	}
 	#endif
+    
+    DarkKnightConfig* config = new DarkKnightConfig;
+    config->setupModule("CONFIG", resolution);
+    config->gui->setPosition(100, 100);
+    config->setModuleMidiMapMode(midiMapMode);
+    ofAddListener(config->onResolutionChangeEvent, this, &ofxDarkKnight::onResolutionChange);
+    modules.insert({"CONFIG", config});
 }
 
 
@@ -352,7 +359,7 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                         MediaPool * mp = static_cast<MediaPool*>(module.second);
                         mp->addItem(hapPlayer, "thumbnails/terrain.jpg", "video player");
                         mediaPoolFounded = true;
-                        hapPlayer->gui->setWidth(450);
+                        hapPlayer->gui->setWidth(ofGetWidth()/5);
                         hapPlayer->loadFile(file.getAbsolutePath());
                         modules.insert({"HAP: " + file.getFileName(), hapPlayer});
                         mp->drawMediaPool();
@@ -398,10 +405,10 @@ Module * ofxDarkKnight::addModule(string moduleName)
     it = modules.find(moduleName);
     if (it == modules.end())
     {
-        
         it = modulesPool.find(moduleName);
         Module * newModule = createModule(it->first);
         if(newModule == nullptr) newModule = it->second;
+        
         
         newModule->setupModule(it->first, resolution);
         newModule->gui->setPosition(ofGetMouseX() - 100, ofGetMouseY() - 15);
@@ -418,6 +425,11 @@ Module * ofxDarkKnight::addModule(string moduleName)
             DarkKnightMidiControlIn * controller = static_cast<DarkKnightMidiControlIn*>(newModule);
             ofAddListener(controller->sendMidi, this, &ofxDarkKnight::newMidiMessage);
             modules.insert({it->first + ofToString(ofGetElapsedTimef()), controller});
+        } else if(moduleName == "CONFIG")
+        {
+            DarkKnightConfig* config = static_cast<DarkKnightConfig*>(newModule);
+            ofAddListener(config->onResolutionChangeEvent, this, &ofxDarkKnight::onResolutionChange);
+            modules.insert({"CONFIG", config});
         }
         else
         {
@@ -531,9 +543,11 @@ void ofxDarkKnight::deleteComponentWires(ofxDatGuiComponent * component)
 
 void ofxDarkKnight::onResolutionChange(ofVec2f & newResolution)
 {
+    resolution = newResolution;
     for(pair<string, Module*> module : modules )
     {
         module.second->setResolution(newResolution.x, newResolution.y);
+        module.second->setup();
     }
 }
 

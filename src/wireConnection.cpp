@@ -45,9 +45,9 @@ void WireConnection::draw()
 {
     ofPushStyle();
     ofSetColor(getWireConnectionColor());
-    ofDrawCircle(wireConnectionPos.x, wireConnectionPos.y, 10);
+    ofDrawCircle(wireConnectionPos.x, wireConnectionPos.y, 8);
     ofSetColor(0);
-    ofDrawCircle(wireConnectionPos.x, wireConnectionPos.y, 6);
+    ofDrawCircle(wireConnectionPos.x, wireConnectionPos.y, 5);
     ofPopStyle();
 }
 

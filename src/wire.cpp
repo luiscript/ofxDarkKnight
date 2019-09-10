@@ -30,7 +30,7 @@ Wire::Wire()
     active = true;
     
     wiresTension = 0.95;
-    connectionRadius = 5;
+    connectionRadius = 4;
 }
 
 void Wire::update()

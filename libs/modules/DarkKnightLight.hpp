@@ -124,23 +124,7 @@ public:
         gui->addSlider("diffuse green", 0, 255, 0)->bind(diffuseColorGreen);
         gui->addSlider("diffuse blue", 0, 255, 0)->bind(diffuseColorBlue);
    
-		ofxDatGuiButton* updateLightButton = gui->addButton("UPDATE LIGHT");
-		updateLightButton->setLabelAlignment(ofxDatGuiAlignment::CENTER);
-		updateLightButton->onButtonEvent(this, &DarkKnightLight::updateLight);
-    }
-
-	void updateLight(ofxDatGuiButtonEvent& e)
-	{
-		light.setPosition(positionX, positionY, positionZ);
-		light.setDiffuseColor(ofColor(
-			diffuseColorRed,
-			diffuseColorGreen,
-			diffuseColorBlue));
-		light.setAmbientColor(ofColor(
-			ambientColorRed,
-			ambientColorGreen,
-			ambientColorBlue));
-	}
+    }   
 
 	ofLight* getLight()
 	{
