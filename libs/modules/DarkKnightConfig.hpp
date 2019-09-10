@@ -26,15 +26,19 @@
 class DarkKnightConfig : public Module
 {
 private:
-    vector<string> options;
     vector<ofVec2f> resolutions;
     float wiresTension;
+    int indexResolution;
+    int indexSplit;
     
 public:
     ofEvent<ofVec2f> onResolutionChangeEvent;
     
     void setup()
     {
+        indexResolution = 2;
+        indexSplit = 0;
+        
         resolutions = {
             {3840, 2160},
             {1920, 1200},
@@ -61,7 +65,7 @@ public:
     
     void addModuleParameters()
     {
-        options =
+        vector<string> options =
         {
             "UHD-1 (3840 x 2160)",
             "WUXGA (1920 x 1200)",
@@ -74,16 +78,37 @@ public:
         };
         
         gui->addFRM();
-        //gui->addSlider("tension", 0.0, 1.0)->bind(wiresTension);
-        //gui->addDropdown("Select Theme", options)->onDropdownEvent(this, &Config::onResolutionChange);
+
         auto resolutionDropDown = gui->addDropdown("Select Resolution", options);
         resolutionDropDown->onDropdownEvent(this, &DarkKnightConfig::onResolutionChange);
-        resolutionDropDown->setIndex(2);
+        resolutionDropDown->select(2);
+        
+        vector<string> splitOptions = {
+            "SINGLE",
+            "DOUBLE",
+            "TRIPLE"
+        };
+        
+        auto numScreens = gui->addDropdown("Split screen", splitOptions);
+        numScreens->onDropdownEvent(this, &DarkKnightConfig::onSplitChange);
+        numScreens->select(0);
     }
     
     void onResolutionChange(ofxDatGuiDropdownEvent e)
     {
-        ofNotifyEvent(onResolutionChangeEvent, resolutions[e.child], this);
+        indexResolution = e.child;
+        ofVec2f resolution = resolutions[indexResolution];
+        resolution.x = resolution.x * (indexSplit + 1);
+        
+        ofNotifyEvent(onResolutionChangeEvent, resolution, this);
+    }
+    
+    void onSplitChange(ofxDatGuiDropdownEvent e)
+    {
+        indexSplit = e.child;
+        ofVec2f resolution = resolutions[indexResolution];
+        resolution.x = resolution.x * (indexSplit + 1);
+        ofNotifyEvent(onResolutionChangeEvent, resolution, this);
     }
     
     float * getWiresTension()
