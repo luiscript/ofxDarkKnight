@@ -66,6 +66,7 @@ private:
     int alpha;
     
     ofVec2f * translation;
+	float* zoom;
     
     ofEvent<string> deleteModule;
     ofEvent<Module*> addModule;
@@ -115,7 +116,7 @@ public:
     
     void setCollectionName(string);
     void setModulesReference(unordered_map<string, Module*> *);
-    void setTranslationReferences(ofVec2f *);
+    void setTranslationReferences(ofVec2f *, float*);
     
     void mousePressed(ofMouseEventArgs & mouse);
     

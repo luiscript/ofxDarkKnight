@@ -38,6 +38,8 @@ void Module::setupCommon(string name, ofVec2f resolution)
 {
     moduleName = name;
     moduleIndex = -1;
+
+	zoom = 1.0;
     
     moduleMidiMapMode = false;
     moduleEnabled = true;
@@ -66,11 +68,17 @@ void Module::setupGui()
     gui->setWidth(ofGetWidth()/5);
 }
 
+void Module::updateModule(float tx, float ty, float zm)
+{
+	zoom = zm;
+	updateModule(tx, ty);
+}
+
 void Module::updateModule(float tx, float ty)
 {
     translation.x = tx;
     translation.y = ty;
-    gui->setTranslation(tx, ty);
+    gui->setTranslation(tx, ty, zoom);
     updateModule();
 }
 

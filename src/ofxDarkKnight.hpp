@@ -84,8 +84,11 @@ private:
     list<string> poolNames;
     
     ofxXmlSettings xml;
-    
     ofxMidiOut darkKnightMidiOut;
+
+	int startX;
+	int startY;
+	float zoom;
 public:
     
     ofxDarkKnight();

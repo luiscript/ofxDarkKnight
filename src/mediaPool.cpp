@@ -85,10 +85,8 @@ void MediaPool::update()
 {
     if(nextIndex != index) triggerPoolMedia(nextIndex);
     currentCanvas->setModuleMidiMapMode(getModuleMidiMapMode());
-
     currentCanvas->gui->setPosition(gui->getPosition().x, gui->getPosition().y + gui->getWidth() * 0.5625 + yOffsetGui);
-    currentCanvas->gui->setTranslation(translation->x, translation->y);
-
+    currentCanvas->gui->setTranslation(translation->x, translation->y, *zoom);
 	
 	if (light != nullptr)
 	{
@@ -341,10 +339,7 @@ void MediaPool::setLight(ofLight* l)
 
 void MediaPool::mousePressed(ofMouseEventArgs & mouse)
 {
-    translation != nullptr
-        ?   updatePoolIndex(mouse.x - translation->x, mouse.y - translation->y)
-        :   updatePoolIndex(mouse.x, mouse.y)
-    ;
+	updatePoolIndex((mouse.x - translation->x) / (*zoom), (mouse.y - translation->y) / (*zoom));
 }
 
 void MediaPool::unMount()
@@ -362,9 +357,10 @@ void MediaPool::setModulesReference(unordered_map<string, Module *> * m)
     modules = m;
 }
 
-void MediaPool::setTranslationReferences(ofVec2f * t)
+void MediaPool::setTranslationReferences(ofVec2f* t, float* z)
 {
     translation = t;
+	zoom = z;
 }
 
 void MediaPool::savePreset()

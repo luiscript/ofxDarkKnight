@@ -38,7 +38,7 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
     loadWires = shiftKey = altKey = cmdKey = midiMapMode = drawing = showExplorer = false;
     translation = { 0, 0 };
     resolution = { 1920, 1080 };
-    
+	zoom = 1.0;
     modulesPool = *pool;
     const int s = modulesPool.size();
     
@@ -100,11 +100,10 @@ void ofxDarkKnight::update()
     for(pair<string, Module*> module : modules )
         if(module.second->getModuleEnabled())
         {
-            module.second->updateModule(translation.x, translation.y);
+            module.second->updateModule(translation.x, translation.y, zoom);
             for(auto msg : module.second->outMidiMessages)
             {
                 sendMidiMessage(*msg);
-                
             }
             module.second->outMidiMessages.clear();
         }
@@ -118,6 +117,7 @@ void ofxDarkKnight::draw()
 {
     ofPushMatrix();
     ofTranslate(translation.x, translation.y);
+	ofScale(zoom);
     for(auto module : modules )
         if(!module.second->moduleIsChild && module.second->getModuleEnabled())
             module.second->drawModule();
@@ -167,8 +167,18 @@ void ofxDarkKnight::onComponentListChange(ofxDatGuiScrollViewEvent e)
 
 void ofxDarkKnight::handleMousePressed(ofMouseEventArgs &mouse)
 {
-    int x = (int) mouse.x - translation.x;
-    int y = (int) mouse.y - translation.y;
+    int x = (int) (mouse.x - translation.x) / zoom;
+    int y = (int) (mouse.y - translation.y) / zoom;
+
+	if (shiftKey)
+	{
+		#ifdef _WIN32
+		SetCursor(LoadCursor(NULL, IDC_SIZEALL));
+		#endif
+		startX = mouse.x;
+		startY = mouse.y;
+	}
+	
     
     for(pair<string, Module*> module : modules )
     {
@@ -199,17 +209,27 @@ void ofxDarkKnight::handleMousePressed(ofMouseEventArgs &mouse)
 
 void ofxDarkKnight::handleMouseDragged(ofMouseEventArgs & mouse)
 {
+	if (shiftKey)
+	{
+		SetCursor(LoadCursor(NULL, IDC_SIZEALL));
+		translation.x += mouse.x - startX;
+		translation.y += mouse.y - startY;
+
+		startX = mouse.x;
+		startY = mouse.y;
+	}
+
     if(drawing)
     {
-        pointer.x = mouse.x - translation.x;
-        pointer.y = mouse.y - translation.y;
+        pointer.x = (mouse.x - translation.x) / zoom;
+        pointer.y = (mouse.y - translation.y) / zoom;
     }
 }
 
 void ofxDarkKnight::handleMouseReleased(ofMouseEventArgs & mouse)
 {
-    int x = (int) mouse.x - translation.x;
-    int y = (int) mouse.y - translation.y;
+    int x = (int) (mouse.x - translation.x) / zoom;
+    int y = (int) (mouse.y - translation.y) / zoom;
 
     if( midiMapMode ) checkInputConnection(x, y, "*");
 }
@@ -217,8 +237,20 @@ void ofxDarkKnight::handleMouseReleased(ofMouseEventArgs & mouse)
 void ofxDarkKnight::handleMouseScrolled(ofMouseEventArgs & mouse)
 {
     //translation is not fully supported with ofxDarkKnightMapping, be careful.
-    translation.x += 2*mouse.scrollX;
-    translation.y += 2*mouse.scrollY;
+	
+	if (shiftKey)
+	{
+		if (zoom >= 0.15)
+		{
+			zoom += mouse.scrollY * 0.05;
+		}
+		else
+		{
+			zoom = 0.15;
+		}
+		
+	}
+	
 }
 
 void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
@@ -235,7 +267,7 @@ void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
         if(output != nullptr && module.second->getModuleEnabled() &&
            (module.second->getName() == moduleName || moduleName == "*" ))
         {
-            currentWireConnectionType = output->getConnectionType();
+			currentWireConnectionType = output->getConnectionType();
             currentWire = new Wire;
             currentWire->setOutputConnection(output);
             currentWire->setConnectionType(currentWireConnectionType);
@@ -376,7 +408,7 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                     newPool->init();
                     newPool->gui->setPosition(ofGetMouseX() + 15, ofGetMouseY() + 15);
                     newPool->setModulesReference(&modules);
-                    newPool->setTranslationReferences(&translation);
+                    newPool->setTranslationReferences(&translation, &zoom);
                     newPool->setModuleMidiMapMode(midiMapMode);
                     modules.insert({"SKETCH POOL 1", newPool});
                     
@@ -440,7 +472,7 @@ Module * ofxDarkKnight::addModule(string moduleName)
         {
             MediaPool * mp = static_cast<MediaPool*>(it->second);
             mp->setModulesReference(&modules);
-            mp->setTranslationReferences(&translation);
+            mp->setTranslationReferences(&translation, &zoom);
             int mIndex = 0;
             for(CollectionItem item : mp->collection)
             {
@@ -603,6 +635,13 @@ void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
     {
         savePreset();
     }
+
+	//cmd + r reset translation and zoom
+	if (cmdKey && keyboard.keycode == 82)
+	{
+		translation = { 0, 0 };
+		zoom = 1.0;
+	}
 }
 
 void ofxDarkKnight::handleKeyReleased(ofKeyEventArgs &keyboard)

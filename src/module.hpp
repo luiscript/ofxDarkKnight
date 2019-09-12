@@ -49,6 +49,7 @@ private:
     
     float   moduleGuiOpacity;
     ofPoint translation;
+	float	zoom;
     
     ofxDatGuiComponent * selectedComponent;
     unordered_map<string, ofxDatGuiComponent *> midiMappings;
@@ -88,6 +89,7 @@ public:
     void setupGui();
     void updateModule();
     void updateModule(float, float);
+	void updateModule(float, float, float);
     void drawModule();
     
     void enable();
