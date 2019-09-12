@@ -22,7 +22,6 @@
 
 #include "ofxDarkKnight.hpp"
 
-
 ofxDarkKnight::ofxDarkKnight()
 {
     
@@ -40,7 +39,7 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
     resolution = { 1920, 1080 };
 	zoom = 1.0;
     modulesPool = *pool;
-    const int s = modulesPool.size();
+	moduleId = 1;
     
     for(pair<string, Module*> module : modulesPool )
         poolNames.push_back(module.first);
@@ -79,13 +78,14 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
     config->gui->setPosition(100, 100);
     config->setModuleMidiMapMode(midiMapMode);
     ofAddListener(config->onResolutionChangeEvent, this, &ofxDarkKnight::onResolutionChange);
-    modules.insert({"CONFIG", config});
+	config->setModuleId(getNextModuleId());
+	modules.insert({"CONFIG", config});
+	
 }
 
 
 void ofxDarkKnight::update()
 {
-    
     if(loadWires)
     {
         loadProjectWires();
@@ -107,7 +107,6 @@ void ofxDarkKnight::update()
             }
             module.second->outMidiMessages.clear();
         }
-    
     
     if (showExplorer) componentsList->update();
 }
@@ -179,7 +178,6 @@ void ofxDarkKnight::handleMousePressed(ofMouseEventArgs &mouse)
 		startY = mouse.y;
 	}
 	
-    
     for(pair<string, Module*> module : modules )
     {
         //send mouse arguments to modules with childs (like Media Pool)
@@ -204,14 +202,15 @@ void ofxDarkKnight::handleMousePressed(ofMouseEventArgs &mouse)
     {
         toggleMappingMode();
     }
-    
 }
 
 void ofxDarkKnight::handleMouseDragged(ofMouseEventArgs & mouse)
 {
 	if (shiftKey)
 	{
+		#ifdef _WIN32
 		SetCursor(LoadCursor(NULL, IDC_SIZEALL));
+		#endif
 		translation.x += mouse.x - startX;
 		translation.y += mouse.y - startY;
 
@@ -237,7 +236,6 @@ void ofxDarkKnight::handleMouseReleased(ofMouseEventArgs & mouse)
 void ofxDarkKnight::handleMouseScrolled(ofMouseEventArgs & mouse)
 {
     //translation is not fully supported with ofxDarkKnightMapping, be careful.
-	
 	if (shiftKey)
 	{
 		if (zoom >= 0.15)
@@ -248,9 +246,7 @@ void ofxDarkKnight::handleMouseScrolled(ofMouseEventArgs & mouse)
 		{
 			zoom = 0.15;
 		}
-		
 	}
-	
 }
 
 void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
@@ -428,7 +424,8 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
 void ofxDarkKnight::addModule(string moduleName, Module * module)
 {
     module->setModuleMidiMapMode(midiMapMode);
-    modules.insert({moduleName, module});
+	module->setModuleId(getNextModuleId());
+    modules.insert({moduleName + ofToString(ofGetElapsedTimef()), module});
 }
 
 Module * ofxDarkKnight::addModule(string moduleName)
@@ -441,33 +438,34 @@ Module * ofxDarkKnight::addModule(string moduleName)
         Module * newModule = createModule(it->first);
         if(newModule == nullptr) newModule = it->second;
         
-        
         newModule->setupModule(it->first, resolution);
-        newModule->gui->setPosition(ofGetMouseX() - 100, ofGetMouseY() - 15);
+        newModule->gui->setPosition((ofGetMouseX() - translation.x)/zoom - 100/zoom, (ofGetMouseY() - translation.y)/zoom - 15/zoom);
         newModule->setModuleMidiMapMode(midiMapMode);
-        
+		newModule->setModuleId(getNextModuleId());
+		string uniqueModuleName = it->first + ofToString(newModule->getModuleId());
+
+		cout << "unique module name: " << uniqueModuleName << endl;
         if(moduleName == "SCREEN OUTPUT")
         {
             ScreenOutput * so = static_cast<ScreenOutput*>(newModule);
             so->mainWindow = mainWindow;
-            modules.insert({it->first + ofToString(ofGetElapsedTimef()), so});
+            modules.insert({uniqueModuleName, so});
         }
         else if(moduleName == "MIDI CONTROL IN")
         {
             DarkKnightMidiControlIn * controller = static_cast<DarkKnightMidiControlIn*>(newModule);
             ofAddListener(controller->sendMidi, this, &ofxDarkKnight::newMidiMessage);
-            modules.insert({it->first + ofToString(ofGetElapsedTimef()), controller});
+            modules.insert({uniqueModuleName, controller});
         } else if(moduleName == "CONFIG")
         {
             DarkKnightConfig* config = static_cast<DarkKnightConfig*>(newModule);
             ofAddListener(config->onResolutionChangeEvent, this, &ofxDarkKnight::onResolutionChange);
-            modules.insert({"CONFIG", config});
+            modules.insert({uniqueModuleName, config});
         }
         else
         {
-            modules.insert({it->first + ofToString(ofGetElapsedTimef()), newModule});
+            modules.insert({uniqueModuleName, newModule});
         }
-        
         if(it->second->getModuleHasChild())
         {
             MediaPool * mp = static_cast<MediaPool*>(it->second);
@@ -480,15 +478,13 @@ Module * ofxDarkKnight::addModule(string moduleName)
                 if(mIndex > 0) m->disable();
                 string childName = it->second->getName() + "/" + m->getName();
                 m->setModuleMidiMapMode(midiMapMode);
-                modules.insert({childName, m});
+				m->setModuleId(getNextModuleId());
+                modules.insert({childName + ofToString(m->getModuleId()), m});
                 mIndex ++;
             }
-            
         }
-        
         return newModule;
     }
-    
     return nullptr;
 }
 
@@ -518,19 +514,17 @@ void ofxDarkKnight::deleteFocusedModule()
                     //iterate all component's children
                     for(auto childComponent : component->children)
                     {
-                        deleteComponentWires(childComponent);
+                        deleteComponentWires(childComponent, module.second->getModuleId());
                     }
                 }
                 //component doesn't have children
                 else {
-                    deleteComponentWires(component);
+                    deleteComponentWires(component, module.second->getModuleId());
                 }
             }
-            
             vector<Wire>::iterator itw = wires.begin();
             while(itw != wires.end())
             {
-//                if(module.second->fboOutput == itw->getOutput() || module.second->fboInput == itw->getInput())
                 if(module.second == itw->outputModule || module.second == itw->inputModule)
                 {
                     wires.erase(itw);
@@ -538,38 +532,34 @@ void ofxDarkKnight::deleteFocusedModule()
                 } else {
                     itw++;
                 }
-                
             }
-            
             // now that we deleted all the module's wires procede to unmount and delete the module it self
             module.second->inputs.clear();
             module.second->outputs.clear();
             module.second->gui->deleteItems();
             modules.erase(module.first);
             module.second->unMount();
-            
             break;
         }
-        
-        
     }
 }
 
-void ofxDarkKnight::deleteComponentWires(ofxDatGuiComponent * component)
+void ofxDarkKnight::deleteComponentWires(ofxDatGuiComponent * component, int deletedModuleId)
 {
     //compare each component with all the stored wires
     vector<Wire>::iterator itw = wires.begin();
     while(itw != wires.end())
     {
-        if(component->getName() == itw->getInput()->getName() ||
-           component->getName() == itw->getOutput()->getName()  )
+        if((component->getName() == itw->getInput()->getName() ||
+           component->getName() == itw->getOutput()->getName()) &&
+			(itw->outputModule->getModuleId() == deletedModuleId || 
+			 itw->inputModule->getModuleId() == deletedModuleId))
         {
             wires.erase(itw);
             itw = wires.begin();
         } else {
             itw++;
         }
-        
     }
 }
 
@@ -618,7 +608,6 @@ void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
     }
     
     //cmd + o
-
     if(cmdKey && keyboard.keycode == 79)
     {
         ofFileDialogResult loadFileResult = ofSystemLoadDialog("Open batmapp project");
@@ -687,7 +676,6 @@ void ofxDarkKnight::newMidiMessage(ofxMidiMessage & msg)
                     mp->gotMidiMapping(mapping);
                 }
     }
-    
 }
 
 void ofxDarkKnight::sendMidiMessage(ofxMidiMessage & msg)
@@ -758,7 +746,6 @@ void ofxDarkKnight::saveProject(string fileName, string path)
                     xml.popTag();
                     xml.popTag();
                 }
-                
                 xml.popTag();
             }
             moduleIndex++;
@@ -776,10 +763,10 @@ void ofxDarkKnight::saveProject(string fileName, string path)
         xml.pushTag("WIRE", wIndex);
         ofPoint po = wire.getOutput()->getWireConnectionPos();
         ofPoint pi = wire.getInput()->getWireConnectionPos();
-        xml.setValue("OINDEX", wire.outputModule->getModuleIndex(), wIndex);
+		xml.setValue("OINDEX", wire.outputModule->getModuleId() , wIndex);
         xml.setValue("XO",  po.x, wIndex);
         xml.setValue("YO",  po.y, wIndex);
-        xml.setValue("IINDEX", wire.inputModule->getModuleIndex(), wIndex);
+        xml.setValue("IINDEX", wire.inputModule->getModuleId(), wIndex);
         xml.setValue("XI",  pi.x, wIndex);
         xml.setValue("YI",  pi.y, wIndex);
         xml.popTag();
@@ -790,7 +777,6 @@ void ofxDarkKnight::saveProject(string fileName, string path)
     
     xml.save(path);
     xml.saveFile(fileName);
-    
 }
 
 void ofxDarkKnight::loadProject(string path, string file)
@@ -801,7 +787,6 @@ void ofxDarkKnight::loadProject(string path, string file)
         xml.pushTag("PROJECT");
         xml.pushTag("MODULES");
         int numModules = xml.getNumTags("MODULE");
-     
         for (int i=0; i<numModules; i++)
         {
             xml.pushTag("MODULE", i);
@@ -835,7 +820,6 @@ void ofxDarkKnight::loadProject(string path, string file)
                                 return ch == '_' ? ' ' : ch;
                             });
                             double scale = xml.getValue("SCALE", 0.0);
-                        
                             for(ofxDatGuiComponent * comp : mediaPool->collection[i].canvas->params->children)
                             {
                                 if(comp->getName() == name)
@@ -851,14 +835,10 @@ void ofxDarkKnight::loadProject(string path, string file)
                     xml.popTag();
                 }
             }
-            
-            
             xml.popTag();
         }
         xml.popTag();
-        
         xml.popTag();
-        
         //wires needs to be loaded after all modules are "updated"
         loadWires = true;
     } else
@@ -872,7 +852,6 @@ void ofxDarkKnight::loadProjectWires()
     xml.pushTag("PROJECT");
     xml.pushTag("WIRES");
     int numWires = xml.getNumTags("WIRE");
-    
     for (int i=0; i<numWires; i++)
     {
         xml.pushTag("WIRE", i);
@@ -922,7 +901,9 @@ Module * ofxDarkKnight::createModule(string name)
     return nullptr;
 }
 
-
-
+int ofxDarkKnight::getNextModuleId()
+{
+	return moduleId++;
+}
 //   ofxDarkKnight
 

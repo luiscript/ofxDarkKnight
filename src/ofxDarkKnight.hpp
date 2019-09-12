@@ -89,11 +89,11 @@ private:
 	int startX;
 	int startY;
 	float zoom;
+	int moduleId;
 public:
     
     ofxDarkKnight();
     ~ofxDarkKnight();
-    
     
     shared_ptr<ofAppBaseWindow> mainWindow;
     
@@ -108,7 +108,7 @@ public:
     void addModule(string, Module *);
     Module * addModule(string);
     void deleteModule(string);
-    void deleteComponentWires(ofxDatGuiComponent *);
+    void deleteComponentWires(ofxDatGuiComponent *, int);
     void deleteFocusedModule();
     
     //mouse event handlers
@@ -137,6 +137,8 @@ public:
     void checkOutputConnection(float, float, string);
     
     void sendMidiMessage(ofxMidiMessage &);
+
+	int getNextModuleId();
     
 };
 

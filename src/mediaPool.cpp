@@ -267,7 +267,7 @@ void MediaPool::addItem(Module * module, string fileName, string name)
     item.canvas->setupModule(name, {getModuleWidth(), getModuleHeight()}, true);
     item.canvas->gui->setVisible(false);
     item.canvas->moduleIsChild = true;
-    item.canvas->setModuleIndex(numItems);
+    //item.canvas->set(numItems);
     collection.push_back(item);
     numItems++;
 }

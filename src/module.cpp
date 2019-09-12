@@ -37,7 +37,7 @@ void Module::setupModule(string name, ofVec2f resolution)
 void Module::setupCommon(string name, ofVec2f resolution)
 {
     moduleName = name;
-    moduleIndex = -1;
+    moduleId = 0;
 
 	zoom = 1.0;
     
@@ -129,9 +129,9 @@ string Module::getName()
     return moduleName;
 }
 
-int Module::getModuleIndex()
+int Module::getModuleId()
 {
-    return moduleIndex;
+    return moduleId;
 }
 float Module::getModuleWidth()
 {
@@ -257,10 +257,10 @@ void Module::setModuleHasChild(bool c)
     moduleHasChild = c;
 }
 
-void Module::setModuleIndex(int index)
+void Module::setModuleId(int index)
 {
     
-    moduleIndex = index;
+    moduleId = index;
 }
 
 void Module::setResolution(int w, int h)

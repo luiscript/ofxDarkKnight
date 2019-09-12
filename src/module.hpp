@@ -33,7 +33,7 @@
 
 class Module{
 private:
-    int     moduleIndex;
+    int     moduleId;
     ofPoint moduleOffset;
     string  moduleName;
     bool    moduleEnabled;
@@ -95,7 +95,7 @@ public:
     void enable();
     void disable();
     
-    int getModuleIndex();
+    int getModuleId();
     float getModuleWidth();
     float getModuleHeight();
     bool getModuleMidiMapMode();
@@ -108,7 +108,7 @@ public:
     void setModuleHeight(float);
     void setModuleEnabled(bool);
     void setModuleHasChild(bool);
-    void setModuleIndex(int);
+    void setModuleId(int);
     
     ofxDatGuiComponent * getOutputComponent(int, int);
     ofxDatGuiComponent * getInputComponent(int, int);
