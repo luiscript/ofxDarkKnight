@@ -72,6 +72,8 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
 		darkKnightMidiOut.openPort(darkKnightMidiOut.getNumOutPorts()-1);
 	}
 	#endif
+
+	fileHandler = DarkKnightFileHandler(&modules, &wires);
     
     DarkKnightConfig* config = new DarkKnightConfig;
     config->setupModule("CONFIG", resolution);
@@ -85,13 +87,7 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
 
 
 void ofxDarkKnight::update()
-{
-    if(loadWires)
-    {
-        loadProjectWires();
-        loadWires = false;
-    }
-    
+{    
     for (auto wire : wires)
         if(wire.inputModule->getModuleEnabled() &&
            wire.outputModule->getModuleEnabled())
@@ -421,11 +417,16 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
     }
 }
 
+void ofxDarkKnight::addModuleTest(string moduleName)
+{
+	cout << "yeah " + moduleName << endl;
+}
+
 void ofxDarkKnight::addModule(string moduleName, Module * module)
 {
     module->setModuleMidiMapMode(midiMapMode);
 	module->setModuleId(getNextModuleId());
-    modules.insert({moduleName + ofToString(ofGetElapsedTimef()), module});
+    modules.insert({moduleName, module});
 }
 
 Module * ofxDarkKnight::addModule(string moduleName)
@@ -442,9 +443,8 @@ Module * ofxDarkKnight::addModule(string moduleName)
         newModule->gui->setPosition((ofGetMouseX() - translation.x)/zoom - 100/zoom, (ofGetMouseY() - translation.y)/zoom - 15/zoom);
         newModule->setModuleMidiMapMode(midiMapMode);
 		newModule->setModuleId(getNextModuleId());
-		string uniqueModuleName = it->first + ofToString(newModule->getModuleId());
+		string uniqueModuleName = it->first;
 
-		cout << "unique module name: " << uniqueModuleName << endl;
         if(moduleName == "SCREEN OUTPUT")
         {
             ScreenOutput * so = static_cast<ScreenOutput*>(newModule);
@@ -598,25 +598,13 @@ void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
     //cmd + 's' to save the project
     if( cmdKey && keyboard.keycode == 83)
     {
-		cout << "save file" << endl;
-        ofFileDialogResult saveFileResult =
-            ofSystemSaveDialog("project.batmapp", "Save project");
-        
-        if (saveFileResult.bSuccess){
-            saveProject(saveFileResult.getPath(), saveFileResult.getName());
-        }
+		fileHandler.saveFileDialog();
     }
     
     //cmd + o
     if(cmdKey && keyboard.keycode == 79)
     {
-        ofFileDialogResult loadFileResult = ofSystemLoadDialog("Open batmapp project");
-        if(loadFileResult.bSuccess)
-        {
-            modules.clear();
-            wires.clear();
-            loadProject(loadFileResult.getPath(), loadFileResult.getName());
-        }
+		fileHandler.openFileDialog();
     }
     
     //cmd + shift + 's' to save preset
@@ -683,193 +671,6 @@ void ofxDarkKnight::sendMidiMessage(ofxMidiMessage & msg)
     darkKnightMidiOut.sendControlChange(msg.channel, msg.control, msg.value);
 }
 
-void ofxDarkKnight::saveProject(string fileName, string path)
-{
-    xml.clear();
-    
-    xml.addTag("PROJECT");
-    xml.pushTag("PROJECT");
-    
-    xml.addTag("MODULES");
-    xml.pushTag("MODULES");
-    int moduleIndex = 0;
-    for(pair<string, Module*> module : modules )
-    {
-        if(!module.second->moduleIsChild)
-        {
-            xml.addTag("MODULE");
-            xml.pushTag("MODULE", moduleIndex);
-            string mName = module.second->getName();
-            std::transform(mName.begin(),mName.end(),mName.begin(), [](char ch){
-                return ch == ' ' ? '_' : ch;
-            });
-            xml.setValue("NAME", mName, moduleIndex);
-            xml.setValue("X", module.second->gui->getPosition().x, moduleIndex);
-            xml.setValue("Y", module.second->gui->getPosition().y, moduleIndex);
-            
-            if(module.second->getModuleHasChild())
-            {
-                MediaPool * mediaPool = static_cast<MediaPool*>(module.second);
-                xml.setValue("INDEX", mediaPool->getCurrentIndex(), moduleIndex);
-                xml.addTag("ITEMS");
-                xml.pushTag("ITEMS"); 
-                int itemIndex = 0;
-                for(CollectionItem item : mediaPool->collection)
-                {
-                    string sName = item.name;
-                    std::transform(sName.begin(), sName.end(), sName.begin(), [](char ch){
-                        return ch == ' ' ? '_' : ch;
-                    });
-                    xml.addTag("ITEM");
-                    xml.pushTag("ITEM", itemIndex);
-                    xml.setValue("NAME", sName, itemIndex);
-                    
-                    xml.addTag("PARAMS");
-                    xml.pushTag("PARAMS");
-                    int compIndex = 0;
-                    for(ofxDatGuiComponent * component : item.canvas->params->children)
-                    {
-                        xml.addTag("PARAM");
-                        xml.pushTag("PARAM", compIndex);
-                        
-                        string compName = component->getName();
-                        std::transform(compName.begin(), compName.end(), compName.begin(), [](char ch){
-                            return ch == ' ' ? '_' : ch;
-                        });
-                        xml.setValue("NAME", compName, compIndex);
-                        xml.setValue("SCALE", component->getComponentScale(), compIndex);
-                        
-                        xml.popTag();
-                        compIndex++;
-                    }
-                    itemIndex++;
-                    xml.popTag();
-                    xml.popTag();
-                }
-                xml.popTag();
-            }
-            moduleIndex++;
-            xml.popTag();
-        }
-    }
-    xml.popTag();
-    
-    xml.addTag("WIRES");
-    xml.pushTag("WIRES");
-    int wIndex = 0;
-    for (auto wire : wires)
-    {
-        xml.addTag("WIRE");
-        xml.pushTag("WIRE", wIndex);
-        ofPoint po = wire.getOutput()->getWireConnectionPos();
-        ofPoint pi = wire.getInput()->getWireConnectionPos();
-		xml.setValue("OINDEX", wire.outputModule->getModuleId() , wIndex);
-        xml.setValue("XO",  po.x, wIndex);
-        xml.setValue("YO",  po.y, wIndex);
-        xml.setValue("IINDEX", wire.inputModule->getModuleId(), wIndex);
-        xml.setValue("XI",  pi.x, wIndex);
-        xml.setValue("YI",  pi.y, wIndex);
-        xml.popTag();
-        wIndex++;
-    }
-    xml.popTag();
-    xml.popTag();
-    
-    xml.save(path);
-    xml.saveFile(fileName);
-}
-
-void ofxDarkKnight::loadProject(string path, string file)
-{
-    xml.load(path);
-    if ( xml.loadFile(file) )
-    {
-        xml.pushTag("PROJECT");
-        xml.pushTag("MODULES");
-        int numModules = xml.getNumTags("MODULE");
-        for (int i=0; i<numModules; i++)
-        {
-            xml.pushTag("MODULE", i);
-            string module = xml.getValue("NAME", "");
-            int x = xml.getValue("X", 0);
-            int y = xml.getValue("Y", 0);
-            
-            std::transform(module.begin(), module.end(), module.begin(), [](char ch){
-                return ch == '_' ? ' ' : ch;
-            });
-            
-            Module * tempModule = addModule(module);
-            if (tempModule != nullptr)
-            {
-                tempModule->gui->setPosition(x, y);
-                if(tempModule->getModuleHasChild())
-                {
-                    MediaPool * mediaPool = static_cast<MediaPool*>(tempModule);
-                    xml.pushTag("ITEMS");
-                    int numItems = xml.getNumTags("ITEM");
-                    for(int i=0; i < numItems; i++)
-                    {
-                        xml.pushTag("ITEM", i);
-                        xml.pushTag("PARAMS");
-                        int numParams = xml.getNumTags("PARAM");
-                        for(int p=0; p < numParams; p++)
-                        {
-                            xml.pushTag("PARAM", p);
-                            string name = xml.getValue("NAME","");
-                            std::transform(name.begin(), name.end(), name.begin(), [](char ch){
-                                return ch == '_' ? ' ' : ch;
-                            });
-                            double scale = xml.getValue("SCALE", 0.0);
-                            for(ofxDatGuiComponent * comp : mediaPool->collection[i].canvas->params->children)
-                            {
-                                if(comp->getName() == name)
-                                {
-                                    comp->setComponentScale(scale);
-                                }
-                            }
-                            xml.popTag();
-                        }
-                        xml.popTag();
-                        xml.popTag();
-                    }
-                    xml.popTag();
-                }
-            }
-            xml.popTag();
-        }
-        xml.popTag();
-        xml.popTag();
-        //wires needs to be loaded after all modules are "updated"
-        loadWires = true;
-    } else
-    {
-        cout << "file not loaded" <<endl;
-    }
-}
-
-void ofxDarkKnight::loadProjectWires()
-{
-    xml.pushTag("PROJECT");
-    xml.pushTag("WIRES");
-    int numWires = xml.getNumTags("WIRE");
-    for (int i=0; i<numWires; i++)
-    {
-        xml.pushTag("WIRE", i);
-        int output = xml.getValue("OINDEX", -1);
-        int xo = xml.getValue("XO",0);
-        int yo = xml.getValue("YO",0);
-        int input = xml.getValue("IINDEX", -1);
-        int xi = xml.getValue("XI",0);
-        int yi = xml.getValue("YI",0);
-        
-        checkOutputConnection(xo, yo, "*");
-        checkInputConnection(xi, yi, "*");
-        xml.popTag();
-    }
-    //wires
-    xml.popTag();
-    xml.popTag();
-}
 
 void ofxDarkKnight::savePreset()
 {

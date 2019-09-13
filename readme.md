@@ -46,8 +46,6 @@ Download and install [ofxDarkKnight](https://github.com/luiscript/ofxDarkKnight/
 
 ofxOsc (included in openframeworks)
 
-ofxXmlSettings (included in openframeworks)
-
 **To properly use the DarkKnightVideoRecorder module you will need to have ffmpeg and Hap codec installed in your computer, otherwise you won't be able to export your video. If you don't want to install them just don't try to export your sequence, the recording process should work"
 
 # Running the examples

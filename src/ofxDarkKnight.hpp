@@ -47,7 +47,6 @@
 #include "DarkKnightPostProcessing.h"
 #include "DarkKnightTextureSharing.hpp"
 
-#include "ofxXmlSettings.h"
 #include "DarkKnightHap.hpp"
 #include "basic.hpp"
 #include "NoiseSlider.hpp"
@@ -55,6 +54,7 @@
 #include "DarkKnightColorShader.hpp"
 #include "DarkKnightLight.hpp"
 #include "DarkKnightConfig.hpp"
+#include "DarkKnightFileHandler.hpp"
 
 
 class ofxDarkKnight : public ofxMidiListener{
@@ -83,13 +83,14 @@ private:
     
     list<string> poolNames;
     
-    ofxXmlSettings xml;
     ofxMidiOut darkKnightMidiOut;
 
 	int startX;
 	int startY;
 	float zoom;
 	int moduleId;
+
+	DarkKnightFileHandler fileHandler;
 public:
     
     ofxDarkKnight();
@@ -105,6 +106,7 @@ public:
     void toggleList();
     void toggleMappingMode();
     
+	void addModuleTest(string);
     void addModule(string, Module *);
     Module * addModule(string);
     void deleteModule(string);
@@ -128,9 +130,6 @@ public:
     void newMidiMessage(ofxMidiMessage &);
     Module * createModule(string);
     
-    void saveProject(string, string);
-    void loadProject(string, string);
-    void loadProjectWires();
     void savePreset();
     
     void checkInputConnection(float, float, string);

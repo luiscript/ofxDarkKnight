@@ -70,6 +70,7 @@ private:
     ofPoint inputPoint;
     ofPoint outputPoint;
     string name;
+	int wireId;
     ConnectionType connectionType;
 };
 

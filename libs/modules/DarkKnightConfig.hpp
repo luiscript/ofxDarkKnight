@@ -79,7 +79,7 @@ public:
         
         gui->addFRM();
 
-        auto resolutionDropDown = gui->addDropdown("Select Resolution", options);
+        auto resolutionDropDown = gui->addDropdown("Resolution", options);
         resolutionDropDown->onDropdownEvent(this, &DarkKnightConfig::onResolutionChange);
         resolutionDropDown->select(2);
         
@@ -89,7 +89,7 @@ public:
             "TRIPLE"
         };
         
-        auto numScreens = gui->addDropdown("Split screen", splitOptions);
+        auto numScreens = gui->addDropdown("Split", splitOptions);
         numScreens->onDropdownEvent(this, &DarkKnightConfig::onSplitChange);
         numScreens->select(0);
     }
