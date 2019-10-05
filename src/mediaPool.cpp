@@ -34,7 +34,7 @@ void MediaPool::init()
     setModuleHasChild(true);
     alpha = 255;
     yOffsetGui = 20;
-    gui->setWidth(ofGetWidth()/5);
+    gui->setWidth(moduleGuiWidth);
     numItems = 0;
     showMediaPool = false;
     

@@ -31,7 +31,6 @@ private:
     bool drawFbo = false;
     float scaleX;
     float scaleY;
-    string fps;
 public:
     void setup();
     void update();

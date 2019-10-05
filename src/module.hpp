@@ -32,6 +32,7 @@
 
 
 class Module{
+
 private:
     int     moduleId;
     ofPoint moduleOffset;
@@ -55,9 +56,9 @@ private:
     unordered_map<string, ofxDatGuiComponent *> midiMappings;
 
 public:
-    vector<ofxMidiMessage*> outMidiMessages;
+	vector<ofxMidiMessage*> outMidiMessages;
     
-    
+	float  moduleGuiWidth;
     bool customParams = false;
     bool moduleIsChild = false;
     ofxDatGui * gui;
@@ -81,8 +82,7 @@ public:
     virtual ofFbo * getFbo(){ return nullptr; };
 	virtual ofLight* getLight() { return nullptr; };
     virtual Module * getChildModule() { return nullptr; };
-    
-    void init();
+
     void setupModule(string, ofVec2f, bool);
     void setupModule(string, ofVec2f);
     void setupCommon(string, ofVec2f);

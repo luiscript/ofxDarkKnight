@@ -22,7 +22,6 @@
 
 #include "module.hpp"
 
-
 void Module::setupModule(string name, ofVec2f resolution, bool child = false)
 {
     moduleIsChild = child;
@@ -36,6 +35,7 @@ void Module::setupModule(string name, ofVec2f resolution)
 
 void Module::setupCommon(string name, ofVec2f resolution)
 {
+	moduleGuiWidth = ofGetWidth() / 6;
     moduleName = name;
     moduleId = 0;
 
@@ -45,7 +45,7 @@ void Module::setupCommon(string name, ofVec2f resolution)
     moduleEnabled = true;
     moduleWidth = resolution.x;
     moduleHeight = resolution.y;
-    
+
     selectedComponent = nullptr;
     setupGui();
     setup();
@@ -65,7 +65,7 @@ void Module::setupGui()
     }
 
     addModuleParameters();
-    gui->setWidth(ofGetWidth()/5);
+    gui->setWidth(moduleGuiWidth);
 }
 
 void Module::updateModule(float tx, float ty, float zm)

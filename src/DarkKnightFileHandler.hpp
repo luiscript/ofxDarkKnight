@@ -37,6 +37,7 @@ private:
 	ofXml xml;
 	unordered_map<string, Module*>* modulesReference;
 	vector<Wire>* wiresReference;
+	
 public:
 	DarkKnightFileHandler();
 	DarkKnightFileHandler(unordered_map<string, Module*>*, vector<Wire>*);
@@ -45,7 +46,10 @@ public:
 	void openFileDialog();
 	void saveProject(string, string);
 	void loadProject(string, string);
-	function<void(string)>* addModule;	
+	//function<void(string)>* addModule;	
+	template<typename T>
+	void addModule(T*& p);
+	
 };
 
 

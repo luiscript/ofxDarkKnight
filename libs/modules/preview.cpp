@@ -27,7 +27,6 @@ void Preview::setup()
     drawFbo = false;
     fbo = nullptr;
     scaleX = scaleY = 0.5;
-    fps = "";
     
     addOutputConnection(ConnectionType::DK_FBO);
     addInputConnection(ConnectionType::DK_FBO);
@@ -35,7 +34,6 @@ void Preview::setup()
 
 void Preview::update()
 {
-    fps = ofToString(ofGetFrameRate()) + " FPS";
 }
 
 void Preview::draw()
@@ -44,10 +42,8 @@ void Preview::draw()
     {
         ofPushMatrix();
         ofTranslate(gui->getPosition().x, gui->getPosition().y + 20);
-        ofDrawBitmapString(fps, gui->getWidth() - 100, -5);
         ofScale(scaleX, scaleY);
         fbo->draw(0,0);
-        
         ofPopMatrix();
     }
     

@@ -74,6 +74,9 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
 	#endif
 
 	fileHandler = DarkKnightFileHandler(&modules, &wires);
+	//fileHandler.addModule = &ofxDarkKnight::addModuleTest;
+
+	//fileHandler.addModule(this);
     
     DarkKnightConfig* config = new DarkKnightConfig;
     config->setupModule("CONFIG", resolution);
@@ -383,7 +386,7 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                         MediaPool * mp = static_cast<MediaPool*>(module.second);
                         mp->addItem(hapPlayer, "thumbnails/terrain.jpg", "video player");
                         mediaPoolFounded = true;
-                        hapPlayer->gui->setWidth(ofGetWidth()/5);
+                        hapPlayer->gui->setWidth(ofGetWidth()/6);
                         hapPlayer->loadFile(file.getAbsolutePath());
                         modules.insert({"HAP: " + file.getFileName(), hapPlayer});
                         mp->drawMediaPool();
@@ -404,7 +407,7 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                     newPool->setModuleMidiMapMode(midiMapMode);
                     modules.insert({"SKETCH POOL 1", newPool});
                     
-                    hapPlayer->gui->setWidth(ofGetWidth()/5);
+                    hapPlayer->gui->setWidth(ofGetWidth()/6);
                     hapPlayer->loadFile(file.getAbsolutePath());
                     hapPlayer->setModuleMidiMapMode(midiMapMode);
                     modules.insert({"HAP: " + file.getFileName(), hapPlayer});
@@ -417,9 +420,10 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
     }
 }
 
+
 void ofxDarkKnight::addModuleTest(string moduleName)
 {
-	cout << "yeah " + moduleName << endl;
+	cout << moduleName << endl;
 }
 
 void ofxDarkKnight::addModule(string moduleName, Module * module)
@@ -442,8 +446,9 @@ Module * ofxDarkKnight::addModule(string moduleName)
         newModule->setupModule(it->first, resolution);
         newModule->gui->setPosition((ofGetMouseX() - translation.x)/zoom - 100/zoom, (ofGetMouseY() - translation.y)/zoom - 15/zoom);
         newModule->setModuleMidiMapMode(midiMapMode);
-		newModule->setModuleId(getNextModuleId());
-		string uniqueModuleName = it->first;
+		int moduleId = getNextModuleId();
+		newModule->setModuleId(moduleId);
+		string uniqueModuleName = it->first + "-" + ofToString(moduleId);
 
         if(moduleName == "SCREEN OUTPUT")
         {

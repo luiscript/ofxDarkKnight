@@ -106,9 +106,9 @@ public:
     void toggleList();
     void toggleMappingMode();
     
-	void addModuleTest(string);
     void addModule(string, Module *);
     Module * addModule(string);
+	static void addModuleTest(string);
     void deleteModule(string);
     void deleteComponentWires(ofxDatGuiComponent *, int);
     void deleteFocusedModule();

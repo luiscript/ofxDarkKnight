@@ -154,9 +154,10 @@ void DarkKnightFileHandler::saveProject(string path, string name)
 
 void DarkKnightFileHandler::loadProject(string path, string name)
 {
+	/*
 	xml.load(path + name);
 	auto project = xml.getChild("project");
-	if (!project)
+	if (!project)	
 	{
 		cout << "Incorrect file format" << endl;
 		return;
@@ -181,5 +182,21 @@ void DarkKnightFileHandler::loadProject(string path, string name)
 		cout << "This file does not have any modules" << endl;
 		return;
 	}
+	for (auto moduleObject : modules.getChildren())
+	{
+		auto name = moduleObject.getAttribute("name");
+		string moduleName = name.getValue();
+		moduleName = moduleName.substr(0, moduleName.find("-"));
+		int id = moduleObject.getAttribute("id").getIntValue();
+	}
+	*/
 
+	//addModule("testing this shit");
+
+}
+
+template<typename T>
+void DarkKnightFileHandler::addModule(T*& p)
+{
+	p->addModule("PREVIEW");
 }
