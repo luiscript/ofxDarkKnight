@@ -26,12 +26,14 @@ DarkKnightFileHandler::DarkKnightFileHandler()
 {
 	modulesReference = nullptr;
 	wiresReference = nullptr;
+	openProjectAndLoad = false;
 }
 
 DarkKnightFileHandler::DarkKnightFileHandler(unordered_map<string, Module*>* modulesReferencePtr, vector<Wire>* wiresReferencePtr)
 {
 	modulesReference = modulesReferencePtr;
 	wiresReference = wiresReferencePtr;
+	openProjectAndLoad = false;
 }
 
 DarkKnightFileHandler::~DarkKnightFileHandler()
@@ -39,6 +41,7 @@ DarkKnightFileHandler::~DarkKnightFileHandler()
 	modulesReference = nullptr;
 	wiresReference = nullptr;
 }
+
 
 void DarkKnightFileHandler::saveFileDialog()
 {
@@ -50,14 +53,14 @@ void DarkKnightFileHandler::saveFileDialog()
 	}
 }
 
-void DarkKnightFileHandler::openFileDialog()
+ofXml DarkKnightFileHandler::openFileDialog()
 {
 	ofFileDialogResult loadFileResult = ofSystemLoadDialog("Open batmapp project");
 	if (loadFileResult.bSuccess)
 	{
 		modulesReference->clear();
 		wiresReference->clear();
-		loadProject(loadFileResult.getPath(), loadFileResult.getName());
+		return loadProject(loadFileResult.getPath(), loadFileResult.getName());
 	}
 }
 
@@ -86,6 +89,9 @@ void DarkKnightFileHandler::saveProject(string path, string name)
 		module.setAttribute("name", moduleObject.first);
 		module.setAttribute("id", moduleObject.second->getModuleId());
 		module.setAttribute("isChild", moduleObject.second->moduleIsChild);
+		auto modulePosition = module.appendChild("position");
+		modulePosition.setAttribute("x", moduleObject.second->gui->getPosition().x);
+		modulePosition.setAttribute("y", moduleObject.second->gui->getPosition().y);
 		if (moduleObject.second->getModuleHasChild())
 		{
 			auto mediaPool = static_cast<MediaPool*>(moduleObject.second);
@@ -148,12 +154,15 @@ void DarkKnightFileHandler::saveProject(string path, string name)
 			}
 		}
 	}
-	xml.save(path + name);
+
+	xml.save(path + ".xml");
 }
 
 
-void DarkKnightFileHandler::loadProject(string path, string name)
+ofXml DarkKnightFileHandler::loadProject(string path, string name)
 {
+	xml.load(path);
+	return xml;
 	/*
 	xml.load(path + name);
 	auto project = xml.getChild("project");
@@ -193,10 +202,24 @@ void DarkKnightFileHandler::loadProject(string path, string name)
 
 	//addModule("testing this shit");
 
+	openProjectAndLoad = true;
 }
 
-template<typename T>
+
+/*template<typename T>
 void DarkKnightFileHandler::addModule(T*& p)
 {
 	p->addModule("PREVIEW");
+}*/
+
+
+bool DarkKnightFileHandler::openProject()
+{
+	return openProjectAndLoad;
+
+}
+
+void DarkKnightFileHandler::setOpenProject(bool p)
+{
+	openProjectAndLoad = p;
 }

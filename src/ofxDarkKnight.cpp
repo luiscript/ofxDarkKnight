@@ -48,9 +48,11 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
     
     componentsList = new ofxDatGuiScrollView("MODULES", 11);
     componentsList->setWidth(500);
-    componentsList->setHeight(600);
+    componentsList->setHeight(800);
+
+	componentsList->setComponentScale(2.0);
     
-    componentsList->setPosition(ofGetWidth()/2 - 250, ofGetHeight()/2 - 300);
+    componentsList->setPosition(ofGetWidth()/2 - 250, ofGetHeight()/2 - 400);
     for(list<string>::iterator it = poolNames.begin(); it != poolNames.end(); it++)
         componentsList->add(*it);
     
@@ -74,9 +76,6 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
 	#endif
 
 	fileHandler = DarkKnightFileHandler(&modules, &wires);
-	//fileHandler.addModule = &ofxDarkKnight::addModuleTest;
-
-	//fileHandler.addModule(this);
     
     DarkKnightConfig* config = new DarkKnightConfig;
     config->setupModule("CONFIG", resolution);
@@ -448,7 +447,7 @@ Module * ofxDarkKnight::addModule(string moduleName)
         newModule->setModuleMidiMapMode(midiMapMode);
 		int moduleId = getNextModuleId();
 		newModule->setModuleId(moduleId);
-		string uniqueModuleName = it->first + "-" + ofToString(moduleId);
+		string uniqueModuleName = it->first + "#" + ofToString(it->second->getModuleId());
 
         if(moduleName == "SCREEN OUTPUT")
         {
@@ -609,7 +608,7 @@ void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
     //cmd + o
     if(cmdKey && keyboard.keycode == 79)
     {
-		fileHandler.openFileDialog();
+		loadProjectFromXml(fileHandler.openFileDialog());
     }
     
     //cmd + shift + 's' to save preset
@@ -692,6 +691,7 @@ void ofxDarkKnight::savePreset()
 Module * ofxDarkKnight::createModule(string name)
 {
     if(name == "PREVIEW") return new Preview;
+	else if (name == "CONFIG") return new DarkKnightConfig;
 	else if (name == "COLOR SHADER") return new ColorShader;
 	else if(name == "INVERTER") return new ParamInverter;
     else if(name == "LFO") return new LfoSlider;
@@ -713,3 +713,49 @@ int ofxDarkKnight::getNextModuleId()
 }
 //   ofxDarkKnight
 
+void ofxDarkKnight::loadProjectFromXml(ofXml xml)
+{
+	modules.clear();
+
+	auto project = xml.getChild("project");
+	if (!project)
+	{
+		cout << "Incorrect file format" << endl;
+		return;
+	}
+	auto resolutionObject = project.getChild("resolution");
+	ofVec2f resolutionVector =
+	{
+		(float)resolutionObject.getAttribute("width").getFloatValue(),
+		(float)resolutionObject.getAttribute("height").getFloatValue()
+	};
+	resolution = resolutionVector;
+
+	auto gui = project.getChild("gui");
+	translation.x = (float)gui.getAttribute("translationX");
+	translation.y = (float)gui.getAttribute("translationY");
+	zoom = (float)gui.getAttribute("zoom");
+
+	auto modulesObjects = project.getChild("modules");
+	if (!modulesObjects) {
+		cout << "This file does not have any modules" << endl;
+		return;
+	}
+
+	for (auto moduleObject : modulesObjects.getChildren())
+	{
+		auto name = moduleObject.getAttribute("name");
+		string moduleName = name.getValue();
+		int tempModuleId = moduleObject.getAttribute("id").getIntValue();
+		
+		if (!moduleObject.getAttribute("isChild").getBoolValue())
+		{
+			auto pos = moduleObject.getChild("position");
+			float posx = pos.getAttribute("x").getFloatValue();
+			float posy = pos.getAttribute("y").getFloatValue();
+			string theName = moduleName.substr(0, moduleName.find("#"));
+			auto newModule = addModule(theName);
+			newModule->gui->setPosition(posx, posy);
+		}
+	}
+}

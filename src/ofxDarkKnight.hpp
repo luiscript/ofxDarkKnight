@@ -138,6 +138,7 @@ public:
     void sendMidiMessage(ofxMidiMessage &);
 
 	int getNextModuleId();
+	void loadProjectFromXml(ofXml);
     
 };
 
