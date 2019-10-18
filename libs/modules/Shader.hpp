@@ -32,6 +32,7 @@ class Shader : public Module{
 private:
     bool drawFbo;
     bool gotTexture;
+	bool loaded;
     ofFbo internalFbo;
     ofFbo * texture;
     ofShader shader;
@@ -57,6 +58,7 @@ public:
     void onParameterMinChange(ofxDatGuiTextInputEvent);
     void onParameterMaxChange(ofxDatGuiTextInputEvent);
     void onParameterPrecisionChange(ofxDatGuiTextInputEvent);
+	void onShaderSettingsButtonPress(ofxDatGuiButtonEvent);
 //    void onOuputControlChange(ofxDatGuiTextInputEvent);
 //    void onOutputChannelChange(ofxDatGuiTextInputEvent);
 };
