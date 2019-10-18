@@ -52,6 +52,10 @@ void Module::setupCommon(string name, ofVec2f resolution)
     
     moduleIsChild = false;
     moduleInitialized = true;
+
+	//auto newTheme = new ofxDatGuiThemeWireframe();
+	//gui->setTheme(newTheme);
+	//gui->setWidth(moduleGuiWidth);
 }
 
 void Module::setupGui()

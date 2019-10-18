@@ -51,6 +51,9 @@ public:
         };
         
         wiresTension = 0.8;
+
+		//auto themeA = new ofxDatGuiThemeAqua;
+		//gui->setTheme(themeA);
     }
     
     void update()
@@ -65,6 +68,12 @@ public:
     
     void addModuleParameters()
     {
+		vector<string> fileOptions =
+		{
+			"Save",
+			"Open"
+		};
+
         vector<string> options =
         {
             "UHD-1 (3840 x 2160)",
@@ -77,7 +86,12 @@ public:
             "VGA (640 x 480)"
         };
         
-        gui->addFRM();
+       
+		auto fileDropDown = gui->addFolder("FILE");
+		auto saveButton = fileDropDown->addButton("Save");
+		auto openButton = fileDropDown->addButton("Open");
+		saveButton->onButtonEvent(this, &DarkKnightConfig::onFileButtonPress);
+		openButton->onButtonEvent(this, &DarkKnightConfig::onFileButtonPress);
 
         auto resolutionDropDown = gui->addDropdown("Resolution", options);
         resolutionDropDown->onDropdownEvent(this, &DarkKnightConfig::onResolutionChange);
@@ -92,14 +106,27 @@ public:
         auto numScreens = gui->addDropdown("Split", splitOptions);
         numScreens->onDropdownEvent(this, &DarkKnightConfig::onSplitChange);
         numScreens->select(0);
+
+		gui->addFRM();
     }
-    
+
+	void onFileButtonPress(ofxDatGuiButtonEvent e)
+	{
+		if (e.target->getName() == "Save")
+		{
+			
+		}
+		else if (e.target->getName() == "Open")
+		{
+
+		}
+	}
+
     void onResolutionChange(ofxDatGuiDropdownEvent e)
-    {
+    {	
         indexResolution = e.child;
         ofVec2f resolution = resolutions[indexResolution];
         resolution.x = resolution.x * (indexSplit + 1);
-        
         ofNotifyEvent(onResolutionChangeEvent, resolution, this);
     }
     

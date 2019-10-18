@@ -50,6 +50,8 @@ public:
 
 	bool openProject();
 	void setOpenProject(bool);
+	void setModulesReference(unordered_map<string, Module*>*);
+	void setWiresReference(vector<Wire>*);
 };
 
 

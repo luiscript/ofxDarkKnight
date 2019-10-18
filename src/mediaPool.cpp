@@ -25,7 +25,7 @@
 
 void MediaPool::setup()
 {
-
+	init();
 }
 
 void MediaPool::init()
@@ -36,8 +36,7 @@ void MediaPool::init()
     yOffsetGui = 20;
     gui->setWidth(moduleGuiWidth);
     numItems = 0;
-    showMediaPool = false;
-    
+
     ofVec2f resolution = { getModuleWidth(), getModuleHeight() };
     
     translation = nullptr;
@@ -55,14 +54,18 @@ void MediaPool::init()
     ofClear(0, 0, 0, 0);
     mediaPoolFbo.end();
     
-    drawMediaPool();
-    
-    currentCanvas = collection[index].canvas;
-    currentCanvas->moduleIsChild = true;
-    
-    addCustomParameters();
-    triggerPoolMedia(index);
-    
+
+	if (collection.size() > 0)
+	{
+		currentCanvas = collection[index].canvas;
+		currentCanvas->moduleIsChild = true;
+		addCustomParameters();
+		triggerPoolMedia(index);
+	}
+	else
+	{
+		currentCanvas = nullptr;
+	}
 
     //MIDI mappings
     //to trigger the index 0 (first media) with midi cannel 16 pitch 0
@@ -73,6 +76,7 @@ void MediaPool::init()
     addOutputConnection(ConnectionType::DK_FBO);
 	addInputConnection(ConnectionType::DK_LIGHT);
 
+	drawMediaPool();
 }
 
 
@@ -83,50 +87,55 @@ void MediaPool::onKeyboardEvent(ofKeyEventArgs & e)
 
 void MediaPool::update()
 {
-    if(nextIndex != index) triggerPoolMedia(nextIndex);
-    currentCanvas->setModuleMidiMapMode(getModuleMidiMapMode());
-    currentCanvas->gui->setPosition(gui->getPosition().x, gui->getPosition().y + gui->getWidth() * 0.5625 + yOffsetGui);
-    currentCanvas->gui->setTranslation(translation->x, translation->y, *zoom);
-	
-	if (light != nullptr)
+	if (currentCanvas != nullptr)
 	{
-		ofEnableDepthTest();
-		ofEnableSmoothing();
-		ofEnableLighting();
-		light->enable();
+		if (nextIndex != index) triggerPoolMedia(nextIndex);
+		currentCanvas->setModuleMidiMapMode(getModuleMidiMapMode());
+		currentCanvas->gui->setPosition(gui->getPosition().x, gui->getPosition().y + gui->getWidth() * 0.5625 + yOffsetGui);
+		currentCanvas->gui->setTranslation(translation->x, translation->y, *zoom);
+
+		if (light != nullptr)
+		{
+			ofEnableDepthTest();
+			ofEnableSmoothing();
+			ofEnableLighting();
+			light->enable();
+		}
+
+		mainFbo.begin();
+
+		ofPushStyle();
+		currentCanvas->draw();
+		ofPopStyle();
+
+		if (hasInput)
+		{
+			ofEnableBlendMode(OF_BLENDMODE_ADD);
+			inputFbo->draw(0, 0);
+			ofDisableBlendMode();
+		}
+
+		mainFbo.end();
+
+		if (light != nullptr)
+		{
+			light->disable();
+			ofDisableLighting();
+			ofDisableSmoothing();
+			ofDisableDepthTest();
+		}
 	}
-	
-	mainFbo.begin();
-
-	ofPushStyle();
-	currentCanvas->draw();
-	ofPopStyle();
-
-	if (hasInput)
-	{
-		ofEnableBlendMode(OF_BLENDMODE_ADD);
-		inputFbo->draw(0, 0);
-		ofDisableBlendMode();
-	}
-
-	mainFbo.end();
-
-	if (light != nullptr)
-	{
-		light->disable();
-		ofDisableLighting();
-		ofDisableSmoothing();
-		ofDisableDepthTest();
-	}
-	
 }
 
 void MediaPool::draw()
 {
-    //drawMediaPool();
     ofPoint pos = gui->getPosition();
     mediaPoolFbo.draw(pos.x, pos.y + yOffsetGui);
-    currentCanvas->gui->draw();
+	if (currentCanvas != nullptr)
+	{
+		currentCanvas->gui->draw();
+	}
+   
 }
 
 
@@ -137,7 +146,7 @@ void MediaPool::drawMediaPool()
     int width = gui->getWidth();
     float x = gui->getPosition().x;
     float y = 0.25 * width;
-    float cellWidth = width/4;
+    float cellWidth = width/4 + 2;
     float cellHeight = cellWidth * 0.5615;
 
     ofPushStyle();
@@ -149,21 +158,21 @@ void MediaPool::drawMediaPool()
         {
             int curIndex = i + 4 * j;
             ofSetColor(66,66,74);
-            ofDrawRectangle(i*cellWidth+2, j*cellHeight, cellWidth - 2, cellHeight - 2);
+            ofDrawRectangle(i*cellWidth, j*cellHeight, cellWidth-2, cellHeight - 2);
             if(curIndex < collection.size())
             {
                 ofSetColor(255);
-                collection[curIndex].thumbnail->draw(i*cellWidth+3,  j*cellHeight+1, cellWidth-4, cellHeight-4);
+                collection[curIndex].thumbnail->draw(i*cellWidth,  j*cellHeight, cellWidth-2, cellHeight-2);
             }
             if(index == curIndex)
             {
                 ofSetColor(232, 181, 54, 128);
-                ofDrawRectangle(i*cellWidth+2, j*cellHeight, cellWidth - 2, cellHeight - 2);
+                ofDrawRectangle(i*cellWidth, j*cellHeight, cellWidth - 2, cellHeight - 2);
             }
             if(getModuleMidiMapMode())
             {
                 ofSetColor(0, 200);
-                ofDrawRectangle(i*cellWidth+2, j*cellHeight, cellWidth - 2, cellHeight - 2);
+                ofDrawRectangle(i*cellWidth, j*cellHeight, cellWidth - 2, cellHeight - 2);
                 
                 for (pair<string, int> element : midiMappings) {
                     if(element.second == curIndex)
@@ -267,8 +276,13 @@ void MediaPool::addItem(Module * module, string fileName, string name)
     item.canvas->setupModule(name, {getModuleWidth(), getModuleHeight()}, true);
     item.canvas->gui->setVisible(false);
     item.canvas->moduleIsChild = true;
-    //item.canvas->set(numItems);
     collection.push_back(item);
+	if (collection.size() == 1)
+	{
+		index = 0;
+		currentCanvas = item.canvas;
+		triggerPoolMedia(0);
+	}
     numItems++;
 }
 
@@ -344,7 +358,11 @@ void MediaPool::mousePressed(ofMouseEventArgs & mouse)
 
 void MediaPool::unMount()
 {
-    currentCanvas->unMount();
+	if (currentCanvas != nullptr)
+	{
+		currentCanvas->unMount();
+	}
+   
 }
 
 Module * MediaPool::getChildModule()

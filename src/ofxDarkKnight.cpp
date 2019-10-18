@@ -45,27 +45,27 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
         poolNames.push_back(module.first);
     
     poolNames.sort();
-    
-    componentsList = new ofxDatGuiScrollView("MODULES", 11);
-    componentsList->setWidth(500);
-    componentsList->setHeight(800);
 
-	componentsList->setComponentScale(2.0);
-    
-    componentsList->setPosition(ofGetWidth()/2 - 250, ofGetHeight()/2 - 400);
-    for(list<string>::iterator it = poolNames.begin(); it != poolNames.end(); it++)
-        componentsList->add(*it);
-    
-    componentsList->onScrollViewEvent(this, &ofxDarkKnight::onComponentListChange);
+	float browserWidth = ofGetWidth() * 0.8;
+	float browserHeight = ofGetHeight() * 0.8;
+
+	componentsList = new ofxDatGuiScrollView("MODULES", 11);
+	componentsList->setWidth(browserWidth / 3);
+	componentsList->setHeight(poolNames.size() * 25.0);
+	componentsList->setPosition(ofGetWidth() * 0.1 + browserWidth/3, ofGetHeight() * 0.1);
+	componentsList->onScrollViewEvent(this, &ofxDarkKnight::onComponentListChange);
+
+    for(auto it = poolNames.begin(); it != poolNames.end(); it++) componentsList->add(*it);
+
     ofAddListener(ofEvents().mousePressed, this, &ofxDarkKnight::handleMousePressed);
     ofAddListener(ofEvents().mouseDragged, this, &ofxDarkKnight::handleMouseDragged);
-    ofAddListener(ofEvents().mouseReleased, this, &ofxDarkKnight::handleMouseReleased);
     ofAddListener(ofEvents().mouseScrolled, this, &ofxDarkKnight::handleMouseScrolled);
-    
-    ofAddListener(ofEvents().keyPressed, this, &ofxDarkKnight::handleKeyPressed);
-    ofAddListener(ofEvents().keyReleased, this, &ofxDarkKnight::handleKeyReleased);
-    ofAddListener(ofEvents().fileDragEvent, this, &ofxDarkKnight::handleDragEvent);
-    
+	ofAddListener(ofEvents().mouseReleased, this, &ofxDarkKnight::handleMouseReleased);
+
+	ofAddListener(ofEvents().keyPressed, this, &ofxDarkKnight::handleKeyPressed);
+	ofAddListener(ofEvents().keyReleased, this, &ofxDarkKnight::handleKeyReleased);
+	ofAddListener(ofEvents().fileDragEvent, this, &ofxDarkKnight::handleDragEvent);
+	
 	#ifdef TARGET_OSX
 	darkKnightMidiOut.openVirtualPort("ofxDarkKnight");
 	#else
@@ -75,16 +75,13 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
 	}
 	#endif
 
-	fileHandler = DarkKnightFileHandler(&modules, &wires);
-    
     DarkKnightConfig* config = new DarkKnightConfig;
-    config->setupModule("CONFIG", resolution);
-    config->gui->setPosition(100, 100);
+    config->setupModule("PROJECT", resolution);
+    config->gui->setPosition(ofGetWidth() - ofGetWidth()/6, 0);
     config->setModuleMidiMapMode(midiMapMode);
     ofAddListener(config->onResolutionChangeEvent, this, &ofxDarkKnight::onResolutionChange);
 	config->setModuleId(getNextModuleId());
-	modules.insert({"CONFIG", config});
-	
+	modules.insert({"PROJECT", config});
 }
 
 
@@ -106,7 +103,11 @@ void ofxDarkKnight::update()
             module.second->outMidiMessages.clear();
         }
     
-    if (showExplorer) componentsList->update();
+	if (showExplorer) {
+	//	assetsList->update();
+		//collectionList->update();
+		componentsList->update();
+	}
 }
 
 
@@ -127,12 +128,8 @@ void ofxDarkKnight::draw()
 
     ofPopMatrix();
     
-    if (showExplorer)
-    {
-        componentsList->setVisible(true);
-        componentsList->draw();
-    }
-    else componentsList->setVisible(false);
+	componentsList->setVisible(showExplorer);
+	showExplorer ? componentsList->draw() : false;
 
 }
 
@@ -162,10 +159,55 @@ void ofxDarkKnight::onComponentListChange(ofxDatGuiScrollViewEvent e)
     toggleList();
 }
 
+void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs& keyboard)
+{
+	if (keyboard.key == OF_KEY_COMMAND || keyboard.key == OF_KEY_CONTROL) cmdKey = true;
+	if (keyboard.key == OF_KEY_SHIFT) shiftKey = true;
+	if (keyboard.key == OF_KEY_ALT) altKey = true;
+
+	// toggle show explorer
+	if (cmdKey && keyboard.keycode == 257 && !keyboard.isRepeat)
+	{
+		toggleList();
+	}
+
+	// cmd+shift+m  -> Toggle midiMap on all layers
+	if (cmdKey && keyboard.keycode == 77 && !keyboard.isRepeat) {
+		toggleMappingMode();
+	}
+
+	if (cmdKey && keyboard.key == OF_KEY_BACKSPACE)
+	{
+		deleteFocusedModule();
+	}
+
+	//cmd + shift + 's' to save preset
+	if (shiftKey && cmdKey && keyboard.key == 's')
+	{
+		savePreset();
+	}
+
+	//cmd + r reset translation and zoom
+	if (cmdKey && keyboard.keycode == 82)
+	{
+		translation = { 0, 0 };
+		zoom = 1.0;
+	}
+}
+
+void ofxDarkKnight::handleKeyReleased(ofKeyEventArgs& keyboard)
+{
+	if (keyboard.key == OF_KEY_COMMAND || keyboard.key == OF_KEY_CONTROL) cmdKey = false;
+	if (keyboard.key == OF_KEY_SHIFT) shiftKey = false;
+	if (keyboard.key == OF_KEY_ALT) altKey = false;
+}
+
 void ofxDarkKnight::handleMousePressed(ofMouseEventArgs &mouse)
 {
-    int x = (int) (mouse.x - translation.x) / zoom;
-    int y = (int) (mouse.y - translation.y) / zoom;
+	int x = (int)(mouse.x - translation.x) / zoom;
+	int y = (int)(mouse.y - translation.y) / zoom;
+
+	if (midiMapMode) checkOutputConnection(x, y, "*");
 
 	if (shiftKey)
 	{
@@ -186,20 +228,18 @@ void ofxDarkKnight::handleMousePressed(ofMouseEventArgs &mouse)
         }
     }
     
-    if( midiMapMode )
-        checkOutputConnection(x, y, "*");
-    
-    //right click?
-    if(mouse.button == 2)
-    {
-        toggleList();
-    }
-    
-    //middle click
-    if(mouse.button == 1)
-    {
-        toggleMappingMode();
-    }
+	//right click?
+	if (mouse.button == 2)
+	{
+		toggleList();
+	}
+
+	//middle click
+	if (mouse.button == 1)
+	{
+		toggleMappingMode();
+	}
+
 }
 
 void ofxDarkKnight::handleMouseDragged(ofMouseEventArgs & mouse)
@@ -322,6 +362,7 @@ void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
         }
     }
 }
+
 
 void ofxDarkKnight::checkInputConnection(float x, float y, string moduleName)
 {
@@ -447,7 +488,7 @@ Module * ofxDarkKnight::addModule(string moduleName)
         newModule->setModuleMidiMapMode(midiMapMode);
 		int moduleId = getNextModuleId();
 		newModule->setModuleId(moduleId);
-		string uniqueModuleName = it->first + "#" + ofToString(it->second->getModuleId());
+		string uniqueModuleName = it->first + "#" + ofToString(newModule->getModuleId());
 
         if(moduleName == "SCREEN OUTPUT")
         {
@@ -577,61 +618,6 @@ void ofxDarkKnight::onResolutionChange(ofVec2f & newResolution)
     }
 }
 
-void ofxDarkKnight::handleKeyPressed(ofKeyEventArgs &keyboard)
-{	
-    if(keyboard.key == OF_KEY_COMMAND || keyboard.key == OF_KEY_CONTROL) cmdKey = true;
-    if(keyboard.key == OF_KEY_SHIFT) shiftKey = true;
-    if(keyboard.key == OF_KEY_ALT) altKey = true;
-
-    // toggle show explorer
-	if (cmdKey && keyboard.keycode == 257 && !keyboard.isRepeat)
-	{
-		toggleList();
-    }
-    
-    // cmd+shift+m  -> Toggle midiMap on all layers
-    if(cmdKey && keyboard.keycode == 77 && ! keyboard.isRepeat ){
-        toggleMappingMode();
-    }
-
-    if (cmdKey && keyboard.key == OF_KEY_BACKSPACE)
-    {
-        deleteFocusedModule();
-    }
-    
-    //cmd + 's' to save the project
-    if( cmdKey && keyboard.keycode == 83)
-    {
-		fileHandler.saveFileDialog();
-    }
-    
-    //cmd + o
-    if(cmdKey && keyboard.keycode == 79)
-    {
-		loadProjectFromXml(fileHandler.openFileDialog());
-    }
-    
-    //cmd + shift + 's' to save preset
-    if( shiftKey && cmdKey && keyboard.key == 's')
-    {
-        savePreset();
-    }
-
-	//cmd + r reset translation and zoom
-	if (cmdKey && keyboard.keycode == 82)
-	{
-		translation = { 0, 0 };
-		zoom = 1.0;
-	}
-}
-
-void ofxDarkKnight::handleKeyReleased(ofKeyEventArgs &keyboard)
-{
-    if(keyboard.key == OF_KEY_COMMAND || keyboard.key == OF_KEY_CONTROL) cmdKey = false;
-    if(keyboard.key == OF_KEY_SHIFT) shiftKey = false;
-    if(keyboard.key == OF_KEY_ALT) altKey = false;
-}
-
 void ofxDarkKnight::close()
 {
     for(pair<string, Module*> module : modules )
@@ -758,4 +744,24 @@ void ofxDarkKnight::loadProjectFromXml(ofXml xml)
 			newModule->gui->setPosition(posx, posy);
 		}
 	}
+}
+
+void ofxDarkKnight::setTranslation(ofVec2f t)
+{
+	translation = t;
+}
+
+void ofxDarkKnight::setZoom(float z)
+{
+	zoom = z;
+}
+
+unordered_map<string, Module*>* ofxDarkKnight::getModulesReference()
+{
+	return &modules;
+}
+
+vector<Wire>* ofxDarkKnight::getWiresReference()
+{
+	return &wires;
 }

@@ -94,8 +94,14 @@ void Shader::addModuleParameters()
 {
     params = gui->addFolder("PARAMETERS");
     ofxDatGuiFolder * shaderSettings = gui->addFolder("SHADER SETTINGS");
+	shaderSettings->addButton("New shader");
+	shaderSettings->addButton("Open shader");
+
+
+
     ofxDatGuiFolder * addParameter = gui->addFolder("ADD PARAMETER");
     ofxDatGuiTextInput * parameterName = addParameter->addTextInput("Name", "parameter");
+	parameterName->setTextUpperCase(false);
     parameterName->onTextInputEvent(this, &Shader::onParameterNameChange);
     ofxDatGuiTextInput * parameterMin = addParameter->addTextInput("Min value", "0");
     parameterMin->onTextInputEvent(this, &Shader::onParameterMinChange);
@@ -132,7 +138,7 @@ void Shader::addParameter(ofxDatGuiButtonEvent e)
             params->addSlider(parameterName, (int) min, (int)max, (int)min)->bind(*newIntParam);
             intParameters.insert({parameterName, newIntParam});
         }
-		gui->setWidth(ofGetWidth() / 5);
+		gui->setWidth(moduleGuiWidth);
     }
 }
 

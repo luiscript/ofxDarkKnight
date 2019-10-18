@@ -53,30 +53,26 @@
 #include "inverter.hpp"
 #include "DarkKnightColorShader.hpp"
 #include "DarkKnightLight.hpp"
-#include "DarkKnightConfig.hpp"
-#include "DarkKnightFileHandler.hpp"
-
+#include "DarkKnightConfig.hpp" 
 
 class ofxDarkKnight : public ofxMidiListener{
 private:
-    ofxDatGuiTheme * theme;
     ofVec2f resolution;
     ofVec2f translation;
     ofPoint pointer;
     bool showExplorer;
     bool drawing;
-    bool midiMapMode;
     bool cmdKey;
     bool shiftKey;
     bool altKey;
     bool loadWires;
     ConnectionType currentWireConnectionType;
     
-    Wire * currentWire;
+    Wire* currentWire;
     vector<Wire> wires;
     
-    ofxDatGui * gui;
-    ofxDatGuiScrollView * componentsList;
+    ofxDatGui* gui;
+    ofxDatGuiScrollView* componentsList;
     
     unordered_map<string, Module*> modulesPool;
     unordered_map<string, Module*> modules;
@@ -90,12 +86,12 @@ private:
 	float zoom;
 	int moduleId;
 
-	DarkKnightFileHandler fileHandler;
 public:
     
     ofxDarkKnight();
     ~ofxDarkKnight();
     
+	bool midiMapMode;
     shared_ptr<ofAppBaseWindow> mainWindow;
     
     void setup(unordered_map<string, Module*> *);
@@ -119,7 +115,6 @@ public:
     void handleMouseReleased(ofMouseEventArgs&);
 
     void handleMouseScrolled(ofMouseEventArgs&);
-    
     void handleKeyPressed(ofKeyEventArgs & keyboard);
     void handleKeyReleased(ofKeyEventArgs & keyboard);
     
@@ -134,11 +129,16 @@ public:
     
     void checkInputConnection(float, float, string);
     void checkOutputConnection(float, float, string);
-    
+
     void sendMidiMessage(ofxMidiMessage &);
+
+	unordered_map<string, Module*>* getModulesReference();
+	vector<Wire>* getWiresReference();
 
 	int getNextModuleId();
 	void loadProjectFromXml(ofXml);
+	void setTranslation(ofVec2f);
+	void setZoom(float);
     
 };
 

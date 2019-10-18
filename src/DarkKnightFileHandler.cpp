@@ -223,3 +223,13 @@ void DarkKnightFileHandler::setOpenProject(bool p)
 {
 	openProjectAndLoad = p;
 }
+
+void DarkKnightFileHandler::setModulesReference(unordered_map<string, Module*>* ref)
+{
+	modulesReference = ref;
+}
+
+void DarkKnightFileHandler::setWiresReference(vector<Wire>* ref)
+{
+	wiresReference = ref;
+}
