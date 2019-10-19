@@ -129,7 +129,7 @@ void ofxDarkKnight::draw()
     ofPopMatrix();
     
 	componentsList->setVisible(showExplorer);
-	showExplorer ? componentsList->draw() : false;
+    if(showExplorer) componentsList->draw();
 
 }
 

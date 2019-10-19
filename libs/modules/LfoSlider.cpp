@@ -25,19 +25,11 @@
 void LfoSlider::setup()
 {
     icons.load("icons/lfoWaves.png");
-    
-	int pixelDensity = ((ofAppGLFWWindow*)ofGetWindowPtr())->getPixelScreenCoordScale();
-	if (pixelDensity == 1)
-	{
-		icons.resize(145, 10);
-	} else 
-	{
-		icons.resize(136, 10);
-	}
+    icons.resize(178, 13);
 	
     wave = 0;
     time = 0;
-    amplitude = 1;
+    amplitude = 1;  
     offset = 0;
     result = 0;
 }
@@ -91,7 +83,7 @@ void LfoSlider::update()
 void LfoSlider::draw()
 {
     float size = moduleGuiWidth * 0.35 + 3;
-    icons.draw(gui->getPosition().x + size, gui->getPosition().y + 30);
+    icons.draw(gui->getPosition().x + size, gui->getPosition().y + 32);
 }
 
 void LfoSlider::addModuleParameters()

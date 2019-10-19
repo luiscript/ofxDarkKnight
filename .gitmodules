@@ -3,19 +3,19 @@
 	url = https://github.com/luiscript/ofxDatGui
 [submodule "libs/DarkKnightMidi"]
 	path = libs/DarkKnightMidi
-	url = git://github.com/luiscript/DarkKnightMidi
+	url = https://github.com/luiscript/DarkKnightMidi
 [submodule "libs/DarkKnightOsc"]
 	path = libs/DarkKnightOsc
-	url = git://github.com/luiscript/DarkKnightOsc
+	url = https://github.com/luiscript/DarkKnightOsc
 [submodule "libs/DarkKnightMapping"]
 	path = libs/DarkKnightMapping
-	url = git://github.com/luiscript/DarkKnightMapping
+	url = https://github.com/luiscript/DarkKnightMapping
 [submodule "libs/DarkKnightSyphon"]
 	path = libs/DarkKnightSyphon
-	url = git://github.com/luiscript/DarkKnightSyphon
+	url = https://github.com/luiscript/DarkKnightSyphon
 [submodule "libs/DarkKnightAbletonLink"]
 	path = libs/DarkKnightAbletonLink
-	url = git://github.com/luiscript/DarkKnightAbletonLink
+	url = https://github.com/luiscript/DarkKnightAbletonLink
 [submodule "libs/DarkKnightHap"]
 	path = libs/DarkKnightHap
 	url = https://github.com/luiscript/DarkKnightHap
