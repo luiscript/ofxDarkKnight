@@ -30,11 +30,15 @@ void MediaPool::setup()
 
 void MediaPool::init()
 {
+    int pixelDensity = ((ofAppGLFWWindow*)ofGetWindowPtr())->getPixelScreenCoordScale();
+    
+    float amp = pixelDensity >= 2 ? pixelDensity - 0.5 : 1.0;
+    
     font.load("fonts/Roboto-Light.ttf", 15, true, true);
     setModuleHasChild(true);
     alpha = 255;
     yOffsetGui = 20;
-    gui->setWidth(moduleGuiWidth);
+    gui->setWidth(moduleGuiWidth * amp);
     numItems = 0;
 
     ofVec2f resolution = { getModuleWidth(), getModuleHeight() };
