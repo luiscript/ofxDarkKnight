@@ -31,6 +31,13 @@
 //#include "ofxOsc.h"
 
 
+struct ModuleSoundParticle
+{
+	float lifetime;
+	float size;
+	float noise;
+};
+
 class Module{
 
 private:

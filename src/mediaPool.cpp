@@ -189,7 +189,7 @@ void MediaPool::drawMediaPool()
                 if(index == curIndex)
                 {
                     ofSetColor(255, 128);
-                    ofDrawRectangle(i*cellWidth+2, j*cellHeight, cellWidth - 2, cellHeight - 2);
+                    ofDrawRectangle(i*cellWidth, j*cellHeight, cellWidth - 2, cellHeight - 2);
                 }
             }
         }

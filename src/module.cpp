@@ -104,15 +104,15 @@ void Module::updateModule()
         update();
     }
     
-    float x = gui->getPosition().x + gui->getWidth() + 17;
-    float y = gui->getPosition().y + 13;
+    float x = gui->getPosition().x + gui->getWidth() + 12;
+    float y = gui->getPosition().y + 10;
 
     for (int o=0; o<outputs.size(); o++) {
         outputs[o]->setWireConnectionPos(ofPoint(x,y + o*30));
     }
 
-    x = gui->getPosition().x - 17;
-    y = gui->getPosition().y + 13;
+    x = gui->getPosition().x - 12;
+    y = gui->getPosition().y + 10;
     
     for (int i=0; i<inputs.size(); i++) {
         inputs[i]->setWireConnectionPos(ofPoint(x,y + i*30));

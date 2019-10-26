@@ -9,7 +9,10 @@ void ofApp::setup()
     unordered_map<string, Module*> modulesPool;
     modulesPool = {
        	{ "ABLETON LINK", new ofxDarkKnightAbletonLink },
+		{ "COLOR INVERTER", new DKColorInverter},
+		{ "COLOR SHADER", new ColorShader},
 		{ "INVERTER", new ParamInverter},
+		{ "LIGHT", new DarkKnightLight},
 		{ "LIVE SHADER", new Shader},
 		{ "LFO", new LfoSlider },
 		{ "MAPPING GRID", new ofxDarkKnightMapping },
@@ -17,17 +20,18 @@ void ofApp::setup()
 		{ "MIDI CONTROL IN", new DarkKnightMidiControlIn },
 		{ "MIDI CONTROL OUT", new DarkKnightMidiControlOut },
 		{ "MIXER", new Mixer },
-		{ "OSC CLIENT", new ofxDarkKnightOsc },
+		{ "OSC CLIENT", new DarkKnightOscClient },
+		{ "OSC SERVER", new DarkKnightOscServer },
 		{ "PERLIN NOISE", new NoiseSlider},
 		{ "POST PROCESSING FX", new DarkKnightPostProcessing },
 		{ "PREVIEW", new Preview },
 		{ "SCREEN OUTPUT", new ScreenOutput },
+		{ "SKETCH POOL", new MediaPool },
 		{ "SKETCH POOL 1", new Basic },
 		{ "SKETCH POOL 2", new Basic },
-		{ "TEXTURE SERVER", new DarkKnightTextureServer },
-		{ "TEXTURE CLIENT", new DarkKnightTextureClient },
+		{ "SPOUT SERVER", new DarkKnightTextureServer },
+		{ "SPOUT CLIENT", new DarkKnightTextureClient },
 		{ "VIDEO RECORDER", new DarkKnightVideoRecorder},
-    };
     manager.setup(&modulesPool);
 }
 

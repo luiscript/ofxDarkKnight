@@ -54,6 +54,7 @@
 #include "DarkKnightColorShader.hpp"
 #include "DarkKnightLight.hpp"
 #include "DarkKnightConfig.hpp" 
+#include "DKColorInverter.h"
 
 class ofxDarkKnight : public ofxMidiListener{
 private:
