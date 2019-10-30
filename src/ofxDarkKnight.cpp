@@ -674,6 +674,7 @@ void ofxDarkKnight::savePreset()
     }
 }
 
+
 Module * ofxDarkKnight::createModule(string name)
 {
     if(name == "PREVIEW") return new Preview;

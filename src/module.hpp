@@ -30,6 +30,7 @@
 #include "ofxMidi.h"
 //#include "ofxOsc.h"
 
+#define STRINGIFY(A) #A
 
 struct ModuleSoundParticle
 {
