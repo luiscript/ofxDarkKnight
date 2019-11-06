@@ -44,7 +44,7 @@ void MediaPool::init()
     ofVec2f resolution = { getModuleWidth(), getModuleHeight() };
     
     translation = nullptr;
-    nextIndex = index = 0;
+	nextIndex = index = 0;
     modules = nullptr;
 	light = nullptr;
     

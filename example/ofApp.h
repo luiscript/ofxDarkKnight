@@ -11,7 +11,6 @@ class ofApp : public ofBaseApp{
 		void draw();
         void exit();
     
-        ofxDarkKnight manager;
+        ofxDarkKnight app;
         shared_ptr<ofAppBaseWindow> mainWindow;
-
 };

@@ -35,15 +35,7 @@ void Module::setupModule(string name, ofVec2f resolution)
 
 void Module::setupCommon(string name, ofVec2f resolution)
 {
-	//moduleGuiWidth = ofGetWidth() / 6;
-    float pixelDensity = ((ofAppGLFWWindow*)ofGetWindowPtr())->getPixelScreenCoordScale();
-    
-    if(pixelDensity > 1)
-    {
-        pixelDensity = 1.5;
-    }
-    
-    moduleGuiWidth = 320;// * pixelDensity;
+    moduleGuiWidth = 320;
     moduleName = name;
     moduleId = 0;
 
@@ -61,9 +53,6 @@ void Module::setupCommon(string name, ofVec2f resolution)
     moduleIsChild = false;
     moduleInitialized = true;
 
-	//auto newTheme = new ofxDatGuiThemeWireframe();
-	//gui->setTheme(newTheme);
-	//gui->setWidth(moduleGuiWidth);
 }
 
 void Module::setupGui()

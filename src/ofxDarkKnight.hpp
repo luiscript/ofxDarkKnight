@@ -56,6 +56,9 @@
 #include "DarkKnightConfig.hpp" 
 #include "DKColorInverter.h"
 
+template<typename T> Module* createInstance() { return new T; }
+typedef map<string, Module* (*)()> map_type;
+
 class ofxDarkKnight : public ofxMidiListener{
 private:
     ofVec2f resolution;
@@ -76,7 +79,7 @@ private:
     ofxDatGuiScrollView* componentsList;
     
     unordered_map<string, Module*> modulesPool;
-    unordered_map<string, Module*> modules;
+	unordered_map<string, Module*> modules;
     
     list<string> poolNames;
     
@@ -87,6 +90,8 @@ private:
 	float zoom;
 	int moduleId;
 
+	
+
 public:
     
     ofxDarkKnight();
@@ -94,8 +99,10 @@ public:
     
 	bool midiMapMode;
     shared_ptr<ofAppBaseWindow> mainWindow;
+	map_type factory;
     
-    void setup(unordered_map<string, Module*> *);
+
+    void setup();
     void update();
     void draw();
     void close();
@@ -105,7 +112,6 @@ public:
     
     void addModule(string, Module *);
     Module * addModule(string);
-	static void addModuleTest(string);
     void deleteModule(string);
     void deleteComponentWires(ofxDatGuiComponent *, int);
     void deleteFocusedModule();
@@ -124,7 +130,6 @@ public:
     void onResolutionChange(ofVec2f &);
     void onComponentListChange(ofxDatGuiScrollViewEvent e);
     void newMidiMessage(ofxMidiMessage &);
-    Module * createModule(string);
     
     void savePreset();
     
@@ -135,6 +140,8 @@ public:
 
 	unordered_map<string, Module*>* getModulesReference();
 	vector<Wire>* getWiresReference();
+	ofVec2f* getTranslationReference();
+	float* getZoomReference();
 
 	int getNextModuleId();
 	void loadProjectFromXml(ofXml);

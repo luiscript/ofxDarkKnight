@@ -85,7 +85,7 @@ If you want to start a new project from scratch, follow the next steps:
 ## Including the addon 
 
 - Add ofxDarkKnight to your code
-- Create an instance of ofxDarkKnight class and call it `manager`.
+- Create an instance of ofxDarkKnight class and call it `app`.
 
 > ofApp.h file:
 
@@ -101,17 +101,17 @@ class ofApp : public ofBaseApp
     void update();
     void draw();
 
-    ofxDarkKnight manager;
+    ofxDarkKnight app;
 }
 ```
 
-## Config the manager
+## Config the app
 
 The `setup` function of ofxDarkKnight class is expecting an `unordered_map<string, Module*>` pointer with a collection of pairs `moduleName-module` objects of type `string-Module*`.
 
-Create the data structure and send it to the manager in the `setup` function of `ofApp.cpp`.
+Create the data structure and send it to the app in the `setup` function of `ofApp.cpp`.
 
-Then just call `manager.update()` in the main `update()`function and `manager.draw()` in the main `draw()` function.
+Then just call `app.update()` in the main `update()`function and `app.draw()` in the main `draw()` function.
 
 <aside class="notice">
 You may need to add <code>#include "unordered_map"</code> in your <code>ofApp.h</code> file.
@@ -125,22 +125,20 @@ void ofApp::setup()
 {
   ofBackground(0);
 
-  unordered_map<string, Module*> modulesPool;
-  modulesPool = {
-      { "PREVIEW", new Preview },
-      { "SKETCH POOL", new Basic }
-  };
-  manager.setup(&modulesPool);
+	app.factory["PREVIEW"] = &createInstance<Preview>;
+	app.factory["SKETCH POOL"] = &createInstance<MediaPool>;
+
+  app.setup();
 }
 
 void ofApp::update()
 {
-    manager.update();
+    app.update();
 }
 
 void ofApp::draw()
 {
-    manager.draw();
+    app.draw();
 }
 ```
 
@@ -149,7 +147,7 @@ void ofApp::draw()
 
 The SCREEN OUTPUT module requires to share the OpenGL context with the main window. To do that, create a `shared_ptr<ofAppBaseWindow>` property of the ofApp class.
 
-Add the window to the manager by modifying the `mainWindow` property.
+Add the window to the app by modifying the `mainWindow` property.
 
 Modify the `main.cpp` file to add some custom configuration to the window.
 
@@ -157,7 +155,7 @@ Modify the `main.cpp` file to add some custom configuration to the window.
 
 ```c++
     ...
-    ofDarkKnight manager;
+    ofDarkKnight app;
     shared_ptr<ofAppBaseWindow> mainWindow;
 }
 ```
@@ -167,7 +165,7 @@ Modify the `main.cpp` file to add some custom configuration to the window.
 void ofApp::setup()
 {
     //...
-    manager.mainWindow = mainWindow;
+    app.mainWindow = mainWindow;
     //...
 }
 ```
@@ -179,9 +177,6 @@ void ofApp::setup()
 #include "ofApp.h"
 
 int main( ){
-    CGRect thisMonitorArea = CGDisplayBounds(CGMainDisplayID());
-    int thisWidth = CGRectGetWidth(thisMonitorArea);
-    int thisHeight = CGRectGetHeight(thisMonitorArea);
     
     ofGLFWWindowSettings settings;
     settings.resizable = true;
@@ -330,9 +325,9 @@ ofFbo * DarkKnightEllipse::getFbo()
 }
 ```
 
-## Add new module to manager
+## Add new module to app
 
-Now that we created a new module, we need to add it to the manager, please refer to the [Adding existing modules](#adding-existing-modules) and follow the instructions. The `modulesPool` structure should look like the code example.
+Now that we created a new module, we need to add it to the app, please refer to the [Adding existing modules](#adding-existing-modules) and follow the instructions. The `modulesPool` structure should look like the code example.
 
 Try to run the project and if everything is good you should be able to add your brand new Ellipse module and control it's size and fillColor with the module's parameters.
 
@@ -344,11 +339,9 @@ Remember to include the module in the main header file <code>#include "DarkKnigh
 
 ```c++
   ...
-  modulesPool = {
-      { "ELLIPSE", new DarkKnightEllipse},
-      { "PREVIEW", new Preview },
-      { "SKETCH POOL", new Basic }
-  };
+	app.factory["PREVIEW"] = &createInstance<Preview>;
+  app.factory["ELLIPSE"] = &createInstance<DarkKnightEllipse>;
+	app.factory["SKETCH POOL"] = &createInstance<MediaPool>;
   ...
 ```
 
@@ -449,7 +442,6 @@ void DarkKnightEllipse::addModuleParameters()
   addSlider("B", fillColorB,10, 255, 128);
 }
 ```
-
 
 # License
 

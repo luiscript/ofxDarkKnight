@@ -32,17 +32,15 @@ ofxDarkKnight::~ofxDarkKnight()
     
 }
 
-void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
+void ofxDarkKnight::setup()
 {
     loadWires = shiftKey = altKey = cmdKey = midiMapMode = drawing = showExplorer = false;
     translation = { 0, 0 };
     resolution = { 1920, 1080 };
 	zoom = 1.0;
-    modulesPool = *pool;
 	moduleId = 1;
     
-    for(pair<string, Module*> module : modulesPool )
-        poolNames.push_back(module.first);
+    for(auto module : factory ) poolNames.push_back(module.first);
     
     poolNames.sort();
 
@@ -75,15 +73,10 @@ void ofxDarkKnight::setup(unordered_map<string, Module*> * pool)
 	}
 	#endif
 
-    DarkKnightConfig* config = new DarkKnightConfig;
-    config->setupModule("PROJECT", resolution);
-    config->gui->setPosition(ofGetWidth() - ofGetWidth()/6, 0);
-    config->setModuleMidiMapMode(midiMapMode);
-    ofAddListener(config->onResolutionChangeEvent, this, &ofxDarkKnight::onResolutionChange);
-	config->setModuleId(getNextModuleId());
-	modules.insert({"PROJECT", config});
-}
+	addModule("PROJECT");
 
+}
+ 
 
 void ofxDarkKnight::update()
 {    
@@ -104,8 +97,6 @@ void ofxDarkKnight::update()
         }
     
 	if (showExplorer) {
-	//	assetsList->update();
-		//collectionList->update();
 		componentsList->update();
 	}
 }
@@ -461,11 +452,6 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
 }
 
 
-void ofxDarkKnight::addModuleTest(string moduleName)
-{
-	cout << moduleName << endl;
-}
-
 void ofxDarkKnight::addModule(string moduleName, Module * module)
 {
     module->setModuleMidiMapMode(midiMapMode);
@@ -475,62 +461,63 @@ void ofxDarkKnight::addModule(string moduleName, Module * module)
 
 Module * ofxDarkKnight::addModule(string moduleName)
 {
-    unordered_map<string, Module*>::iterator it;
-    it = modules.find(moduleName);
-    if (it == modules.end())
+	int moduleId = getNextModuleId();
+	string uniqueModuleName = moduleName + "@" + ofToString(moduleId);
+	
+	auto newModule = factory[moduleName]();
+    newModule->setupModule(moduleName, resolution);
+    newModule->gui->setPosition((ofGetMouseX() - translation.x)/zoom - 100/zoom, (ofGetMouseY() - translation.y)/zoom - 15/zoom);
+    newModule->setModuleMidiMapMode(midiMapMode);
+	newModule->setModuleId(moduleId);
+	
+    if(moduleName == "SCREEN OUTPUT")
     {
-        it = modulesPool.find(moduleName);
-        Module * newModule = createModule(it->first);
-        if(newModule == nullptr) newModule = it->second;
-        
-        newModule->setupModule(it->first, resolution);
-        newModule->gui->setPosition((ofGetMouseX() - translation.x)/zoom - 100/zoom, (ofGetMouseY() - translation.y)/zoom - 15/zoom);
-        newModule->setModuleMidiMapMode(midiMapMode);
-		int moduleId = getNextModuleId();
-		newModule->setModuleId(moduleId);
-		string uniqueModuleName = it->first + "#" + ofToString(newModule->getModuleId());
-
-        if(moduleName == "SCREEN OUTPUT")
-        {
-            ScreenOutput * so = static_cast<ScreenOutput*>(newModule);
-            so->mainWindow = mainWindow;
-            modules.insert({uniqueModuleName, so});
-        }
-        else if(moduleName == "MIDI CONTROL IN")
-        {
-            DarkKnightMidiControlIn * controller = static_cast<DarkKnightMidiControlIn*>(newModule);
-            ofAddListener(controller->sendMidi, this, &ofxDarkKnight::newMidiMessage);
-            modules.insert({uniqueModuleName, controller});
-        } else if(moduleName == "CONFIG")
-        {
-            DarkKnightConfig* config = static_cast<DarkKnightConfig*>(newModule);
-            ofAddListener(config->onResolutionChangeEvent, this, &ofxDarkKnight::onResolutionChange);
-            modules.insert({uniqueModuleName, config});
-        }
-        else
-        {
-            modules.insert({uniqueModuleName, newModule});
-        }
-        if(it->second->getModuleHasChild())
-        {
-            MediaPool * mp = static_cast<MediaPool*>(it->second);
-            mp->setModulesReference(&modules);
-            mp->setTranslationReferences(&translation, &zoom);
-            int mIndex = 0;
-            for(CollectionItem item : mp->collection)
-            {
-                Module * m = item.canvas;
-                if(mIndex > 0) m->disable();
-                string childName = it->second->getName() + "/" + m->getName();
-                m->setModuleMidiMapMode(midiMapMode);
-				m->setModuleId(getNextModuleId());
-                modules.insert({childName + ofToString(m->getModuleId()), m});
-                mIndex ++;
-            }
-        }
-        return newModule;
+		ScreenOutput* so = static_cast<ScreenOutput*>(newModule);;
+        so->mainWindow = mainWindow;
+        modules.insert({uniqueModuleName, so});
     }
-    return nullptr;
+	else if (moduleName == "PROJECT")
+	{
+		DarkKnightConfig* config = static_cast<DarkKnightConfig*>(newModule);;
+		config->setupModule("PROJECT", resolution);
+		config->gui->setPosition(ofGetWidth() - ofGetWidth() / 6, 0);
+		config->setModuleMidiMapMode(midiMapMode);
+		ofAddListener(config->onResolutionChangeEvent, this, &ofxDarkKnight::onResolutionChange);
+		config->setModuleId(getNextModuleId());
+		modules.insert({ "PROJECT", config });
+	}
+    else if(moduleName == "MIDI CONTROL IN")
+    {
+        DarkKnightMidiControlIn * controller = static_cast<DarkKnightMidiControlIn*>(newModule);;
+        ofAddListener(controller->sendMidi, this, &ofxDarkKnight::newMidiMessage);
+        modules.insert({uniqueModuleName, controller});
+    } 
+    else
+    {
+            modules.insert({uniqueModuleName, newModule});
+    }
+
+    if(newModule->getModuleHasChild())
+    {
+        MediaPool * mp = static_cast<MediaPool*>(newModule);
+        mp->setModulesReference(&modules);
+        mp->setTranslationReferences(&translation, &zoom);
+        int mIndex = 0;
+        for(CollectionItem item : mp->collection)
+        {
+            Module * m = item.canvas;
+            if(mIndex > 0) m->disable();
+            string childName = m->getName();
+            m->setModuleMidiMapMode(midiMapMode);
+			int childModuleId = getNextModuleId();
+			m->setModuleId(childModuleId);
+			string childNameWithId = childName + ofToString(childModuleId);
+            modules.insert({childNameWithId, m}); 
+            mIndex ++;
+        }
+
+    }
+    return newModule;
 }
 
 void ofxDarkKnight::deleteModule(string moduleName)
@@ -674,26 +661,6 @@ void ofxDarkKnight::savePreset()
     }
 }
 
-
-Module * ofxDarkKnight::createModule(string name)
-{
-    if(name == "PREVIEW") return new Preview;
-	else if (name == "CONFIG") return new DarkKnightConfig;
-	else if (name == "COLOR SHADER") return new ColorShader;
-	else if(name == "INVERTER") return new ParamInverter;
-    else if(name == "LFO") return new LfoSlider;
-    else if(name == "MAPPING TOOLS") return new ofxDarkKnightMapping;
-    else if(name == "MIDI CONTROL IN") return new DarkKnightMidiControlIn;
-    else if(name == "MIDI CONTROL OUT") return new DarkKnightMidiControlOut;
-    else if(name == "MIXER") return new Mixer;
-    else if(name == "PERLIN NOISE") return new NoiseSlider;
-    else if(name == "OSC CLIENT") return new DarkKnightOscClient;
-    else if(name == "TEXTURE SERVER") return new DarkKnightTextureServer;
-    else if(name == "TEXTURE CLIENT") return new DarkKnightTextureClient;
-    
-    return nullptr;
-}
-
 int ofxDarkKnight::getNextModuleId()
 {
 	return moduleId++;
@@ -702,49 +669,7 @@ int ofxDarkKnight::getNextModuleId()
 
 void ofxDarkKnight::loadProjectFromXml(ofXml xml)
 {
-	modules.clear();
 
-	auto project = xml.getChild("project");
-	if (!project)
-	{
-		cout << "Incorrect file format" << endl;
-		return;
-	}
-	auto resolutionObject = project.getChild("resolution");
-	ofVec2f resolutionVector =
-	{
-		(float)resolutionObject.getAttribute("width").getFloatValue(),
-		(float)resolutionObject.getAttribute("height").getFloatValue()
-	};
-	resolution = resolutionVector;
-
-	auto gui = project.getChild("gui");
-	translation.x = (float)gui.getAttribute("translationX");
-	translation.y = (float)gui.getAttribute("translationY");
-	zoom = (float)gui.getAttribute("zoom");
-
-	auto modulesObjects = project.getChild("modules");
-	if (!modulesObjects) {
-		cout << "This file does not have any modules" << endl;
-		return;
-	}
-
-	for (auto moduleObject : modulesObjects.getChildren())
-	{
-		auto name = moduleObject.getAttribute("name");
-		string moduleName = name.getValue();
-		int tempModuleId = moduleObject.getAttribute("id").getIntValue();
-		
-		if (!moduleObject.getAttribute("isChild").getBoolValue())
-		{
-			auto pos = moduleObject.getChild("position");
-			float posx = pos.getAttribute("x").getFloatValue();
-			float posy = pos.getAttribute("y").getFloatValue();
-			string theName = moduleName.substr(0, moduleName.find("#"));
-			auto newModule = addModule(theName);
-			newModule->gui->setPosition(posx, posy);
-		}
-	}
 }
 
 void ofxDarkKnight::setTranslation(ofVec2f t)
@@ -765,4 +690,14 @@ unordered_map<string, Module*>* ofxDarkKnight::getModulesReference()
 vector<Wire>* ofxDarkKnight::getWiresReference()
 {
 	return &wires;
+}
+
+ofVec2f* ofxDarkKnight::getTranslationReference()
+{
+	return &translation;
+}
+
+float* ofxDarkKnight::getZoomReference()
+{
+	return &zoom;
 }

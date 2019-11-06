@@ -70,7 +70,7 @@ private:
     
     ofEvent<string> deleteModule;
     ofEvent<Module*> addModule;
-    unordered_map<string, Module*> * modules;
+	unordered_map<string, Module*> * modules;
     int yOffsetGui;
     ofTrueTypeFont	font;
     
