@@ -70,7 +70,6 @@ public:
     bool customParams = false;
     bool moduleIsChild = false;
     ofxDatGui * gui;
-    ofxDatGuiFolder * params;
 
     vector<WireConnection*> inputs;
     vector<WireConnection*> outputs;

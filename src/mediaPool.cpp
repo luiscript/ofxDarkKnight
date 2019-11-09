@@ -387,11 +387,11 @@ void MediaPool::setTranslationReferences(ofVec2f* t, float* z)
 
 void MediaPool::savePreset()
 {
-    unordered_map<string, float> preset;
+    /*unordered_map<string, float> preset;
     for(ofxDatGuiComponent * param : currentCanvas->params->children)
     {
         preset.insert({param->getName(), param->getComponentScale()});
     }
     string name = "preset-"+ofToString(collection[index].presets.size());
-    collection[index].presets.push_back({name, preset});
+    collection[index].presets.push_back({name, preset});*/
 }

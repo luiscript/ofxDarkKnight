@@ -484,7 +484,7 @@ Module * ofxDarkKnight::addModule(string moduleName)
 		config->setModuleMidiMapMode(midiMapMode);
 		ofAddListener(config->onResolutionChangeEvent, this, &ofxDarkKnight::onResolutionChange);
 		config->setModuleId(getNextModuleId());
-		modules.insert({ "PROJECT", config });
+		modules.insert({uniqueModuleName, config });
 	}
     else if(moduleName == "MIDI CONTROL IN")
     {
@@ -511,7 +511,7 @@ Module * ofxDarkKnight::addModule(string moduleName)
             m->setModuleMidiMapMode(midiMapMode);
 			int childModuleId = getNextModuleId();
 			m->setModuleId(childModuleId);
-			string childNameWithId = childName + ofToString(childModuleId);
+			string childNameWithId = childName + "@" + ofToString(childModuleId);
             modules.insert({childNameWithId, m}); 
             mIndex ++;
         }
@@ -574,6 +574,18 @@ void ofxDarkKnight::deleteFocusedModule()
             break;
         }
     }
+}
+
+void ofxDarkKnight::deleteAllModules(){
+	for (auto module : modules)
+	{
+		module.second->inputs.clear();
+		module.second->outputs.clear();
+		module.second->gui->deleteItems();
+		module.second->unMount();
+	}
+
+	modules.clear();
 }
 
 void ofxDarkKnight::deleteComponentWires(ofxDatGuiComponent * component, int deletedModuleId)

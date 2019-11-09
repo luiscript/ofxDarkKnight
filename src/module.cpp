@@ -63,8 +63,6 @@ void Module::setupGui()
     gui->addHeader(moduleName);
     
     if(moduleIsChild) {
-        params = gui->addFolder("PARAMS");
-        params->expand();
         int pixelDensity = ((ofAppGLFWWindow*)ofGetWindowPtr())->getPixelScreenCoordScale();
         amp = pixelDensity >= 2 ? pixelDensity - 0.5 : 1.0;
     }
@@ -290,22 +288,22 @@ void Module::disable()
 
 void Module::addSlider(string name, int & add, int min, int max, int val)
 {
-    params->addSlider(name, min, max, val)->bind(add);
+    gui->addSlider(name, min, max, val)->bind(add);
 }
 
 void Module::addSlider(string name, float & add, float min, float max, float val)
 {
-    params->addSlider(name, min, max, val)->bind(add);
+    gui->addSlider(name, min, max, val)->bind(add);
 }
 
 void Module::addSlider(string name, int & add, int min, int max, int val, int precision)
 {
-    params->addSlider(name, min, max, val)->setPrecision(precision)->bind(add);
+    gui->addSlider(name, min, max, val)->setPrecision(precision)->bind(add);
 }
 
 void Module::addSlider(string name, float & add, float min, float max, float val, int precision)
 {
-    params->addSlider(name, min, max, val)->setPrecision(precision)->bind(add);
+    gui->addSlider(name, min, max, val)->setPrecision(precision)->bind(add);
 }
 
 

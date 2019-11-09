@@ -115,6 +115,7 @@ public:
     void deleteModule(string);
     void deleteComponentWires(ofxDatGuiComponent *, int);
     void deleteFocusedModule();
+	void deleteAllModules();
     
     //mouse event handlers
     void handleMousePressed(ofMouseEventArgs&);
@@ -146,8 +147,7 @@ public:
 	int getNextModuleId();
 	void loadProjectFromXml(ofXml);
 	void setTranslation(ofVec2f);
-	void setZoom(float);
-    
+	void setZoom(float);    
 };
 
 #endif /* modulesManager_hpp */

@@ -218,12 +218,10 @@ void Constellation::draw()
 
 void Constellation::addModuleParameters()
 {
-    ofxDatGuiFolder * patternsParams = gui->addFolder("PATTERNS", ofColor::cyan);
-    ofxDatGuiMatrix * matrix = patternsParams->addMatrix("", 8, true);
+    ofxDatGuiMatrix * matrix = gui->addMatrix("drawing modes", 8, true);
     matrix->onMatrixEvent(this, &Constellation::onDrawingModeChange);
     matrix->setRadioMode(true);
     matrix->getChildAt(0)->setSelected(false);
-    patternsParams->expand();
     
     addSlider("count", numParticles, 0, 2000, 500);
     addSlider("size", particleSize, 0, 50, 5);
