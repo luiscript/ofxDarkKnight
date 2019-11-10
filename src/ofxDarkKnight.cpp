@@ -43,6 +43,9 @@ void ofxDarkKnight::setup()
     for(auto module : factory ) poolNames.push_back(module.first);
     
     poolNames.sort();
+    
+    cout << "ofgetwidth " << ofGetWidth() << endl;
+    cout << "screen width" << ofGetScreenWidth() << endl;
 
 	float browserWidth = ofGetWidth() * 0.8;
 	float browserHeight = ofGetHeight() * 0.8;
@@ -50,7 +53,7 @@ void ofxDarkKnight::setup()
 	componentsList = new ofxDatGuiScrollView("MODULES", 11);
 	componentsList->setWidth(browserWidth / 3);
 	componentsList->setHeight(poolNames.size() * 25.0);
-	componentsList->setPosition(ofGetWidth() * 0.1 + browserWidth/3, ofGetHeight() * 0.1);
+	componentsList->setPosition(ofGetWidth()/2 - 0.5 * browserWidth / 3, ofGetHeight()/2 - 200);
 	componentsList->onScrollViewEvent(this, &ofxDarkKnight::onComponentListChange);
 
     for(auto it = poolNames.begin(); it != poolNames.end(); it++) componentsList->add(*it);
@@ -415,11 +418,13 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                     if(module.second->getModuleHasChild())
                     {
                         MediaPool * mp = static_cast<MediaPool*>(module.second);
+                        float amp = 1.0;
                         mp->addItem(hapPlayer, "thumbnails/terrain.jpg", "video player");
                         mediaPoolFounded = true;
-                        hapPlayer->gui->setWidth(ofGetWidth()/6);
                         hapPlayer->loadFile(file.getAbsolutePath());
+                        hapPlayer->gui->setWidth(mp->gui->getWidth());
                         modules.insert({"HAP: " + file.getFileName(), hapPlayer});
+                        
                         mp->drawMediaPool();
                         return;
                     }
@@ -438,7 +443,7 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                     newPool->setModuleMidiMapMode(midiMapMode);
                     modules.insert({"SKETCH POOL 1", newPool});
                     
-                    hapPlayer->gui->setWidth(ofGetWidth()/6);
+                    hapPlayer->gui->setWidth(newPool->gui->getWidth());
                     hapPlayer->loadFile(file.getAbsolutePath());
                     hapPlayer->setModuleMidiMapMode(midiMapMode);
                     modules.insert({"HAP: " + file.getFileName(), hapPlayer});
@@ -480,7 +485,7 @@ Module * ofxDarkKnight::addModule(string moduleName)
 	{
 		DarkKnightConfig* config = static_cast<DarkKnightConfig*>(newModule);;
 		config->setupModule("PROJECT", resolution);
-		config->gui->setPosition(ofGetWidth() - ofGetWidth() / 6, 0);
+		config->gui->setPosition(ofGetWidth() - 320, 0);
 		config->setModuleMidiMapMode(midiMapMode);
 		ofAddListener(config->onResolutionChangeEvent, this, &ofxDarkKnight::onResolutionChange);
 		config->setModuleId(getNextModuleId());
@@ -576,7 +581,8 @@ void ofxDarkKnight::deleteFocusedModule()
     }
 }
 
-void ofxDarkKnight::deleteAllModules(){
+void ofxDarkKnight::deleteAllModules()
+{
 	for (auto module : modules)
 	{
 		module.second->inputs.clear();
@@ -712,4 +718,25 @@ ofVec2f* ofxDarkKnight::getTranslationReference()
 float* ofxDarkKnight::getZoomReference()
 {
 	return &zoom;
+}
+
+void ofxDarkKnight::resizeWindow(int w, int h)
+{
+    float browserWidth = w * 0.8;
+    float browserHeight = h * 0.8;
+    
+    delete componentsList;
+    componentsList = nullptr;
+    
+    componentsList = new ofxDatGuiScrollView("MODULES", 11);
+    componentsList->setWidth(browserWidth / 3);
+    componentsList->setHeight(poolNames.size() * 25.0);
+    componentsList->setPosition(ofGetWidth()/2 - 0.5 * browserWidth / 3, ofGetHeight()/2 - 200);
+    componentsList->onScrollViewEvent(this, &ofxDarkKnight::onComponentListChange);
+    
+    
+    componentsList->setWidth(browserWidth / 3);
+    componentsList->setHeight(poolNames.size() * 25.0);
+    componentsList->setPosition(ofGetWidth()/2 - 0.5 * browserWidth / 3, ofGetHeight()/2 - 200);
+    for(auto it = poolNames.begin(); it != poolNames.end(); it++) componentsList->add(*it);
 }

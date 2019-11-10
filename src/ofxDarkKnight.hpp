@@ -147,7 +147,8 @@ public:
 	int getNextModuleId();
 	void loadProjectFromXml(ofXml);
 	void setTranslation(ofVec2f);
-	void setZoom(float);    
+	void setZoom(float);
+    void resizeWindow(int, int);
 };
 
 #endif /* modulesManager_hpp */
