@@ -23,11 +23,11 @@
 #ifndef basic_hpp
 #define basic_hpp
 
-#include "mediaPool.hpp"
+#include "DKMediaPool.hpp"
 #include "constellation.h"
 #include "terrain.hpp"
 
-class Basic : public MediaPool{
+class Basic : public DKMediaPool{
 
 public:
     void setup(){

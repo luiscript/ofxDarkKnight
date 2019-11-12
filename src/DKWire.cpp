@@ -20,10 +20,10 @@
  SOFTWARE.
  */
 
-#include "wire.hpp"
+#include "DKWire.hpp"
 
 
-Wire::Wire()
+DKWire::DKWire()
 {
     input = nullptr;
     output = nullptr;
@@ -33,18 +33,18 @@ Wire::Wire()
     connectionRadius = 4;
 }
 
-void Wire::update()
+void DKWire::update()
 {
     if(input != nullptr && output != nullptr)
     {
-        if(getConnectionType() == ConnectionType::DK_SLIDER)
+        if(getConnectionType() == DKConnectionType::DK_SLIDER)
         {
             slider->setComponentScale(*output->getScale());
         }
     }
 }
 
-void Wire::draw()
+void DKWire::draw()
 {
     if (inputModule->getModuleEnabled() && outputModule->getModuleEnabled()) {
         float dist = getDistance();
@@ -55,7 +55,7 @@ void Wire::draw()
     }
 }
 
-ofPoint Wire::getWireControlPoint(ofPoint p1, ofPoint p2, float dist)
+ofPoint DKWire::getWireControlPoint(ofPoint p1, ofPoint p2, float dist)
 {
     ofPoint slump;
     slump.y = (1.0 - wiresTension) * (150.0 + 1.0*dist);
@@ -64,7 +64,7 @@ ofPoint Wire::getWireControlPoint(ofPoint p1, ofPoint p2, float dist)
 
 }
 
-void Wire::drawWire(ofPoint p1, ofPoint p2, ofPoint p3)
+void DKWire::drawWire(ofPoint p1, ofPoint p2, ofPoint p3)
 {
     ofPushStyle();
     ofPushMatrix();
@@ -80,7 +80,7 @@ void Wire::drawWire(ofPoint p1, ofPoint p2, ofPoint p3)
     ofPopStyle();
 }
 
-void Wire::drawCurrentWire(ofPoint p)
+void DKWire::drawCurrentWire(ofPoint p)
 {
     ofPoint op = output->getWireConnectionPos();
     float dist = ofDist(op.x, op.y, p.x, p.y);
@@ -89,47 +89,47 @@ void Wire::drawCurrentWire(ofPoint p)
     drawWire(out, p, controlPoint);
 }
 
-WireConnection * Wire::getInput()
+DKWireConnection * DKWire::getInput()
 {
     return input;
 }
 
-WireConnection * Wire::getOutput()
+DKWireConnection * DKWire::getOutput()
 {
     return output;
 }
 
-void Wire::setInputConnection(WireConnection * in)
+void DKWire::setInputConnection(DKWireConnection * in)
 {
     input = in;
 }
 
-void Wire::setOutputConnection(WireConnection * out)
+void DKWire::setOutputConnection(DKWireConnection * out)
 {
     output = out;
 }
 
-void Wire::setOutputModule(Module * m)
+void DKWire::setOutputModule(DKModule * m)
 {
     outputModule = m;
 }
 
-void Wire::setInputModule(Module * m)
+void DKWire::setInputModule(DKModule * m)
 {
     inputModule = m;
 }
 
-void Wire::setConnectionType(ConnectionType connType)
+void DKWire::setConnectionType(DKConnectionType connType)
 {
     connectionType = connType;
 }
 
-float Wire::getDistance()
+float DKWire::getDistance()
 {
     return ofDist(input->getWireConnectionPos().x, input->getWireConnectionPos().y, output->getWireConnectionPos().x, output->getWireConnectionPos().y);
 }
 
-ConnectionType Wire::getConnectionType()
+DKConnectionType DKWire::getConnectionType()
 {
     return connectionType;
 }

@@ -23,7 +23,7 @@
 #ifndef canvasCollection_hpp
 #define canvasCollection_hpp
 
-#include "module.hpp"
+#include "DKModule.hpp"
 #include <math.h>
 
 #include "ofxMidi.h"
@@ -37,14 +37,14 @@ struct Preset{
 class CollectionItem{
 public:
     string name;
-    Module * canvas;
+    DKModule * canvas;
     string fileName;
     ofImage * thumbnail;
     vector<Preset> presets;
 };
 
 
-class MediaPool : public Module
+class DKMediaPool : public DKModule
 {
 private:
     string collectionName;
@@ -55,7 +55,7 @@ private:
     bool drawFbo = false;
     bool hasInput = false;
     bool drawMode = false;
-    Module * currentCanvas;
+    DKModule * currentCanvas;
 
     ofFbo mainFbo;
     ofFbo mediaPoolFbo;
@@ -69,8 +69,8 @@ private:
 	float* zoom;
     
     ofEvent<string> deleteModule;
-    ofEvent<Module*> addModule;
-	unordered_map<string, Module*> * modules;
+    ofEvent<DKModule*> addModule;
+	unordered_map<string, DKModule*> * modules;
     int yOffsetGui;
     ofTrueTypeFont	font;
     
@@ -89,14 +89,14 @@ public:
     void draw();
     void addModuleParameters();
     void addCustomParameters();
-    void addItem(Module *, string, string);
+    void addItem(DKModule *, string, string);
     void onMidiInputListChange(ofxDatGuiDropdownEvent);
     void onToggleDraw(ofxDatGuiToggleEvent);
     
     void onMatrix1Change(ofxDatGuiMatrixEvent);
     void onKeyboardEvent(ofKeyEventArgs & e);
     
-    Module * getChildModule();
+    DKModule * getChildModule();
     
     void drawMediaPool();
     void updatePoolIndex(int, int);
@@ -115,7 +115,7 @@ public:
 	void setLight(ofLight*);
     
     void setCollectionName(string);
-    void setModulesReference(unordered_map<string, Module*> *);
+    void setModulesReference(unordered_map<string, DKModule*> *);
     void setTranslationReferences(ofVec2f *, float*);
     
     void mousePressed(ofMouseEventArgs & mouse);

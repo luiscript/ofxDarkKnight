@@ -20,12 +20,12 @@
  SOFTWARE.
  */
 
-#include "Shader.hpp"
+#include "DKLiveShader.hpp"
 
-void Shader::setup()
+void DKLiveShader::setup()
 {
     gotTexture = false;
-    //autoShader.load("Shaders/EmptyShader");
+    //autoDKLiveShader.load("DKLiveShaders/EmptyDKLiveShader");
     
     fbo.allocate(getModuleWidth(), getModuleHeight());
     fbo.begin();
@@ -38,16 +38,16 @@ void Shader::setup()
     precision = 2;
 	loaded = false;
     
-    addOutputConnection(ConnectionType::DK_FBO);
-    addInputConnection(ConnectionType::DK_FBO);
+    addOutputConnection(DKConnectionType::DK_FBO);
+    addInputConnection(DKConnectionType::DK_FBO);
 }
 
-void Shader::update()
+void DKLiveShader::update()
 {
     
 }
 
-void Shader::draw()
+void DKLiveShader::draw()
 {
 	if (loaded)
 	{
@@ -60,7 +60,7 @@ void Shader::draw()
 		fbo.begin();
 		ofClear(0, 0, 0, 0);
 		autoShader.begin();
-		autoShader.setUniform1f("u_time", ofGetElapsedTimef());
+        autoShader.setUniform1f("u_time", ofGetElapsedTimef());
 		autoShader.setUniform2f("u_resolution", glm::vec2(getModuleWidth(), getModuleHeight()));
 		for (auto& it : floatParameters)
 		{
@@ -96,43 +96,43 @@ void Shader::draw()
 }
 
 
-void Shader::addModuleParameters()
+void DKLiveShader::addModuleParameters()
 {
-	ofxDatGuiFolder* shaderSettings = gui->addFolder("SHADER SETTINGS");
-	auto newButtton = shaderSettings->addButton("New shader");
-	auto openButton = shaderSettings->addButton("Open shader");
+	ofxDatGuiFolder* DKLiveShaderSettings = gui->addFolder("DKLiveShader SETTINGS");
+	auto newButtton = DKLiveShaderSettings->addButton("New DKLiveShader");
+	auto openButton = DKLiveShaderSettings->addButton("Open DKLiveShader");
 
-	newButtton->onButtonEvent(this, &Shader::onShaderSettingsButtonPress);
-	openButton->onButtonEvent(this, &Shader::onShaderSettingsButtonPress);
+	newButtton->onButtonEvent(this, &DKLiveShader::onShaderSettingsButtonPress);
+	openButton->onButtonEvent(this, &DKLiveShader::onShaderSettingsButtonPress);
 
 	ofxDatGuiFolder* addParameter = gui->addFolder("ADD PARAMETER");
 	ofxDatGuiTextInput* parameterName = addParameter->addTextInput("Name", "parameter");
 	parameterName->setTextUpperCase(false);
-	parameterName->onTextInputEvent(this, &Shader::onParameterNameChange);
+	parameterName->onTextInputEvent(this, &DKLiveShader::onParameterNameChange);
 	ofxDatGuiTextInput* parameterMin = addParameter->addTextInput("Min value", "0");
-	parameterMin->onTextInputEvent(this, &Shader::onParameterMinChange);
+	parameterMin->onTextInputEvent(this, &DKLiveShader::onParameterMinChange);
 	ofxDatGuiTextInput* parameterMax = addParameter->addTextInput("Max value", "1");
-	parameterMax->onTextInputEvent(this, &Shader::onParameterMaxChange);
+	parameterMax->onTextInputEvent(this, &DKLiveShader::onParameterMaxChange);
 	ofxDatGuiTextInput* parameterPrecision = addParameter->addTextInput("Precision", "2");
-	parameterPrecision->onTextInputEvent(this, &Shader::onParameterPrecisionChange);
+	parameterPrecision->onTextInputEvent(this, &DKLiveShader::onParameterPrecisionChange);
 
 	ofxDatGuiButton* addParameterButton = addParameter->addButton("ADD");
 	addParameterButton->setLabelAlignment(ofxDatGuiAlignment::CENTER);
-	addParameterButton->onButtonEvent(this, &Shader::addParameter);
+	addParameterButton->onButtonEvent(this, &DKLiveShader::addParameter);
 
 	params = gui->addFolder("PARAMETERS");
 }
 
-void Shader::onShaderSettingsButtonPress(ofxDatGuiButtonEvent e)
+void DKLiveShader::onShaderSettingsButtonPress(ofxDatGuiButtonEvent e)
 {
-	if (e.target->getName() == "New shader")
+	if (e.target->getName() == "New DKLiveShader")
 	{
 		ofFileDialogResult loadFileResult = ofSystemLoadDialog("Selecciona un directorio", true, "./");
 		
 		if (loadFileResult.bSuccess) 
 		{
-			string destFragString = loadFileResult.filePath + "/emptyShader.frag";
-			string destVertString = loadFileResult.filePath + "/emptyShader.vert";
+			string destFragString = loadFileResult.filePath + "/emptyDKLiveShader.frag";
+			string destVertString = loadFileResult.filePath + "/emptyDKLiveShader.vert";
 			
 			const GLchar* frag = 
 R"END(#version 120
@@ -160,28 +160,28 @@ R"END(void main(void)
 			ofstream destVert(destVertString.c_str(), ios::binary);
 			destVert << vert;
 			
-			autoShader.load(loadFileResult.filePath + "/emptyShader");
+			autoShader.load(loadFileResult.filePath + "/emptyDKLiveShader");
 			
 			loaded = true;
 
 		}
 	}
-	if (e.target->getName() == "Open shader")
+	if (e.target->getName() == "Open DKLiveShader")
 	{
-		ofFileDialogResult loadFileResult = ofSystemLoadDialog("Open shader");
+		ofFileDialogResult loadFileResult = ofSystemLoadDialog("Open DKLiveShader");
 
 		if (loadFileResult.bSuccess)
 		{
 			string fileString = loadFileResult.getPath();
-			string shaderName = fileString.substr(0, fileString.find("."));
-			autoShader.load(shaderName);
+			string DKLiveShaderName = fileString.substr(0, fileString.find("."));
+			autoShader.load(DKLiveShaderName);
 			loaded = true;
 		}
 	}
 }
 
 
-void Shader::addParameter(ofxDatGuiButtonEvent e)
+void DKLiveShader::addParameter(ofxDatGuiButtonEvent e)
 {
     if(parameterName != "")
     {
@@ -206,32 +206,32 @@ void Shader::addParameter(ofxDatGuiButtonEvent e)
     }
 }
 
-void Shader::onParameterNameChange(ofxDatGuiTextInputEvent e)
+void DKLiveShader::onParameterNameChange(ofxDatGuiTextInputEvent e)
 {
     parameterName = e.target->getText();
 }
 
-void Shader::onParameterMinChange(ofxDatGuiTextInputEvent e)
+void DKLiveShader::onParameterMinChange(ofxDatGuiTextInputEvent e)
 {
     min = ofToFloat(e.target->getText());
 }
 
-void Shader::onParameterMaxChange(ofxDatGuiTextInputEvent e)
+void DKLiveShader::onParameterMaxChange(ofxDatGuiTextInputEvent e)
 {
     max = ofToFloat(e.target->getText());
 }
 
-void Shader::onParameterPrecisionChange(ofxDatGuiTextInputEvent e)
+void DKLiveShader::onParameterPrecisionChange(ofxDatGuiTextInputEvent e)
 {
     precision = ofToInt(e.target->getText());
 }
 
-ofFbo * Shader::getFbo()
+ofFbo * DKLiveShader::getFbo()
 {
     return &fbo;
 }
 
-void Shader::setFbo(ofFbo * inFbo)
+void DKLiveShader::setFbo(ofFbo * inFbo)
 {
     texture = inFbo;
     gotTexture = inFbo != nullptr;

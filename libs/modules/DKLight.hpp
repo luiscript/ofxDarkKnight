@@ -21,9 +21,9 @@
  */
 
 
-#include "module.hpp"
+#include "DKModule.hpp"
 
-class DarkKnightLight : public Module
+class DKLight : public DKModule
 {
 private:
     int ambientColorRed;
@@ -89,7 +89,7 @@ public:
                                       ambientColorGreen,
                                       ambientColorBlue));
         
-        addOutputConnection(ConnectionType::DK_LIGHT);
+        addOutputConnection(DKConnectionType::DK_LIGHT);
     }
     
     void update()

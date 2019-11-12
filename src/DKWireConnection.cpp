@@ -20,28 +20,28 @@
  SOFTWARE.
  */
 
-#include "wireConnection.hpp"
+#include "DKWireConnection.hpp"
 
 
-void WireConnection::setup(ofPoint p, string n)
+void DKWireConnection::setup(ofPoint p, string n)
 {
     wireConnectionPos = p;
     name = n;
 }
 
-void WireConnection::setup(ofPoint p, ConnectionType type)
+void DKWireConnection::setup(ofPoint p, DKConnectionType type)
 {
     wireConnectionPos = p;
     connectionType = type;
 }
 
-void WireConnection::updateWireConnectionPos(int x, int y)
+void DKWireConnection::updateWireConnectionPos(int x, int y)
 {
     wireConnectionPos.x = x;
     wireConnectionPos.y = y;
 }
 
-void WireConnection::draw()
+void DKWireConnection::draw()
 {
     ofPushStyle();
     ofSetColor(getWireConnectionColor());
@@ -51,80 +51,80 @@ void WireConnection::draw()
     ofPopStyle();
 }
 
-void WireConnection::setWireConnectionPos(ofPoint p)
+void DKWireConnection::setWireConnectionPos(ofPoint p)
 {
     wireConnectionPos = p;
 }
 
-ofPoint WireConnection::getWireConnectionPos()
+ofPoint DKWireConnection::getWireConnectionPos()
 {
     return wireConnectionPos;
 }
 
-string WireConnection::getName()
+string DKWireConnection::getName()
 {
     return name;
 }
 
-ConnectionType WireConnection::getConnectionType()
+DKConnectionType DKWireConnection::getConnectionType()
 {
     return connectionType;
 }
 
-WireConnection * WireConnection::testWireConnection(float x, float y)
+DKWireConnection * DKWireConnection::testWireConnection(float x, float y)
 {
     ofPoint p = getWireConnectionPos();
     float dist = ofDist(p.x, p.y, x, y);
     return dist < 15.0 ? this : nullptr;
 }
 
-float WireConnection::getDist(WireConnection * wire)
+float DKWireConnection::getDist(DKWireConnection * wire)
 {
     return ofDist(wireConnectionPos.x, wireConnectionPos.y, wire->wireConnectionPos.x, wire->wireConnectionPos.y);
 }
 
 
-void WireConnection::setScale(double * sc)
+void DKWireConnection::setScale(double * sc)
 {
     scale = sc;
 }
 
-double * WireConnection::getScale()
+double * DKWireConnection::getScale()
 {
     return scale;
 }
 
-void WireConnection::setFbo(ofFbo * fbo)
+void DKWireConnection::setFbo(ofFbo * fbo)
 {
     fboPtr = fbo;
 }
 
-void WireConnection::setWireConnectionType(ConnectionType type)
+void DKWireConnection::setWireConnectionType(DKConnectionType type)
 {
     connectionType = type;
 }
 
-ofFbo * WireConnection::getFbo()
+ofFbo * DKWireConnection::getFbo()
 {
     return fboPtr;
 }
 
-void WireConnection::setName(string n)
+void DKWireConnection::setName(string n)
 {
 	name = n;
 }
 
-ofLight* WireConnection::getLight()
+ofLight* DKWireConnection::getLight()
 {
 	return light;
 }
 
-void WireConnection::setLight(ofLight* l)
+void DKWireConnection::setLight(ofLight* l)
 {
 	light = l;
 }
 
-void WireConnection::checkConnectionOnDrag(ConnectionType type)
+void DKWireConnection::checkConnectionOnDrag(DKConnectionType type)
 {
     if(connectionType == type)
     {
@@ -132,9 +132,9 @@ void WireConnection::checkConnectionOnDrag(ConnectionType type)
     }
 }
 
-ofColor WireConnection::getWireConnectionColor()
+ofColor DKWireConnection::getWireConnectionColor()
 {
-	if (connectionType == ConnectionType::DK_FBO) return ofColor(180, 180, 0);
-	if (connectionType == ConnectionType::DK_SLIDER) return ofColor(255, 255, 255);
-	if (connectionType == ConnectionType::DK_LIGHT) return ofColor(0, 180, 180);
+	if (connectionType == DKConnectionType::DK_FBO) return ofColor(180, 180, 0);
+	if (connectionType == DKConnectionType::DK_SLIDER) return ofColor(255, 255, 255);
+	if (connectionType == DKConnectionType::DK_LIGHT) return ofColor(0, 180, 180);
 }

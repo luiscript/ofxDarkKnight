@@ -20,12 +20,12 @@
  SOFTWARE.
  */
 
-#ifndef wireConnection_hpp
-#define wireConnection_hpp
+#ifndef DKWireConnection_hpp
+#define DKWireConnection_hpp
 
 #include "ofMain.h"
 
-enum class ConnectionType {
+enum class DKConnectionType {
     DK_TEXTURE = 0,
     DK_FBO = 1,
     DK_SLIDER = 2,
@@ -33,36 +33,36 @@ enum class ConnectionType {
 	DK_LIGHT = 4
 };
 
-class WireConnection{
+class DKWireConnection{
 private:
     ofPoint wireConnectionPos;
     string name;
-    ConnectionType connectionType;
+    DKConnectionType connectionType;
     double * scale;
     ofFbo * fboPtr;
 	ofLight* light;
 public:
     void setup(ofPoint, string);
-    void setup(ofPoint, ConnectionType);
+    void setup(ofPoint, DKConnectionType);
     
     void updateWireConnectionPos(int, int);
     
     void draw();
     
-    float getDist(WireConnection *);
+    float getDist(DKWireConnection *);
     string getName();
     ofPoint getWireConnectionPos();
     double * getScale();
-    ConnectionType getConnectionType();
+    DKConnectionType getConnectionType();
     ofColor getWireConnectionColor();
     
     void setScale(double *);
-    void setWireConnectionType(ConnectionType);
+    void setWireConnectionType(DKConnectionType);
     void setWireConnectionPos(ofPoint);
 	void setName(string);
     
-    void checkConnectionOnDrag(ConnectionType);
-    WireConnection * testWireConnection(float, float);
+    void checkConnectionOnDrag(DKConnectionType);
+    DKWireConnection * testWireConnection(float, float);
     
     ofFbo * getFbo();
     void setFbo(ofFbo *);
@@ -73,4 +73,4 @@ public:
 };
 
 
-#endif /* wireConnection_hpp */
+#endif /* DKWireConnection_hpp */

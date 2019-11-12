@@ -21,9 +21,9 @@
  */
 
 
-#include "module.hpp"
+#include "DKModule.hpp"
 
-class DarkKnightConfig : public Module
+class DKConfig : public DKModule
 {
 private:
     vector<ofVec2f> resolutions;
@@ -90,11 +90,11 @@ public:
 		auto fileDropDown = gui->addFolder("FILE");
 		auto saveButton = fileDropDown->addButton("Save");
 		auto openButton = fileDropDown->addButton("Open");
-		saveButton->onButtonEvent(this, &DarkKnightConfig::onFileButtonPress);
-		openButton->onButtonEvent(this, &DarkKnightConfig::onFileButtonPress);
+		saveButton->onButtonEvent(this, &DKConfig::onFileButtonPress);
+		openButton->onButtonEvent(this, &DKConfig::onFileButtonPress);
 
         auto resolutionDropDown = gui->addDropdown("Resolution", options);
-        resolutionDropDown->onDropdownEvent(this, &DarkKnightConfig::onResolutionChange);
+        resolutionDropDown->onDropdownEvent(this, &DKConfig::onResolutionChange);
         resolutionDropDown->select(2);
         
         vector<string> splitOptions = {
@@ -104,7 +104,7 @@ public:
         };
         
         auto numScreens = gui->addDropdown("Split", splitOptions);
-        numScreens->onDropdownEvent(this, &DarkKnightConfig::onSplitChange);
+        numScreens->onDropdownEvent(this, &DKConfig::onSplitChange);
         numScreens->select(0);
 
 		gui->addFRM();

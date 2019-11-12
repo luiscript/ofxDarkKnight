@@ -20,49 +20,23 @@
  SOFTWARE.
  */
 
-#include "preview.hpp"
+#ifndef preview_hpp
+#define preview_hpp
 
-void Preview::setup()
-{
-    drawFbo = false;
-    fbo = nullptr;
-    scaleX = scaleY = 0.5;
-    
-    addOutputConnection(ConnectionType::DK_FBO);
-    addInputConnection(ConnectionType::DK_FBO);
-}
+#include "DKModule.hpp"
 
-void Preview::update()
-{
-}
+class DKPreview : public DKModule{
+private:
+    ofFbo * fbo;
+    bool drawFbo = false;
+    float scaleX;
+    float scaleY;
+public:
+    void setup();
+    void update();
+    void draw();
+    void setFbo(ofFbo *);
+    ofFbo * getFbo();
+};
 
-void Preview::draw()
-{
-    if(drawFbo)
-    {
-        ofPushMatrix();
-        ofTranslate(gui->getPosition().x, gui->getPosition().y + 20);
-        ofScale(scaleX, scaleY);
-        fbo->draw(0,0);
-        ofPopMatrix();
-    }
-    
-}
-
-void Preview::setFbo(ofFbo * fboPtr)
-{
-    fbo  = fboPtr;
-    drawFbo = fboPtr != nullptr;
-    
-    float scale = ofGetWidth()/getModuleWidth();
-    float aspect = getModuleWidth()/getModuleHeight();
-    scaleX = scale * 0.20 * aspect;
-    scaleY = scale * 0.20 * aspect;
-    
-    gui->setWidth(getModuleWidth() * scaleX);
-}
-
-ofFbo * Preview::getFbo()
-{
-    return fbo;
-}
+#endif /* preview_hpp */

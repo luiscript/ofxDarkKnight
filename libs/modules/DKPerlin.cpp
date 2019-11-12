@@ -20,10 +20,10 @@
  SOFTWARE.
  */
 
-#include "NoiseSlider.hpp"
+#include "DKPerlin.hpp"
 
 
-void NoiseSlider::setup()
+void DKPerlin::setup()
 {
     noiseValue = 0;
     amplitude = 1;
@@ -32,17 +32,17 @@ void NoiseSlider::setup()
     mult = 1.0;
 }
 
-void NoiseSlider::update()
+void DKPerlin::update()
 {
     noiseValue = ofNoise(ofGetElapsedTimef() * mult, random) * amplitude + offset;
 }
 
-void NoiseSlider::draw()
+void DKPerlin::draw()
 {
     
 }
 
-void NoiseSlider::addModuleParameters()
+void DKPerlin::addModuleParameters()
 {
     gui->addSlider("amplitude", 0, 1, 1)->bind(amplitude);
     gui->addSlider("offset", 0,1,0)->bind(offset);

@@ -20,9 +20,9 @@
  SOFTWARE.
  */
 
-#include "LfoSlider.hpp"
+#include "DKLfo.hpp"
 
-void LfoSlider::setup()
+void DKLfo::setup()
 {
     icons.load("icons/lfoWaves.png");
     icons.resize(148, 13);
@@ -34,7 +34,7 @@ void LfoSlider::setup()
     result = 0;
 }
 
-void LfoSlider::update()
+void DKLfo::update()
 {
     
     switch(wave){
@@ -80,16 +80,16 @@ void LfoSlider::update()
     result += offset;
 }
 
-void LfoSlider::draw()
+void DKLfo::draw()
 {
     float size = moduleGuiWidth * 0.35 + 3;
     icons.draw(gui->getPosition().x + size, gui->getPosition().y + 28);
 }
 
-void LfoSlider::addModuleParameters()
+void DKLfo::addModuleParameters()
 {
     ofxDatGuiMatrix * matrix = gui->addMatrix("wave", 6, false);
-    matrix->onMatrixEvent(this, &LfoSlider::onWaveSelected);
+    matrix->onMatrixEvent(this, &DKLfo::onWaveSelected);
     matrix->setRadioMode(true);
     matrix->getChildAt(0)->setSelected(true);
     
@@ -99,7 +99,7 @@ void LfoSlider::addModuleParameters()
     gui->addSlider("result", 0, 1, 0)->setPrecision(4)->bind(result);
 }
 
-void LfoSlider::onWaveSelected(ofxDatGuiMatrixEvent e)
+void DKLfo::onWaveSelected(ofxDatGuiMatrixEvent e)
 {
     wave = e.child;
 }

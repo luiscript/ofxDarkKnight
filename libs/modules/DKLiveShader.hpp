@@ -23,12 +23,12 @@
 #ifndef Shader_hpp
 #define Shader_hpp
 
-#include "module.hpp"
+#include "DKModule.hpp"
 #include "ofxAutoReloadedShader.h"
 
 #define STRINGIFY(A) #A
 
-class Shader : public Module{
+class DKLiveShader : public DKModule{
 private:
     bool drawFbo;
     bool gotTexture;

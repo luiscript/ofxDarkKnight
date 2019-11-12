@@ -21,29 +21,29 @@
  */
 
 
-#include "screenOutput.hpp"
+#include "DKScreenOutput.hpp"
 
-void ScreenOutput::setup()
+void DKScreenOutput::setup()
 {
-    addInputConnection(ConnectionType::DK_FBO);
-    addOutputConnection(ConnectionType::DK_FBO);
+    addInputConnection(DKConnectionType::DK_FBO);
+    addOutputConnection(DKConnectionType::DK_FBO);
     display = nullptr;
 	drawFbo = false;
 }
 
-void ScreenOutput::setFbo(ofFbo * fboPtr)
+void DKScreenOutput::setFbo(ofFbo * fboPtr)
 {
     fbo  = fboPtr;
     drawFbo = fboPtr != nullptr;
 }
 
-ofFbo * ScreenOutput::getFbo()
+ofFbo * DKScreenOutput::getFbo()
 {
     return fbo;
 }
 
 
-void ScreenOutput::addModuleParameters()
+void DKScreenOutput::addModuleParameters()
 {
     int monitorCount;
     GLFWmonitor** monitors = glfwGetMonitors(&monitorCount);
@@ -63,11 +63,11 @@ void ScreenOutput::addModuleParameters()
     }
     
     ofxDatGuiComponent * component = gui->addDropdown("Output", monitorsName);
-    component->onDropdownEvent(this, &ScreenOutput::onVideoOutputChange);
+    component->onDropdownEvent(this, &DKScreenOutput::onVideoOutputChange);
     monitorsName.clear();
 }
 
-void ScreenOutput::onVideoOutputChange(ofxDatGuiDropdownEvent e)
+void DKScreenOutput::onVideoOutputChange(ofxDatGuiDropdownEvent e)
 {
     int index = e.child;
     
@@ -86,14 +86,14 @@ void ScreenOutput::onVideoOutputChange(ofxDatGuiDropdownEvent e)
         settings.multiMonitorFullScreen = false;
         settings.shareContextWith = mainWindow;
         display = ofCreateWindow(settings);
-        ofAddListener(display->events().draw, this, &ScreenOutput::drawDisplay);
+        ofAddListener(display->events().draw, this, &DKScreenOutput::drawDisplay);
         display->setFullscreen(true);
     } else {
         if(display != nullptr)
         {
             display->setFullscreen(false);
             display->setWindowShouldClose();
-            ofRemoveListener(display->events().draw, this, &ScreenOutput::drawDisplay);
+            ofRemoveListener(display->events().draw, this, &DKScreenOutput::drawDisplay);
             display.reset();
             display = nullptr;
         }
@@ -101,7 +101,7 @@ void ScreenOutput::onVideoOutputChange(ofxDatGuiDropdownEvent e)
     }
 }
 
-void ScreenOutput::drawDisplay(ofEventArgs & args)
+void DKScreenOutput::drawDisplay(ofEventArgs & args)
 {
     if(drawFbo)
     {

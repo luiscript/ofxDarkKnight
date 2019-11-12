@@ -25,10 +25,10 @@
 
 #include "ofMain.h"
 #include "ofxDatGui.h"
-#include "unordered_map"
-#include "wireConnection.hpp"
 #include "ofxMidi.h"
-//#include "ofxOsc.h"
+#include "unordered_map"
+#include "DKWireConnection.hpp"
+
 
 #define STRINGIFY(A) #A
 
@@ -39,7 +39,7 @@ struct ModuleSoundParticle
 	float noise;
 };
 
-class Module{
+class DKModule{
 
 private:
     int     moduleId;
@@ -71,8 +71,8 @@ public:
     bool moduleIsChild = false;
     ofxDatGui * gui;
 
-    vector<WireConnection*> inputs;
-    vector<WireConnection*> outputs;
+    vector<DKWireConnection*> inputs;
+    vector<DKWireConnection*> outputs;
     
     virtual void setup() { };
     virtual void update() { };
@@ -88,7 +88,7 @@ public:
     virtual void reset() { };
     virtual ofFbo * getFbo(){ return nullptr; };
 	virtual ofLight* getLight() { return nullptr; };
-    virtual Module * getChildModule() { return nullptr; };
+    virtual DKModule * getChildModule() { return nullptr; };
 
     void setupModule(string, ofVec2f, bool);
     void setupModule(string, ofVec2f);
@@ -121,8 +121,8 @@ public:
     ofxDatGuiComponent * getInputComponent(int, int);
     ofxDatGuiTheme * getGuiTheme();
     
-    WireConnection * getOutputConnection(float, float);
-    WireConnection * getInputConnection(float, float);
+    DKWireConnection * getOutputConnection(float, float);
+    DKWireConnection * getInputConnection(float, float);
     
     void setMidiMapping(string);
     void setMidiScale(string, double);
@@ -142,11 +142,11 @@ public:
     void addSlider(string, float &, float, float, float, int);
     
     
-    void addInputConnection(ConnectionType);
-    void addOutputConnection(ConnectionType);
+    void addInputConnection(DKConnectionType);
+    void addOutputConnection(DKConnectionType);
 
-	void addInputConnection(ConnectionType, string);
-	void addOutputConnection(ConnectionType, string);
+	void addInputConnection(DKConnectionType, string);
+	void addOutputConnection(DKConnectionType, string);
     
     void sendMidiMessage(ofxMidiMessage *);
 

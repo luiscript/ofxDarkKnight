@@ -1,27 +1,27 @@
 [submodule "libs/ofxDatGui"]
 	path = libs/ofxDatGui
 	url = https://github.com/luiscript/ofxDatGui
-[submodule "libs/DarkKnightMidi"]
-	path = libs/DarkKnightMidi
-	url = https://github.com/luiscript/DarkKnightMidi
-[submodule "libs/DarkKnightOsc"]
-	path = libs/DarkKnightOsc
-	url = https://github.com/luiscript/DarkKnightOsc
-[submodule "libs/DarkKnightMapping"]
-	path = libs/DarkKnightMapping
-	url = https://github.com/luiscript/DarkKnightMapping
-[submodule "libs/DarkKnightSyphon"]
-	path = libs/DarkKnightSyphon
-	url = https://github.com/luiscript/DarkKnightSyphon
-[submodule "libs/DarkKnightAbletonLink"]
-	path = libs/DarkKnightAbletonLink
-	url = https://github.com/luiscript/DarkKnightAbletonLink
-[submodule "libs/DarkKnightHap"]
-	path = libs/DarkKnightHap
-	url = https://github.com/luiscript/DarkKnightHap
-[submodule "libs/DarkKnightPostProcessing"]
-	path = libs/DarkKnightPostProcessing
-	url = https://github.com/luiscript/DarkKnightPostProcessing
-[submodule "libs/DarkKnightVideoRecorder"]
-	path = libs/DarkKnightVideoRecorder
-	url = https://github.com/luiscript/DarkKnightVideoRecorder
+[submodule "libs/DKMidi"]
+	path = libs/DKMidi
+	url = https://github.com/luiscript/DKMidi
+[submodule "libs/DKOsc"]
+	path = libs/DKOsc
+	url = https://github.com/luiscript/DKOsc
+[submodule "libs/DKMapping"]
+	path = libs/DKMapping
+	url = https://github.com/luiscript/DKMapping
+[submodule "libs/DKSyphon"]
+	path = libs/DKSyphon
+	url = https://github.com/luiscript/DKSyphon
+[submodule "libs/DKAbletonLink"]
+	path = libs/DKAbletonLink
+	url = https://github.com/luiscript/DKAbletonLink
+[submodule "libs/DKHap"]
+	path = libs/DKHap
+	url = https://github.com/luiscript/DKHap
+[submodule "libs/DKPostProcessingFx"]
+	path = libs/DKPostProcessingFx
+	url = https://github.com/luiscript/DKPostProcessingFx
+[submodule "libs/DKVideoRecorder"]
+	path = libs/DKVideoRecorder
+	url = https://github.com/luiscript/DKVideoRecorder

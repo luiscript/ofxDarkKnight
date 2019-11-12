@@ -20,80 +20,81 @@
  SOFTWARE.
  */
 
-#ifndef modulesManager_hpp
-#define modulesManager_hpp
+#ifndef ofxDarkKnight_hpp
+#define ofxDarkKnight_hpp
 
 #include "unordered_map"
 #include "ofMain.h"
-
-#include "module.hpp"
 #include "ofxDatGui.h"
-#include "wireConnection.hpp"
-#include "wire.hpp"
 
-#include "preview.hpp"
-#include "mediaPool.hpp"
-#include "screenOutput.hpp"
-#include "mixer.hpp"
-#include "NoiseSlider.hpp"
-#include "LfoSlider.hpp"
-#include "Shader.hpp"
+// Core modules
+#include "DKModule.hpp"
+#include "DKMediaPool.hpp"
+#include "DKWireConnection.hpp"
+#include "DKWire.hpp"
 
-#include "DarkKnightMidi.hpp"
-#include "ofxDarkKnightAbletonLink.hpp"
-#include "DarkKnightVideoRecorder.hpp"
-#include "ofxDarkKnightMapping.hpp"
-#include "DarkKnightOsc.hpp"
-#include "DarkKnightPostProcessing.h"
-#include "DarkKnightTextureSharing.hpp"
-
-#include "DarkKnightHap.hpp"
-#include "basic.hpp"
-#include "NoiseSlider.hpp"
-#include "inverter.hpp"
-#include "DarkKnightColorShader.hpp"
-#include "DarkKnightLight.hpp"
-#include "DarkKnightConfig.hpp" 
+// Internal modules
 #include "DKColorInverter.h"
+#include "DKColorShader.hpp"
+#include "DKConfig.hpp"
+#include "DKLight.hpp"
+#include "DKLiveShader.hpp"
+#include "DKLfo.hpp"
+#include "DKPreview.hpp"
+#include "DKMixer.hpp"
+#include "DKPerlin.hpp"
+#include "DKScreenOutput.hpp"
+#include "DKSliderInverter.hpp"
 
-template<typename T> Module* createInstance() { return new T; }
-typedef map<string, Module* (*)()> map_type;
+// External modules
+#include "DKMidi.hpp"
+#include "DKAbletonLink.hpp"
+#include "DKVideoRecorder.hpp"
+#include "DKMapping.hpp"
+#include "DKOsc.hpp"
+#include "DKPostProcessingFx.h"
+#include "DKSyphonSpout.hpp"
+#include "DKHap.hpp"
+
+// Collections
+#include "basic.hpp"
+
+// I dare you to add your own here!
+
+template<typename T> DKModule* createInstance() { return new T; }
+typedef map<string, DKModule* (*)()> map_type;
 
 class ofxDarkKnight : public ofxMidiListener{
 private:
+    unordered_map<string, DKModule*> modulesPool;
+    unordered_map<string, DKModule*> modules;
+    list<string> poolNames;
+    
     ofVec2f resolution;
     ofVec2f translation;
     ofPoint pointer;
+    
     bool showExplorer;
     bool drawing;
     bool cmdKey;
     bool shiftKey;
     bool altKey;
     bool loadWires;
-    ConnectionType currentWireConnectionType;
+    DKConnectionType currentWireConnectionType;
     
-    Wire* currentWire;
-    vector<Wire> wires;
+    DKWire* currentWire;
+    vector<DKWire> wires;
     
     ofxDatGui* gui;
     ofxDatGuiScrollView* componentsList;
-    
-    unordered_map<string, Module*> modulesPool;
-	unordered_map<string, Module*> modules;
-    
-    list<string> poolNames;
-    
+
     ofxMidiOut darkKnightMidiOut;
 
 	int startX;
 	int startY;
-	float zoom;
 	int moduleId;
-
-	
-
+    float zoom;
 public:
-    
     ofxDarkKnight();
     ~ofxDarkKnight();
     
@@ -101,7 +102,6 @@ public:
     shared_ptr<ofAppBaseWindow> mainWindow;
 	map_type factory;
     
-
     void setup();
     void update();
     void draw();
@@ -110,8 +110,8 @@ public:
     void toggleList();
     void toggleMappingMode();
     
-    void addModule(string, Module *);
-    Module * addModule(string);
+    void addModule(string, DKModule *);
+    DKModule * addModule(string);
     void deleteModule(string);
     void deleteComponentWires(ofxDatGuiComponent *, int);
     void deleteFocusedModule();
@@ -139,8 +139,8 @@ public:
 
     void sendMidiMessage(ofxMidiMessage &);
 
-	unordered_map<string, Module*>* getModulesReference();
-	vector<Wire>* getWiresReference();
+	unordered_map<string, DKModule*>* getModulesReference();
+	vector<DKWire>* getWiresReference();
 	ofVec2f* getTranslationReference();
 	float* getZoomReference();
 
@@ -151,4 +151,4 @@ public:
     void resizeWindow(int, int);
 };
 
-#endif /* modulesManager_hpp */
+#endif /* ofxDarkKnight_hpp */

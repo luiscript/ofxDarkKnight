@@ -1,16 +1,16 @@
 /*
- Copyright (C) 2018 Luis Fernando GarcÃ­a [http://luiscript.com]
- 
+ Copyright (C) 2019 Luis Fernando García [http://luiscript.com]
+
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
- 
+
  The above copyright notice and this permission notice shall be included in all
  copies or substantial portions of the Software.
- 
+
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,33 +20,30 @@
  SOFTWARE.
  */
 
-#ifndef screenOutput_hpp
-#define screenOutput_hpp
+#ifndef ParamInverter_hpp
+#define ParamInverter_hpp
 
-#include "ofMain.h"
-#include "ofxDatGui.h"
-#include "module.hpp"
-#include "GLFW/glfw3.h"
+#include "DKModule.hpp"
 
-
-class ScreenOutput : public Module{
+class DKSliderInverter : public DKModule
+{
 private:
-    ofFbo * fbo;
-    bool drawFbo = false;
-    string serverName;
-    vector<string> monitorsName;
-    shared_ptr<ofAppBaseWindow> display;
-    
+	float source;
+	float target;
 public:
-    void setup();
-    void drawDisplay(ofEventArgs & args);
-    void setFbo(ofFbo *);
-    void addModuleParameters();
-    ofFbo * getFbo();
-    void onVideoOutputChange(ofxDatGuiDropdownEvent);    
-    shared_ptr<ofAppBaseWindow> mainWindow;
+	void setup() 
+	{
+		target = source = 0.0;
+	}
+	void update() 
+	{
+		target = 1.0 - source;
+	}
+	void addModuleParameters()
+	{
+		gui->addSlider("source", 0.0, 1.0, 1.0)->setPrecision(4)->bind(source);
+		gui->addSlider("target", 0.0, 1.0, 0.0)->setPrecision(4)->bind(target);
+	}
 };
 
-
-
-#endif /* screenOutput_hpp */
+#endif /* Inverter_hpp */

@@ -23,10 +23,10 @@
 #ifndef mixer_h
 #define mixer_h
 
-#include "module.hpp"
+#include "DKModule.hpp"
 #include "unordered_map"
 
-class Mixer : public Module
+class DKMixer : public DKModule
 {
 private:
     ofBlendMode blendMode;
@@ -51,9 +51,9 @@ public:
         ofClear(0,0,0,0);
         compositionFbo.end();
         
-		addInputConnection(ConnectionType::DK_FBO, "fbo1");
-		addInputConnection(ConnectionType::DK_FBO, "fbo2");
-        addOutputConnection(ConnectionType::DK_FBO);
+		addInputConnection(DKConnectionType::DK_FBO, "fbo1");
+		addInputConnection(DKConnectionType::DK_FBO, "fbo2");
+        addOutputConnection(DKConnectionType::DK_FBO);
         
         fbos.clear();
         
@@ -93,7 +93,7 @@ public:
         blendModesLabels.push_back("SCREEN");
         
         ofxDatGuiComponent * component = gui->addDropdown("BLEND MODE", blendModesLabels);
-        component->onDropdownEvent(this, &Mixer::onBlendModeChanges);
+        component->onDropdownEvent(this, &DKMixer::onBlendModeChanges);
     }
     
     ofFbo * getFbo()

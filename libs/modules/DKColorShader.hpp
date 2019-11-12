@@ -22,9 +22,9 @@
 
 
 #define STRINGIFY(A) #A
-#include "module.hpp"
+#include "DKModule.hpp"
 
-class ColorShader : public Module
+class DKColorShader : public DKModule
 {
 private:
 	float red;
@@ -50,8 +50,8 @@ public:
 		
 		shader.load("Shaders/ColorShader");
 
-		addInputConnection(ConnectionType::DK_FBO);
-		addOutputConnection(ConnectionType::DK_FBO);
+		addInputConnection(DKConnectionType::DK_FBO);
+		addOutputConnection(DKConnectionType::DK_FBO);
 	}
 
 	void update()

@@ -23,9 +23,9 @@
 #ifndef terrain_hpp
 #define terrain_hpp
 
-#include "module.hpp"
+#include "DKModule.hpp"
 
-class Terrain : public Module
+class Terrain : public DKModule
 {
 public:
     void setup();

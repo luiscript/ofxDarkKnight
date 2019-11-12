@@ -19,59 +19,50 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
-#ifndef wires_hpp
-#define wires_hpp
 
-#include "ofMain.h"
-#include "module.hpp"
-#include "wireConnection.hpp"
+#include "DKPreview.hpp"
 
-class Wire{
-public:
-    Wire();
+void DKPreview::setup()
+{
+    drawFbo = false;
+    fbo = nullptr;
+    scaleX = scaleY = 0.5;
     
-    void update();
+    addOutputConnection(DKConnectionType::DK_FBO);
+    addInputConnection(DKConnectionType::DK_FBO);
+}
 
-    void draw();
-    void drawCurrentWire(ofPoint);
-    void drawWire(ofPoint, ofPoint, ofPoint);
-    
-    float getDistance();
-    ofPoint getWireControlPoint(ofPoint, ofPoint, float);
-    WireConnection * getInput();
-    WireConnection * getOutput();
-    ConnectionType getConnectionType();
-    
-    void setInputConnection(WireConnection *);
-    void setOutputConnection(WireConnection *);
-    void setInputModule(Module *);
-    void setOutputModule(Module *);
-    void setConnectionType(ConnectionType);
+void DKPreview::update()
+{
+}
 
-    WireConnection * input;
-    WireConnection * output;
+void DKPreview::draw()
+{
+    if(drawFbo)
+    {
+        ofPushMatrix();
+        ofTranslate(gui->getPosition().x, gui->getPosition().y + 20);
+        ofScale(scaleX, scaleY);
+        fbo->draw(0,0);
+        ofPopMatrix();
+    }
     
-    string type;
-    
-    void * data;
-    ofFbo * fbo;
-	ofLight* light;
-    double * scale;
-    ofxDatGuiSlider * slider;
-    bool active;
-    
-    float connectionRadius;
-    float wiresTension;
-    
-    Module * inputModule;
-    Module * outputModule;
-private:
-    bool drawing;
-    ofPoint inputPoint;
-    ofPoint outputPoint;
-    string name;
-	int wireId;
-    ConnectionType connectionType;
-};
+}
 
-#endif /* wires_hpp */
+void DKPreview::setFbo(ofFbo * fboPtr)
+{
+    fbo  = fboPtr;
+    drawFbo = fboPtr != nullptr;
+    
+    float scale = 2 * moduleGuiWidth/getModuleWidth();
+    float aspect = getModuleWidth()/getModuleHeight();
+    scaleX = scale * 0.80 * aspect;
+    scaleY = scale * 0.80 * aspect;
+    
+    gui->setWidth(getModuleWidth() * scaleX);
+}
+
+ofFbo * DKPreview::getFbo()
+{
+    return fbo;
+}

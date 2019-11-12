@@ -20,26 +20,26 @@
  SOFTWARE.
  */
 
-#ifndef noiseSlider_h
-#define noiseSlider_h
+#ifndef LfoSlider_hpp
+#define LfoSlider_hpp
 
-#include "module.hpp"
+#include "DKModule.hpp"
 
-
-class NoiseSlider : public Module
+class DKLfo : public DKModule
 {
-public:
-    float noiseValue;
-    float random;
-    float mult;
-    float amplitude;
+private:
+    ofImage icons;
+    float time;
     float offset;
+    float amplitude;
+    float result;
+    unsigned int wave;
+public:
     void setup();
     void update();
     void draw();
     void addModuleParameters();
-};
+    void onWaveSelected(ofxDatGuiMatrixEvent);
+};  
 
-#endif /* noiseSlider_h */
-
-
+#endif /* LfoSlider_hpp */

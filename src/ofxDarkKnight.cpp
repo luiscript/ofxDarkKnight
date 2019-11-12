@@ -88,7 +88,7 @@ void ofxDarkKnight::update()
            wire.outputModule->getModuleEnabled())
             wire.update();
     
-    for(pair<string, Module*> module : modules )
+    for(pair<string, DKModule*> module : modules )
         if(module.second->getModuleEnabled())
         {
             module.second->updateModule(translation.x, translation.y, zoom);
@@ -136,12 +136,12 @@ void ofxDarkKnight::toggleMappingMode()
 {
     midiMapMode = !midiMapMode;
     
-    for(pair<string, Module*> module : modules )
+    for(pair<string, DKModule*> module : modules )
     {
         module.second->toggleMidiMap();
 		if (module.second->getModuleHasChild())
 		{
-			MediaPool* mp = static_cast<MediaPool*>(module.second);
+			DKMediaPool* mp = static_cast<DKMediaPool*>(module.second);
 			mp->drawMediaPool();
 		}
     }
@@ -212,12 +212,12 @@ void ofxDarkKnight::handleMousePressed(ofMouseEventArgs &mouse)
 		startY = mouse.y;
 	}
 	
-    for(pair<string, Module*> module : modules )
+    for(pair<string, DKModule*> module : modules )
     {
         //send mouse arguments to modules with childs (like Media Pool)
         if(module.second->getModuleHasChild())
         {
-            MediaPool * mp = static_cast<MediaPool*>(module.second);
+            DKMediaPool * mp = static_cast<DKMediaPool*>(module.second);
             mp->mousePressed(mouse);
         }
     }
@@ -283,10 +283,10 @@ void ofxDarkKnight::handleMouseScrolled(ofMouseEventArgs & mouse)
 
 void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
 {
-    WireConnection * output;
-    WireConnection * input;
+    DKWireConnection * output;
+    DKWireConnection * input;
     
-    for(pair<string, Module*> module : modules )
+    for(pair<string, DKModule*> module : modules )
     {
         if(!module.second->getModuleEnabled()) continue;
         output = module.second->getOutputConnection(x, y);
@@ -296,16 +296,16 @@ void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
            (module.second->getName() == moduleName || moduleName == "*" ))
         {
 			currentWireConnectionType = output->getConnectionType();
-            currentWire = new Wire;
+            currentWire = new DKWire;
             currentWire->setOutputConnection(output);
             currentWire->setConnectionType(currentWireConnectionType);
             currentWire->outputModule = module.second;
-            if(currentWireConnectionType == ConnectionType::DK_FBO)
+            if(currentWireConnectionType == DKConnectionType::DK_FBO)
             {
 				output->setFbo(module.second->getFbo());
                 currentWire->fbo = module.second->getFbo();
 			}
-			else if (currentWireConnectionType == ConnectionType::DK_LIGHT)
+			else if (currentWireConnectionType == DKConnectionType::DK_LIGHT)
 			{
 				output->setLight(module.second->getLight());
 				currentWire->light = module.second->getLight();
@@ -327,18 +327,18 @@ void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
                 // we need to disconect the wire and delete it from the list
                 if(it->getInput() == input)
                 {
-                    currentWire = new Wire;
+                    currentWire = new DKWire;
                     currentWire->setConnectionType(input->getConnectionType());
                     currentWire->setOutputConnection(it->getOutput());
                     currentWire->outputModule = it->outputModule;
                     //if the disconected input is an FBO remove reference
-                    if (currentWire->getConnectionType() == ConnectionType::DK_FBO)
+                    if (currentWire->getConnectionType() == DKConnectionType::DK_FBO)
                     {
 						input->setFbo(nullptr);
                         it->inputModule->setFbo(nullptr);
                         currentWire->fbo = it->outputModule->getFbo();
 					}
-					else if (currentWire->getConnectionType() == ConnectionType::DK_LIGHT)
+					else if (currentWire->getConnectionType() == DKConnectionType::DK_LIGHT)
 					{
 						input->setLight(nullptr);
 						it->inputModule->setLight(nullptr);
@@ -360,9 +360,9 @@ void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
 
 void ofxDarkKnight::checkInputConnection(float x, float y, string moduleName)
 {
-    WireConnection * input;
+    DKWireConnection * input;
     
-    for(pair<string, Module*> module : modules )
+    for(pair<string, DKModule*> module : modules )
     {
         if(!module.second->getModuleEnabled()) continue;
         input = module.second->getInputConnection(x, y);
@@ -373,16 +373,16 @@ void ofxDarkKnight::checkInputConnection(float x, float y, string moduleName)
             currentWire->setInputConnection(input);
             currentWire->setInputModule(module.second);
             
-            if (currentWire->getConnectionType() == ConnectionType::DK_SLIDER)
+            if (currentWire->getConnectionType() == DKConnectionType::DK_SLIDER)
             {
                 currentWire->slider = static_cast<ofxDatGuiSlider*>(module.second->getInputComponent(x, y));
             }
-            else if(currentWire->getConnectionType() == ConnectionType::DK_FBO)
+            else if(currentWire->getConnectionType() == DKConnectionType::DK_FBO)
             {
 				module.second->getInputConnection(x, y)->setFbo(currentWire->fbo);
                 module.second->setFbo(currentWire->fbo);
 			}
-			else if (currentWire->getConnectionType() == ConnectionType::DK_LIGHT)
+			else if (currentWire->getConnectionType() == DKConnectionType::DK_LIGHT)
 			{
 				module.second->getInputConnection(x, y)->setLight(currentWire->light);
 				module.second->setLight(currentWire->light);
@@ -411,13 +411,13 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
             string fileExtension = ofToUpper(file.getExtension());
             if(fileExtension == "MOV" || fileExtension == "MP4")
             {
-                DarkKnightHap * hapPlayer = new DarkKnightHap;
+                DKHap * hapPlayer = new DKHap;
                 
-                for(pair<string, Module*> module : modules )
+                for(pair<string, DKModule*> module : modules )
                     //this is true only for Media Pool modules
                     if(module.second->getModuleHasChild())
                     {
-                        MediaPool * mp = static_cast<MediaPool*>(module.second);
+                        DKMediaPool * mp = static_cast<DKMediaPool*>(module.second);
                         float amp = 1.0;
                         mp->addItem(hapPlayer, "thumbnails/terrain.jpg", "video player");
                         mediaPoolFounded = true;
@@ -431,7 +431,7 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                 
                 if(!mediaPoolFounded)
                 {
-                    MediaPool * newPool = new MediaPool;
+                    DKMediaPool * newPool = new DKMediaPool;
                     
                     newPool->setCollectionName("Collection 1");
                     newPool->setupModule("SKETCH POOL 1", resolution, false);
@@ -457,14 +457,14 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
 }
 
 
-void ofxDarkKnight::addModule(string moduleName, Module * module)
+void ofxDarkKnight::addModule(string moduleName, DKModule * module)
 {
     module->setModuleMidiMapMode(midiMapMode);
 	module->setModuleId(getNextModuleId());
     modules.insert({moduleName, module});
 }
 
-Module * ofxDarkKnight::addModule(string moduleName)
+DKModule * ofxDarkKnight::addModule(string moduleName)
 {
 	int moduleId = getNextModuleId();
 	string uniqueModuleName = moduleName + "@" + ofToString(moduleId);
@@ -477,13 +477,13 @@ Module * ofxDarkKnight::addModule(string moduleName)
 	
     if(moduleName == "SCREEN OUTPUT")
     {
-		ScreenOutput* so = static_cast<ScreenOutput*>(newModule);;
+		DKScreenOutput* so = static_cast<DKScreenOutput*>(newModule);;
         so->mainWindow = mainWindow;
         modules.insert({uniqueModuleName, so});
     }
 	else if (moduleName == "PROJECT")
 	{
-		DarkKnightConfig* config = static_cast<DarkKnightConfig*>(newModule);;
+		DKConfig* config = static_cast<DKConfig*>(newModule);;
 		config->setupModule("PROJECT", resolution);
 		config->gui->setPosition(ofGetWidth() - 320, 0);
 		config->setModuleMidiMapMode(midiMapMode);
@@ -493,7 +493,7 @@ Module * ofxDarkKnight::addModule(string moduleName)
 	}
     else if(moduleName == "MIDI CONTROL IN")
     {
-        DarkKnightMidiControlIn * controller = static_cast<DarkKnightMidiControlIn*>(newModule);;
+        DKMidiControlIn * controller = static_cast<DKMidiControlIn*>(newModule);;
         ofAddListener(controller->sendMidi, this, &ofxDarkKnight::newMidiMessage);
         modules.insert({uniqueModuleName, controller});
     } 
@@ -504,13 +504,13 @@ Module * ofxDarkKnight::addModule(string moduleName)
 
     if(newModule->getModuleHasChild())
     {
-        MediaPool * mp = static_cast<MediaPool*>(newModule);
+        DKMediaPool * mp = static_cast<DKMediaPool*>(newModule);
         mp->setModulesReference(&modules);
         mp->setTranslationReferences(&translation, &zoom);
         int mIndex = 0;
         for(CollectionItem item : mp->collection)
         {
-            Module * m = item.canvas;
+            DKModule * m = item.canvas;
             if(mIndex > 0) m->disable();
             string childName = m->getName();
             m->setModuleMidiMapMode(midiMapMode);
@@ -534,7 +534,7 @@ void ofxDarkKnight::deleteModule(string moduleName)
 void ofxDarkKnight::deleteFocusedModule()
 {
     //iterate all the modules to get the focused one
-    for(pair<string, Module*> module : modules )
+    for(pair<string, DKModule*> module : modules )
     {
         //focused module
         if(module.second->gui->getFocused())
@@ -559,7 +559,7 @@ void ofxDarkKnight::deleteFocusedModule()
                     deleteComponentWires(component, module.second->getModuleId());
                 }
             }
-            vector<Wire>::iterator itw = wires.begin();
+            vector<DKWire>::iterator itw = wires.begin();
             while(itw != wires.end())
             {
                 if(module.second == itw->outputModule || module.second == itw->inputModule)
@@ -597,7 +597,7 @@ void ofxDarkKnight::deleteAllModules()
 void ofxDarkKnight::deleteComponentWires(ofxDatGuiComponent * component, int deletedModuleId)
 {
     //compare each component with all the stored wires
-    vector<Wire>::iterator itw = wires.begin();
+    vector<DKWire>::iterator itw = wires.begin();
     while(itw != wires.end())
     {
         if((component->getName() == itw->getInput()->getName() ||
@@ -616,7 +616,7 @@ void ofxDarkKnight::deleteComponentWires(ofxDatGuiComponent * component, int del
 void ofxDarkKnight::onResolutionChange(ofVec2f & newResolution)
 {
     resolution = newResolution;
-    for(pair<string, Module*> module : modules )
+    for(pair<string, DKModule*> module : modules )
     {
         module.second->setResolution(newResolution.x, newResolution.y);
         module.second->setup();
@@ -625,7 +625,7 @@ void ofxDarkKnight::onResolutionChange(ofVec2f & newResolution)
 
 void ofxDarkKnight::close()
 {
-    for(pair<string, Module*> module : modules )
+    for(pair<string, DKModule*> module : modules )
     {
         module.second->unMount();
     }
@@ -635,10 +635,10 @@ void ofxDarkKnight::close()
 void ofxDarkKnight::newMidiMessage(ofxMidiMessage & msg)
 {
     //send midi message to media pool.
-    for(pair<string, Module*> module : modules )
+    for(pair<string, DKModule*> module : modules )
         if(module.second->getModuleHasChild())
         {
-            MediaPool * mp = static_cast<MediaPool*>(module.second);
+            DKMediaPool * mp = static_cast<DKMediaPool*>(module.second);
             mp->gotMidiMessage(&msg);
         }
     
@@ -652,10 +652,10 @@ void ofxDarkKnight::newMidiMessage(ofxMidiMessage & msg)
                 + ofToString(msg.pitch);
 
         if(msg.status == MIDI_NOTE_ON)
-            for(pair<string, Module*> module : modules )
+            for(pair<string, DKModule*> module : modules )
                 if(module.second->getModuleHasChild())
                 {
-                    MediaPool * mp = static_cast<MediaPool*>(module.second);
+                    DKMediaPool * mp = static_cast<DKMediaPool*>(module.second);
                     mp->gotMidiMapping(mapping);
                 }
     }
@@ -669,11 +669,11 @@ void ofxDarkKnight::sendMidiMessage(ofxMidiMessage & msg)
 
 void ofxDarkKnight::savePreset()
 {
-    for(pair<string, Module*> module : modules)
+    for(pair<string, DKModule*> module : modules)
     {
         if(module.second->getModuleHasChild())
         {
-            MediaPool * mediaPool = static_cast<MediaPool*>(module.second);
+            DKMediaPool * mediaPool = static_cast<DKMediaPool*>(module.second);
             mediaPool->savePreset();
         }
     }
@@ -700,12 +700,12 @@ void ofxDarkKnight::setZoom(float z)
 	zoom = z;
 }
 
-unordered_map<string, Module*>* ofxDarkKnight::getModulesReference()
+unordered_map<string, DKModule*>* ofxDarkKnight::getModulesReference()
 {
 	return &modules;
 }
 
-vector<Wire>* ofxDarkKnight::getWiresReference()
+vector<DKWire>* ofxDarkKnight::getWiresReference()
 {
 	return &wires;
 }

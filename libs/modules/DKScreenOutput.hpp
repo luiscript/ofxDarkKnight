@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2018 Luis Fernando García [http://luiscript.com]
+ Copyright (C) 2018 Luis Fernando Garc√≠a [http://luiscript.com]
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -20,23 +20,33 @@
  SOFTWARE.
  */
 
-#ifndef preview_hpp
-#define preview_hpp
+#ifndef screenOutput_hpp
+#define screenOutput_hpp
 
-#include "module.hpp"
+#include "ofMain.h"
+#include "ofxDatGui.h"
+#include "DKModule.hpp"
+#include "GLFW/glfw3.h"
 
-class Preview : public Module{
+
+class DKScreenOutput : public DKModule{
 private:
     ofFbo * fbo;
     bool drawFbo = false;
-    float scaleX;
-    float scaleY;
+    string serverName;
+    vector<string> monitorsName;
+    shared_ptr<ofAppBaseWindow> display;
+    
 public:
     void setup();
-    void update();
-    void draw();
+    void drawDisplay(ofEventArgs & args);
     void setFbo(ofFbo *);
+    void addModuleParameters();
     ofFbo * getFbo();
+    void onVideoOutputChange(ofxDatGuiDropdownEvent);    
+    shared_ptr<ofAppBaseWindow> mainWindow;
 };
 
-#endif /* preview_hpp */
+
+
+#endif /* screenOutput_hpp */

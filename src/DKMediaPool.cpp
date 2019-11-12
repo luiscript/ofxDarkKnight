@@ -20,15 +20,15 @@
  SOFTWARE.
  */
 
-#include "mediaPool.hpp"
+#include "DKMediaPool.hpp"
 
 
-void MediaPool::setup()
+void DKMediaPool::setup()
 {
 	init();
 }
 
-void MediaPool::init()
+void DKMediaPool::init()
 {
     int pixelDensity = ((ofAppGLFWWindow*)ofGetWindowPtr())->getPixelScreenCoordScale();
     
@@ -76,20 +76,20 @@ void MediaPool::init()
     //use this:
     //midiMappings.insert({"16/0", 0});
 
-    addInputConnection(ConnectionType::DK_FBO);
-    addOutputConnection(ConnectionType::DK_FBO);
-	addInputConnection(ConnectionType::DK_LIGHT);
+    addInputConnection(DKConnectionType::DK_FBO);
+    addOutputConnection(DKConnectionType::DK_FBO);
+	addInputConnection(DKConnectionType::DK_LIGHT);
 
 	drawMediaPool();
 }
 
 
-void MediaPool::onKeyboardEvent(ofKeyEventArgs & e)
+void DKMediaPool::onKeyboardEvent(ofKeyEventArgs & e)
 {
     
 }
 
-void MediaPool::update()
+void DKMediaPool::update()
 {
 	if (currentCanvas != nullptr)
 	{
@@ -131,7 +131,7 @@ void MediaPool::update()
 	}
 }
 
-void MediaPool::draw()
+void DKMediaPool::draw()
 {
     ofPoint pos = gui->getPosition();
     mediaPoolFbo.draw(pos.x, pos.y + yOffsetGui);
@@ -143,7 +143,7 @@ void MediaPool::draw()
 }
 
 
-void MediaPool::drawMediaPool()
+void DKMediaPool::drawMediaPool()
 {
     mediaPoolFbo.begin();
     ofClear(0,0,0,0);
@@ -199,7 +199,7 @@ void MediaPool::drawMediaPool()
 }
 
 
-void MediaPool::updatePoolIndex(int mouseX, int mouseY)
+void DKMediaPool::updatePoolIndex(int mouseX, int mouseY)
 {
     ofPoint pos = gui->getPosition();
     float offset = yOffsetGui + gui->getWidth() * 0.5625;
@@ -224,7 +224,7 @@ void MediaPool::updatePoolIndex(int mouseX, int mouseY)
     }
 }
 
-void MediaPool::triggerPoolMedia(int ind)
+void DKMediaPool::triggerPoolMedia(int ind)
 {
     if(ind < collection.size())
     {
@@ -247,22 +247,22 @@ void MediaPool::triggerPoolMedia(int ind)
 }
     
 
-void MediaPool::addModuleParameters()
+void DKMediaPool::addModuleParameters()
 {
 
 }
 
-void MediaPool::onMatrix1Change(ofxDatGuiMatrixEvent e)
+void DKMediaPool::onMatrix1Change(ofxDatGuiMatrixEvent e)
 {
 
 }
 
-void MediaPool::onToggleDraw(ofxDatGuiToggleEvent e)
+void DKMediaPool::onToggleDraw(ofxDatGuiToggleEvent e)
 {
     drawMode = e.target->getChecked();
 }
 
-void MediaPool::addCustomParameters()
+void DKMediaPool::addCustomParameters()
 {
     if(!currentCanvas->customParams)
     {
@@ -271,7 +271,7 @@ void MediaPool::addCustomParameters()
     
 }
 
-void MediaPool::addItem(Module * module, string fileName, string name)
+void DKMediaPool::addItem(DKModule * module, string fileName, string name)
 {
     vector<Preset> modulePresets;
     
@@ -291,7 +291,7 @@ void MediaPool::addItem(Module * module, string fileName, string name)
 }
 
 
-void MediaPool::gotMidiMapping(string mapping)
+void DKMediaPool::gotMidiMapping(string mapping)
 {
     
     unordered_map<string, int>::iterator it;
@@ -324,43 +324,43 @@ void MediaPool::gotMidiMapping(string mapping)
     }
 }
 
-void MediaPool::gotMidiMessage(ofxMidiMessage * msg)
+void DKMediaPool::gotMidiMessage(ofxMidiMessage * msg)
 {
     currentCanvas->triggerMidiMessage(msg);
 }
 
-void MediaPool::setCollectionName(string name)
+void DKMediaPool::setCollectionName(string name)
 {
     collectionName = name;
 }
 
 
-ofFbo * MediaPool::getFbo()
+ofFbo * DKMediaPool::getFbo()
 {
     return &mainFbo;
 }
 
-int MediaPool::getCurrentIndex()
+int DKMediaPool::getCurrentIndex()
 {
     return index;
 }
-void MediaPool::setFbo(ofFbo * fboptr)
+void DKMediaPool::setFbo(ofFbo * fboptr)
 {
     inputFbo = fboptr;
     hasInput = fboptr != nullptr;
 }
 
-void MediaPool::setLight(ofLight* l)
+void DKMediaPool::setLight(ofLight* l)
 {
 	light = l;
 }
 
-void MediaPool::mousePressed(ofMouseEventArgs & mouse)
+void DKMediaPool::mousePressed(ofMouseEventArgs & mouse)
 {
 	updatePoolIndex((mouse.x - translation->x) / (*zoom), (mouse.y - translation->y) / (*zoom));
 }
 
-void MediaPool::unMount()
+void DKMediaPool::unMount()
 {
 	if (currentCanvas != nullptr)
 	{
@@ -369,23 +369,23 @@ void MediaPool::unMount()
    
 }
 
-Module * MediaPool::getChildModule()
+DKModule * DKMediaPool::getChildModule()
 {
     return currentCanvas;
 }
 
-void MediaPool::setModulesReference(unordered_map<string, Module *> * m)
+void DKMediaPool::setModulesReference(unordered_map<string, DKModule *> * m)
 {
     modules = m;
 }
 
-void MediaPool::setTranslationReferences(ofVec2f* t, float* z)
+void DKMediaPool::setTranslationReferences(ofVec2f* t, float* z)
 {
     translation = t;
 	zoom = z;
 }
 
-void MediaPool::savePreset()
+void DKMediaPool::savePreset()
 {
     /*unordered_map<string, float> preset;
     for(ofxDatGuiComponent * param : currentCanvas->params->children)

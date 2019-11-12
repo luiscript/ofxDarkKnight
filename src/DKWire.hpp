@@ -19,50 +19,59 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
-
+#ifndef DKWire_hpp
+#define DKWire_hpp
 
 #include "ofMain.h"
 #include "DKModule.hpp"
+#include "DKWireConnection.hpp"
 
-class Constellation : public DKModule{
+class DKWire{
 public:
-    void setup();
+    DKWire();
+    
     void update();
-    void draw();
-    void addModuleParameters();
-    
-    void onDrawingModeChange(ofxDatGuiMatrixEvent);
-    
-private:
-    
-    // parameters
-    float connectionDistance;
-    int numParticles;
-    float particleSize;
-    float time0;
-    int drawingMode;
-    
-    float lineSize;
-    float lineWidth;
-    
-    float velocityMultx;
-    float velocityMulty;
-    float velocityMultz;
-    
-    ofEasyCam cam;
-    float camDistance;
-    
-    
-//    int diffuseR;
-//    int diffuseG;
-//    int diffuseB;
-//    
-//    int ambientR;
-//    int ambientG;
-//    int ambientB;
-    
-    ofMesh mesh;
-    ofMesh meshPoints;
-    vector<ofVec3f> vel;
 
+    void draw();
+    void drawCurrentWire(ofPoint);
+    void drawWire(ofPoint, ofPoint, ofPoint);
+    
+    float getDistance();
+    ofPoint getWireControlPoint(ofPoint, ofPoint, float);
+    DKWireConnection * getInput();
+    DKWireConnection * getOutput();
+    DKConnectionType getConnectionType();
+    
+    void setInputConnection(DKWireConnection *);
+    void setOutputConnection(DKWireConnection *);
+    void setInputModule(DKModule *);
+    void setOutputModule(DKModule *);
+    void setConnectionType(DKConnectionType);
+
+    DKWireConnection * input;
+    DKWireConnection * output;
+    
+    string type;
+    
+    void * data;
+    ofFbo * fbo;
+	ofLight* light;
+    double * scale;
+    ofxDatGuiSlider * slider;
+    bool active;
+    
+    float connectionRadius;
+    float wiresTension;
+    
+    DKModule * inputModule;
+    DKModule * outputModule;
+private:
+    bool drawing;
+    ofPoint inputPoint;
+    ofPoint outputPoint;
+    string name;
+	int wireId;
+    DKConnectionType connectionType;
 };
+
+#endif /* DKWire_hpp */

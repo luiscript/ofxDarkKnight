@@ -20,20 +20,20 @@
  SOFTWARE.
  */
 
-#include "module.hpp"
+#include "DKModule.hpp"
 
-void Module::setupModule(string name, ofVec2f resolution, bool child = false)
+void DKModule::setupModule(string name, ofVec2f resolution, bool child = false)
 {
     moduleIsChild = child;
     setupCommon(name, resolution);
 }
 
-void Module::setupModule(string name, ofVec2f resolution)
+void DKModule::setupModule(string name, ofVec2f resolution)
 {
     setupCommon(name, resolution);
 }
 
-void Module::setupCommon(string name, ofVec2f resolution)
+void DKModule::setupCommon(string name, ofVec2f resolution)
 {
     moduleGuiWidth = 320;
     moduleName = name;
@@ -55,7 +55,7 @@ void Module::setupCommon(string name, ofVec2f resolution)
 
 }
 
-void Module::setupGui()
+void DKModule::setupGui()
 {
     float amp = 1.0;
     
@@ -70,13 +70,13 @@ void Module::setupGui()
     gui->setWidth(moduleGuiWidth * amp);
 }
 
-void Module::updateModule(float tx, float ty, float zm)
+void DKModule::updateModule(float tx, float ty, float zm)
 {
 	zoom = zm;
 	updateModule(tx, ty);
 }
 
-void Module::updateModule(float tx, float ty)
+void DKModule::updateModule(float tx, float ty)
 {
     translation.x = tx;
     translation.y = ty;
@@ -84,7 +84,7 @@ void Module::updateModule(float tx, float ty)
     updateModule();
 }
 
-void Module::updateModule()
+void DKModule::updateModule()
 {
     gui->update();
     if (moduleEnabled) {
@@ -107,7 +107,7 @@ void Module::updateModule()
     
 }
 
-void Module::drawModule()
+void DKModule::drawModule()
 {
     gui->draw();
 
@@ -120,49 +120,49 @@ void Module::drawModule()
 }
 
 
-void Module::toggleMidiMap()
+void DKModule::toggleMidiMap()
 {
     moduleMidiMapMode = !moduleMidiMapMode;
     gui->toggleMidiMode();
 }
 
-string Module::getName()
+string DKModule::getName()
 {
     return moduleName;
 }
 
-int Module::getModuleId()
+int DKModule::getModuleId()
 {
     return moduleId;
 }
-float Module::getModuleWidth()
+float DKModule::getModuleWidth()
 {
     return moduleWidth;
 }
 
-float Module::getModuleHeight()
+float DKModule::getModuleHeight()
 {
     return moduleHeight;
 }
 
-bool Module::getModuleMidiMapMode()
+bool DKModule::getModuleMidiMapMode()
 {
     return moduleMidiMapMode;
 }
 
-ofxDatGuiComponent * Module::getOutputComponent(int x, int y)
+ofxDatGuiComponent * DKModule::getOutputComponent(int x, int y)
 {
     return gui->getOutputComponent(x, y);
 }
 
-ofxDatGuiComponent * Module::getInputComponent(int x, int y)
+ofxDatGuiComponent * DKModule::getInputComponent(int x, int y)
 {
     return gui->getInputComponent(x, y);
 }
 
-WireConnection * Module::getOutputConnection(float x , float y)
+DKWireConnection * DKModule::getOutputConnection(float x , float y)
 {
-    WireConnection * foundedWireConnection = nullptr;
+    DKWireConnection * foundedWireConnection = nullptr;
     for(auto out : outputs)
     {
         foundedWireConnection = out->testWireConnection(x, y);
@@ -174,9 +174,9 @@ WireConnection * Module::getOutputConnection(float x , float y)
     return gui->testOutputConnection(x, y);
 }
 
-WireConnection * Module::getInputConnection(float x , float y)
+DKWireConnection * DKModule::getInputConnection(float x , float y)
 {
-    WireConnection * foundedWireConnection = nullptr;
+    DKWireConnection * foundedWireConnection = nullptr;
     for(auto inp : inputs)
     {
         foundedWireConnection = inp->testWireConnection(x, y);
@@ -188,33 +188,33 @@ WireConnection * Module::getInputConnection(float x , float y)
     return gui->testInputConnection(x, y);
 }
 
-ofxDatGuiTheme * Module::getGuiTheme()
+ofxDatGuiTheme * DKModule::getGuiTheme()
 {
     return nullptr;
 }
 
 
-bool Module::getModuleInitialized()
+bool DKModule::getModuleInitialized()
 {
     return moduleInitialized;
 }
 
-bool Module::getModuleEnabled()
+bool DKModule::getModuleEnabled()
 {
     return moduleEnabled;
 }
 
-bool Module::getModuleHasChild()
+bool DKModule::getModuleHasChild()
 {
     return moduleHasChild;
 }
 
-ofPoint Module::getTranslation()
+ofPoint DKModule::getTranslation()
 {
     return translation;
 }
 
-void Module::onSliderEventParent(ofxDatGuiSliderEvent e)
+void DKModule::onSliderEventParent(ofxDatGuiSliderEvent e)
 {
     if(e.target->getMidiMode())
     {
@@ -225,22 +225,22 @@ void Module::onSliderEventParent(ofxDatGuiSliderEvent e)
     }
 }
 
-void Module::onEnableChange(ofxDatGuiToggleEvent e)
+void DKModule::onEnableChange(ofxDatGuiToggleEvent e)
 {
     moduleEnabled = e.target->getChecked();
 }
 
-void Module::setModuleWidth(float w)
+void DKModule::setModuleWidth(float w)
 {
     moduleWidth = w;
 }
 
-void Module::setModuleHeight(float h)
+void DKModule::setModuleHeight(float h)
 {
     moduleHeight = h;
 }
 
-void Module::setModuleMidiMapMode(bool m)
+void DKModule::setModuleMidiMapMode(bool m)
 {
     if(getModuleMidiMapMode() != m)
     {
@@ -249,95 +249,95 @@ void Module::setModuleMidiMapMode(bool m)
     }
 }
 
-void Module::setModuleEnabled(bool e)
+void DKModule::setModuleEnabled(bool e)
 {
     moduleEnabled = e;
 }
 
-void Module::setModuleHasChild(bool c)
+void DKModule::setModuleHasChild(bool c)
 {
     moduleHasChild = c;
 }
 
-void Module::setModuleId(int index)
+void DKModule::setModuleId(int index)
 {
     
     moduleId = index;
 }
 
-void Module::setResolution(int w, int h)
+void DKModule::setResolution(int w, int h)
 {
     setModuleWidth(w);
     setModuleHeight(h);
 }
 
 
-void Module::enable()
+void DKModule::enable()
 {
     gui->setEnabled(true);
     gui->setVisible(true);
     moduleEnabled = true;
 }
 
-void Module::disable()
+void DKModule::disable()
 {
     gui->setEnabled(false);
     gui->setVisible(false);
     moduleEnabled = false;
 }
 
-void Module::addSlider(string name, int & add, int min, int max, int val)
+void DKModule::addSlider(string name, int & add, int min, int max, int val)
 {
     gui->addSlider(name, min, max, val)->bind(add);
 }
 
-void Module::addSlider(string name, float & add, float min, float max, float val)
+void DKModule::addSlider(string name, float & add, float min, float max, float val)
 {
     gui->addSlider(name, min, max, val)->bind(add);
 }
 
-void Module::addSlider(string name, int & add, int min, int max, int val, int precision)
+void DKModule::addSlider(string name, int & add, int min, int max, int val, int precision)
 {
     gui->addSlider(name, min, max, val)->setPrecision(precision)->bind(add);
 }
 
-void Module::addSlider(string name, float & add, float min, float max, float val, int precision)
+void DKModule::addSlider(string name, float & add, float min, float max, float val, int precision)
 {
     gui->addSlider(name, min, max, val)->setPrecision(precision)->bind(add);
 }
 
 
-void Module::addInputConnection(ConnectionType t)
+void DKModule::addInputConnection(DKConnectionType t)
 {
-    WireConnection * input = new WireConnection;
+    DKWireConnection * input = new DKWireConnection;
     input->setWireConnectionType(t);
     inputs.push_back(input);
 }
 
-void Module::addOutputConnection(ConnectionType t)
+void DKModule::addOutputConnection(DKConnectionType t)
 {
-    WireConnection * output = new WireConnection;
+    DKWireConnection * output = new DKWireConnection;
     output->setWireConnectionType(t);
     outputs.push_back(output);
 }
 
-void Module::addInputConnection(ConnectionType t, string name)
+void DKModule::addInputConnection(DKConnectionType t, string name)
 {
-	WireConnection* input = new WireConnection;
+	DKWireConnection* input = new DKWireConnection;
 	input->setName(name);
 	input->setWireConnectionType(t);
 	inputs.push_back(input);
 }
 
-void Module::addOutputConnection(ConnectionType t, string name)
+void DKModule::addOutputConnection(DKConnectionType t, string name)
 {
-	WireConnection* output = new WireConnection;
+	DKWireConnection* output = new DKWireConnection;
 	output->setName(name);
 	output->setWireConnectionType(t);
 	outputs.push_back(output);
 }
 
-void Module::sendMidiMessage(ofxMidiMessage * msg)
+void DKModule::sendMidiMessage(ofxMidiMessage * msg)
 {
     outMidiMessages.push_back(msg);
 }
