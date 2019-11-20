@@ -28,6 +28,7 @@
 #include "ofxMidi.h"
 #include "unordered_map"
 #include "DKWireConnection.hpp"
+#include "ofxPostProcessing.h"
 
 
 #define STRINGIFY(A) #A
@@ -62,6 +63,7 @@ private:
     
     ofxDatGuiComponent * selectedComponent;
     unordered_map<string, ofxDatGuiComponent *> midiMappings;
+    DKModule* chainModule;
 
 public:
 	vector<ofxMidiMessage*> outMidiMessages;
@@ -73,22 +75,28 @@ public:
 
     vector<DKWireConnection*> inputs;
     vector<DKWireConnection*> outputs;
+    vector<DKWireConnection*> chainOutputs;
     
     virtual void setup() { };
     virtual void update() { };
     virtual void draw() { };
+    virtual void render(ofFbo&, ofFbo&) { };
     virtual void addModuleParameters() { };
     virtual void unMount() { };
     virtual void setFbo(ofFbo *){ };
     virtual void setFbo(ofFbo *, int) { };
+    virtual void setChainModule(DKModule*) { };
 	virtual void setLight(ofLight*) { };
     virtual void onMouseMove(int, int) { };
     virtual void triggerMidiEvent(){ };
     virtual void triggerMidiMessage(ofxMidiMessage *) { };
     virtual void reset() { };
+    
     virtual ofFbo * getFbo(){ return nullptr; };
 	virtual ofLight* getLight() { return nullptr; };
-    virtual DKModule * getChildModule() { return nullptr; };
+    virtual DKModule * getChainModule() { return nullptr; };
+    virtual ofxPostProcessing* getChain() { return nullptr; };
+    
 
     void setupModule(string, ofVec2f, bool);
     void setupModule(string, ofVec2f);
@@ -141,9 +149,9 @@ public:
     void addSlider(string, int &, int, int, int, int);
     void addSlider(string, float &, float, float, float, int);
     
-    
     void addInputConnection(DKConnectionType);
     void addOutputConnection(DKConnectionType);
+    void addChainOutputConnection(DKConnectionType);
 
 	void addInputConnection(DKConnectionType, string);
 	void addOutputConnection(DKConnectionType, string);

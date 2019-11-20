@@ -25,7 +25,7 @@
 void DKLfo::setup()
 {
     icons.load("icons/lfoWaves.png");
-    icons.resize(148, 13);
+    icons.resize(153, 13);
 	
     wave = 0;
     time = 0;

@@ -27,41 +27,15 @@
 #include "ofMain.h"
 #include "ofxDatGui.h"
 
-// Core modules
-#include "DKModule.hpp"
-#include "DKMediaPool.hpp"
-#include "DKWireConnection.hpp"
-#include "DKWire.hpp"
-
-// Internal modules
-#include "DKColorInverter.h"
-#include "DKColorShader.hpp"
-#include "DKConfig.hpp"
-#include "DKLight.hpp"
-#include "DKLiveShader.hpp"
-#include "DKLfo.hpp"
-#include "DKPreview.hpp"
-#include "DKMixer.hpp"
-#include "DKPerlin.hpp"
-#include "DKScreenOutput.hpp"
-#include "DKSliderInverter.hpp"
-
-// External modules
-#include "DKMidi.hpp"
-#include "DKAbletonLink.hpp"
-#include "DKVideoRecorder.hpp"
-#include "DKMapping.hpp"
-#include "DKOsc.hpp"
-#include "DKPostProcessingFx.h"
-#include "DKSyphonSpout.hpp"
-#include "DKHap.hpp"
+#include "DKCore.h"
+#include "DKInternal.h"
+#include "DKExternal.h"
+#include "DKFx.h"
 
 // Collections
 #include "basic.hpp"
 
-// I dare you to add your own here!
-
-template<typename T> DKModule* createInstance() { return new T; }
+template<typename T> DKModule* moduleType() { return new T; }
 typedef map<string, DKModule* (*)()> map_type;
 
 class ofxDarkKnight : public ofxMidiListener{
@@ -100,7 +74,7 @@ public:
     
 	bool midiMapMode;
     shared_ptr<ofAppBaseWindow> mainWindow;
-	map_type factory;
+	map_type moduleList;
     
     void setup();
     void update();
@@ -112,6 +86,7 @@ public:
     
     void addModule(string, DKModule *);
     DKModule * addModule(string);
+
     void deleteModule(string);
     void deleteComponentWires(ofxDatGuiComponent *, int);
     void deleteFocusedModule();

@@ -20,8 +20,6 @@
  SOFTWARE.
  */
 
-
-#define STRINGIFY(A) #A
 #include "DKModule.hpp"
 
 class DKColorShader : public DKModule
@@ -30,67 +28,43 @@ private:
 	float red;
 	float green;
 	float blue;
-	ofShader shader;
-	ofFbo* fbo;
-	ofFbo* newFbo;
-	bool gotTexture;
+    ofShader shader;
 public:
-	void setup() 
+	void init()
 	{
-		fbo = nullptr;
-
-		newFbo = new ofFbo();
-		newFbo->allocate(getModuleWidth(), getModuleHeight());
-		newFbo->begin();
-		ofClear(0, 0, 0, 0);
-		newFbo->end();
-
 		red = green = blue = 1.0;
-		gotTexture = false;
-		
 		shader.load("Shaders/ColorShader");
-
-		addInputConnection(DKConnectionType::DK_FBO);
-		addOutputConnection(DKConnectionType::DK_FBO);
 	}
 
-	void update()
-	{
-		
-	}
-
-	void draw()
-	{
-		ofPushStyle();
-		ofEnableAlphaBlending();
-		if (gotTexture)
-		{
-			fbo->bind();
-		}
-
-		newFbo->begin();
-		ofClear(0, 0, 0, 0);
-		shader.begin();
-		shader.setUniform1f("r", red);
-		shader.setUniform1f("g", green);
-		shader.setUniform1f("b", blue);
-		
-		if (gotTexture)
-		{
-			shader.setUniformTexture("text1", fbo->getTextureReference(), 1);
-			fbo->draw(0, 0);
-		}
-
-		shader.end();
-		newFbo->end();
-		ofDisableAlphaBlending();
-		ofPopStyle();
-
-		if (gotTexture)
-		{
-			fbo->unbind();
-		}
-	}
+    void drawChain()
+    {
+        if (false)
+        {
+            ofPushStyle();
+            ofEnableAlphaBlending();
+//            chain->readFbo->bind();
+//            chain->writeFbo->begin();
+            ofClear(0, 0, 0, 0);
+            shader.begin();
+            shader.setUniform1f("r", red);
+            shader.setUniform1f("g", green);
+            shader.setUniform1f("b", blue);
+            
+            //shader.setUniformTexture("text1", chain->readFbo->getTexture(), 1);
+            //chain->readFbo->draw(0, 0);
+            
+            shader.end();
+//            chain->writeFbo->end();
+//
+//            chain->readFbo->unbind();
+            
+            ofDisableAlphaBlending();
+            ofPopStyle();
+            
+            //chain->readFbo = chain->writeFbo;
+        }
+        
+    }
 
 	void addModuleParameters()
 	{
@@ -99,14 +73,4 @@ public:
 		gui->addSlider("blue", 0.0, 1.0, 1.0)->setPrecision(4)->bind(blue);
 	}
 	
-	void setFbo(ofFbo* fboptr) 
-	{
-		gotTexture = fboptr != nullptr;
-		fbo = fboptr;
-	}
-
-	ofFbo* getFbo()
-	{
-		return  newFbo;
-	}
 };

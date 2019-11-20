@@ -56,9 +56,13 @@ void DKScreenOutput::addModuleParameters()
     for (int i = 0; i<monitorCount; i++) {
         
         mode = (GLFWvidmode*)glfwGetVideoMode(*monitors);
-        
         string fullName = ofToString(glfwGetMonitorName(*monitors)) + " (" + ofToString(mode->width) + " x " + ofToString(mode->height) + ")";
-        monitorsName.push_back( fullName );
+        bool add = true;
+        for(auto lmonitor : monitorsName)
+        {
+            if(lmonitor == fullName) add = false;
+        }
+        if(add) monitorsName.push_back( fullName );
         monitors++;
     }
     
@@ -77,17 +81,21 @@ void DKScreenOutput::onVideoOutputChange(ofxDatGuiDropdownEvent e)
         monitors = monitors + (index - 1);
         int xpos, ypos;
         glfwGetMonitorPos(*monitors, &xpos, &ypos);
+        
         ofGLFWWindowSettings settings;
         settings.setSize(getModuleWidth(), getModuleHeight());
         settings.setPosition(ofVec2f(xpos,ypos));
         settings.decorated = false;
         settings.resizable = false;
-        settings.windowMode = OF_FULLSCREEN;
-        settings.multiMonitorFullScreen = false;
+        settings.title = "BatMapp Output";
         settings.shareContextWith = mainWindow;
+        
+        glfwWindowHint(GLFW_AUTO_ICONIFY, GL_FALSE);
+        glfwWindowHint(GLFW_MAXIMIZED, GL_TRUE);
+        
         display = ofCreateWindow(settings);
+        
         ofAddListener(display->events().draw, this, &DKScreenOutput::drawDisplay);
-        display->setFullscreen(true);
     } else {
         if(display != nullptr)
         {
@@ -108,6 +116,11 @@ void DKScreenOutput::drawDisplay(ofEventArgs & args)
         ofBackground(0);
         fbo->draw(0,0);
     }
+}
+
+void DKScreenOutput::unMount()
+{
+    
 }
 
 

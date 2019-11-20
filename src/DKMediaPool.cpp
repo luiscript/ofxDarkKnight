@@ -34,7 +34,7 @@ void DKMediaPool::init()
     
     float amp = pixelDensity >= 2 ? pixelDensity - 0.5 : 1.0;
     
-    font.load("fonts/Roboto-Light.ttf", 15, true, true);
+    font.load("ofxbraitsch/fonts/HelveticaNeueLTStd-Md.otf", 15, true, true);
     setModuleHasChild(true);
     alpha = 255;
     yOffsetGui = 20;
@@ -175,8 +175,8 @@ void DKMediaPool::drawMediaPool()
             }
             if(getModuleMidiMapMode())
             {
-                ofSetColor(0, 200);
-                ofDrawRectangle(i*cellWidth, j*cellHeight, cellWidth - 2, cellHeight - 2);
+                /*ofSetColor(0, 200);
+                ofDrawRectangle(i*cellWidth, j*cellHeight, cellWidth - 2, cellHeight - 2);*/
                 
                 for (pair<string, int> element : midiMappings) {
                     if(element.second == curIndex)
@@ -186,11 +186,11 @@ void DKMediaPool::drawMediaPool()
                     }
                 }
                 
-                if(index == curIndex)
+                /*if(index == curIndex)
                 {
                     ofSetColor(255, 128);
                     ofDrawRectangle(i*cellWidth, j*cellHeight, cellWidth - 2, cellHeight - 2);
-                }
+                }*/ 
             }
         }
     }

@@ -35,7 +35,7 @@ void DKModule::setupModule(string name, ofVec2f resolution)
 
 void DKModule::setupCommon(string name, ofVec2f resolution)
 {
-    moduleGuiWidth = 320;
+    moduleGuiWidth = 250;
     moduleName = name;
     moduleId = 0;
 
@@ -52,7 +52,8 @@ void DKModule::setupCommon(string name, ofVec2f resolution)
     
     moduleIsChild = false;
     moduleInitialized = true;
-
+    
+    chainModule = nullptr;
 }
 
 void DKModule::setupGui()
@@ -91,19 +92,34 @@ void DKModule::updateModule()
         update();
     }
     
-    float x = gui->getPosition().x + gui->getWidth() + 12;
-    float y = gui->getPosition().y + 10;
+    float px = gui->getPosition().x;
+    float py = gui->getPosition().y;
+    
+    float x = px + gui->getWidth() + 13;
+    float y = py + 11;
 
     for (int o=0; o<outputs.size(); o++) {
-        outputs[o]->setWireConnectionPos(ofPoint(x,y + o*30));
+        outputs[o]->setWireConnectionPos(ofPoint(x,y + o*23));
     }
 
-    x = gui->getPosition().x - 12;
-    y = gui->getPosition().y + 10;
+    x = px - 12;
+    y = py + 11;
     
     for (int i=0; i<inputs.size(); i++) {
-        inputs[i]->setWireConnectionPos(ofPoint(x,y + i*30));
+        inputs[i]->setWireConnectionPos(ofPoint(x,y + i*23));
     }
+    
+    
+    if(chainOutputs.size() > 0)
+    {
+        x = px - 12;
+        y = py + gui->getHeight() + 11;
+        
+        for (int i=0; i<chainOutputs.size(); i++) {
+            chainOutputs[i]->setWireConnectionPos(ofPoint(x,y + i*23));
+        }
+    }
+
     
 }
 
@@ -115,10 +131,10 @@ void DKModule::drawModule()
     {
         for(auto out : outputs) out->draw();
         for(auto inp : inputs ) inp->draw();
+        for(auto chain : chainOutputs) chain->draw();
     }
     if (moduleEnabled) draw();
 }
-
 
 void DKModule::toggleMidiMap()
 {
@@ -171,6 +187,16 @@ DKWireConnection * DKModule::getOutputConnection(float x , float y)
             return foundedWireConnection;
         }
     }
+    
+    for(auto out : chainOutputs)
+    {
+        foundedWireConnection = out->testWireConnection(x, y);
+        if(foundedWireConnection != nullptr)
+        {
+            return foundedWireConnection;
+        }
+    }
+    
     return gui->testOutputConnection(x, y);
 }
 
@@ -319,6 +345,13 @@ void DKModule::addOutputConnection(DKConnectionType t)
     DKWireConnection * output = new DKWireConnection;
     output->setWireConnectionType(t);
     outputs.push_back(output);
+}
+
+void DKModule::addChainOutputConnection(DKConnectionType t)
+{
+    DKWireConnection * output = new DKWireConnection;
+    output->setWireConnectionType(t);
+    chainOutputs.push_back(output);
 }
 
 void DKModule::addInputConnection(DKConnectionType t, string name)

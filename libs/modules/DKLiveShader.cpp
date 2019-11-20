@@ -98,9 +98,9 @@ void DKLiveShader::draw()
 
 void DKLiveShader::addModuleParameters()
 {
-	ofxDatGuiFolder* DKLiveShaderSettings = gui->addFolder("DKLiveShader SETTINGS");
-	auto newButtton = DKLiveShaderSettings->addButton("New DKLiveShader");
-	auto openButton = DKLiveShaderSettings->addButton("Open DKLiveShader");
+	ofxDatGuiFolder* DKLiveShaderSettings = gui->addFolder("SHADER SETTINGS");
+	auto newButtton = DKLiveShaderSettings->addButton("New Shader");
+	auto openButton = DKLiveShaderSettings->addButton("Open Shader");
 
 	newButtton->onButtonEvent(this, &DKLiveShader::onShaderSettingsButtonPress);
 	openButton->onButtonEvent(this, &DKLiveShader::onShaderSettingsButtonPress);
@@ -125,14 +125,14 @@ void DKLiveShader::addModuleParameters()
 
 void DKLiveShader::onShaderSettingsButtonPress(ofxDatGuiButtonEvent e)
 {
-	if (e.target->getName() == "New DKLiveShader")
+	if (e.target->getName() == "New Shader")
 	{
 		ofFileDialogResult loadFileResult = ofSystemLoadDialog("Selecciona un directorio", true, "./");
 		
 		if (loadFileResult.bSuccess) 
 		{
-			string destFragString = loadFileResult.filePath + "/emptyDKLiveShader.frag";
-			string destVertString = loadFileResult.filePath + "/emptyDKLiveShader.vert";
+			string destFragString = loadFileResult.filePath + "/emptyShader.frag";
+			string destVertString = loadFileResult.filePath + "/emptyShader.vert";
 			
 			const GLchar* frag = 
 R"END(#version 120
@@ -160,15 +160,15 @@ R"END(void main(void)
 			ofstream destVert(destVertString.c_str(), ios::binary);
 			destVert << vert;
 			
-			autoShader.load(loadFileResult.filePath + "/emptyDKLiveShader");
+			autoShader.load(loadFileResult.filePath + "/emptyShader");
 			
 			loaded = true;
 
 		}
 	}
-	if (e.target->getName() == "Open DKLiveShader")
+	if (e.target->getName() == "Open Shader")
 	{
-		ofFileDialogResult loadFileResult = ofSystemLoadDialog("Open DKLiveShader");
+		ofFileDialogResult loadFileResult = ofSystemLoadDialog("Open Shader");
 
 		if (loadFileResult.bSuccess)
 		{

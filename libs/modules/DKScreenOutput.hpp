@@ -43,7 +43,8 @@ public:
     void setFbo(ofFbo *);
     void addModuleParameters();
     ofFbo * getFbo();
-    void onVideoOutputChange(ofxDatGuiDropdownEvent);    
+    void onVideoOutputChange(ofxDatGuiDropdownEvent);
+    void unMount();
     shared_ptr<ofAppBaseWindow> mainWindow;
 };
 

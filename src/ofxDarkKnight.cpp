@@ -40,31 +40,27 @@ void ofxDarkKnight::setup()
 	zoom = 1.0;
 	moduleId = 1;
     
-    for(auto module : factory ) poolNames.push_back(module.first);
+    for(auto module : moduleList ) poolNames.push_back(module.first);
     
     poolNames.sort();
     
-    cout << "ofgetwidth " << ofGetWidth() << endl;
-    cout << "screen width" << ofGetScreenWidth() << endl;
-
 	float browserWidth = ofGetWidth() * 0.8;
 	float browserHeight = ofGetHeight() * 0.8;
-
-	componentsList = new ofxDatGuiScrollView("MODULES", 11);
+    int compHeight = poolNames.size() * 22.0;
+	componentsList = new ofxDatGuiScrollView("MODULES");
 	componentsList->setWidth(browserWidth / 3);
-	componentsList->setHeight(poolNames.size() * 25.0);
-	componentsList->setPosition(ofGetWidth()/2 - 0.5 * browserWidth / 3, ofGetHeight()/2 - 200);
+	componentsList->setHeight(compHeight);
+	componentsList->setPosition(ofGetWidth()/2 - 0.5 * browserWidth / 3, ofGetHeight()/2 - compHeight/2);
 	componentsList->onScrollViewEvent(this, &ofxDarkKnight::onComponentListChange);
-
+        
     for(auto it = poolNames.begin(); it != poolNames.end(); it++) componentsList->add(*it);
 
-    ofAddListener(ofEvents().mousePressed, this, &ofxDarkKnight::handleMousePressed);
-    ofAddListener(ofEvents().mouseDragged, this, &ofxDarkKnight::handleMouseDragged);
+    ofAddListener(ofEvents().mousePressed,  this, &ofxDarkKnight::handleMousePressed);
+    ofAddListener(ofEvents().mouseDragged,  this, &ofxDarkKnight::handleMouseDragged);
     ofAddListener(ofEvents().mouseScrolled, this, &ofxDarkKnight::handleMouseScrolled);
 	ofAddListener(ofEvents().mouseReleased, this, &ofxDarkKnight::handleMouseReleased);
-
-	ofAddListener(ofEvents().keyPressed, this, &ofxDarkKnight::handleKeyPressed);
-	ofAddListener(ofEvents().keyReleased, this, &ofxDarkKnight::handleKeyReleased);
+	ofAddListener(ofEvents().keyPressed,    this, &ofxDarkKnight::handleKeyPressed);
+	ofAddListener(ofEvents().keyReleased,       this, &ofxDarkKnight::handleKeyReleased);
 	ofAddListener(ofEvents().fileDragEvent, this, &ofxDarkKnight::handleDragEvent);
 	
 	#ifdef TARGET_OSX
@@ -82,7 +78,7 @@ void ofxDarkKnight::setup()
  
 
 void ofxDarkKnight::update()
-{    
+{
     for (auto wire : wires)
         if(wire.inputModule->getModuleEnabled() &&
            wire.outputModule->getModuleEnabled())
@@ -110,6 +106,7 @@ void ofxDarkKnight::draw()
     ofPushMatrix();
     ofTranslate(translation.x, translation.y);
 	ofScale(zoom);
+    
     for(auto module : modules )
         if(!module.second->moduleIsChild && module.second->getModuleEnabled())
             module.second->drawModule();
@@ -310,6 +307,7 @@ void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
 				output->setLight(module.second->getLight());
 				currentWire->light = module.second->getLight();
 			}
+
             pointer.x = x;
             pointer.y = y;
             drawing = true;
@@ -344,6 +342,10 @@ void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
 						it->inputModule->setLight(nullptr);
 						currentWire->light = it->output->getLight();
 					}
+                    else if (currentWire->getConnectionType() == DKConnectionType::DK_CHAIN)
+                    {
+                        currentWire->outputModule->setChainModule(nullptr);
+                    }
                     
                     pointer.x = x;
                     pointer.y = y;
@@ -370,6 +372,14 @@ void ofxDarkKnight::checkInputConnection(float x, float y, string moduleName)
         if(input != nullptr && currentWire != nullptr &&
            (module.second->getName() == moduleName || moduleName == "*"))
         {
+            //if current dragging wire connection is different from the input break the search
+            if(input->getConnectionType() != currentWire->getOutput()->getConnectionType())
+            {
+                currentWire = nullptr;
+                drawing = false;
+                break;
+            }
+            
             currentWire->setInputConnection(input);
             currentWire->setInputModule(module.second);
             
@@ -387,7 +397,10 @@ void ofxDarkKnight::checkInputConnection(float x, float y, string moduleName)
 				module.second->getInputConnection(x, y)->setLight(currentWire->light);
 				module.second->setLight(currentWire->light);
 			}
-            
+            else if (currentWire->getConnectionType() == DKConnectionType::DK_CHAIN)
+            {
+                currentWire->outputModule->setChainModule(module.second);
+            }
             
             wires.push_back(*currentWire);
             drawing = false;
@@ -435,20 +448,19 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                     
                     newPool->setCollectionName("Collection 1");
                     newPool->setupModule("SKETCH POOL 1", resolution, false);
-                    newPool->addItem(hapPlayer, "thumbnails/terrain.jpg", "HAP: " + file.getFileName());
-                    newPool->init();
                     newPool->gui->setPosition(ofGetMouseX() + 15, ofGetMouseY() + 15);
                     newPool->setModulesReference(&modules);
                     newPool->setTranslationReferences(&translation, &zoom);
                     newPool->setModuleMidiMapMode(midiMapMode);
-                    modules.insert({"SKETCH POOL 1", newPool});
+                    newPool->addItem(hapPlayer, "thumbnails/terrain.jpg", "HAP: " + file.getFileName());
                     
                     hapPlayer->gui->setWidth(newPool->gui->getWidth());
                     hapPlayer->loadFile(file.getAbsolutePath());
                     hapPlayer->setModuleMidiMapMode(midiMapMode);
+                    
                     modules.insert({"HAP: " + file.getFileName(), hapPlayer});
-                    newPool->drawMediaPool();
-
+                    modules.insert({"SKETCH POOL 1", newPool});
+                   
                     return;
                 }
             }
@@ -469,7 +481,7 @@ DKModule * ofxDarkKnight::addModule(string moduleName)
 	int moduleId = getNextModuleId();
 	string uniqueModuleName = moduleName + "@" + ofToString(moduleId);
 	
-	auto newModule = factory[moduleName]();
+	auto newModule = moduleList[moduleName]();
     newModule->setupModule(moduleName, resolution);
     newModule->gui->setPosition((ofGetMouseX() - translation.x)/zoom - 100/zoom, (ofGetMouseY() - translation.y)/zoom - 15/zoom);
     newModule->setModuleMidiMapMode(midiMapMode);
@@ -485,7 +497,7 @@ DKModule * ofxDarkKnight::addModule(string moduleName)
 	{
 		DKConfig* config = static_cast<DKConfig*>(newModule);;
 		config->setupModule("PROJECT", resolution);
-		config->gui->setPosition(ofGetWidth() - 320, 0);
+		config->gui->setPosition(ofGetScreenWidth()/2 - 160, 20);
 		config->setModuleMidiMapMode(midiMapMode);
 		ofAddListener(config->onResolutionChangeEvent, this, &ofxDarkKnight::onResolutionChange);
 		config->setModuleId(getNextModuleId());

@@ -73,7 +73,13 @@ public:
 			"Save",
 			"Open"
 		};
-
+        
+        vector<string> splitOptions = {
+            "SINGLE",
+            "DOUBLE",
+            "TRIPLE"
+        };
+        
         vector<string> options =
         {
             "UHD-1 (3840 x 2160)",
@@ -92,22 +98,19 @@ public:
 		auto openButton = fileDropDown->addButton("Open");
 		saveButton->onButtonEvent(this, &DKConfig::onFileButtonPress);
 		openButton->onButtonEvent(this, &DKConfig::onFileButtonPress);
-
+        gui->addBreak();
+        
         auto resolutionDropDown = gui->addDropdown("Resolution", options);
         resolutionDropDown->onDropdownEvent(this, &DKConfig::onResolutionChange);
         resolutionDropDown->select(2);
-        
-        vector<string> splitOptions = {
-            "SINGLE",
-            "DOUBLE",
-            "TRIPLE"
-        };
+        gui->addBreak();
         
         auto numScreens = gui->addDropdown("Split", splitOptions);
         numScreens->onDropdownEvent(this, &DKConfig::onSplitChange);
         numScreens->select(0);
-
-		gui->addFRM();
+        gui->addBreak();
+		
+        gui->addFRM();
     }
 
 	void onFileButtonPress(ofxDatGuiButtonEvent e)

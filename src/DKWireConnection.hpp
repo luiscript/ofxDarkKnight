@@ -30,8 +30,16 @@ enum class DKConnectionType {
     DK_FBO = 1,
     DK_SLIDER = 2,
     DK_INT = 3,
-	DK_LIGHT = 4
+	DK_LIGHT = 4,
+    DK_CHAIN = 5
 };
+
+struct DKFboChain
+{
+    ofFbo* readFbo;
+    ofFbo* writeFbo;
+};
+
 
 class DKWireConnection{
 private:
@@ -61,7 +69,6 @@ public:
     void setWireConnectionPos(ofPoint);
 	void setName(string);
     
-    void checkConnectionOnDrag(DKConnectionType);
     DKWireConnection * testWireConnection(float, float);
     
     ofFbo * getFbo();
@@ -69,7 +76,6 @@ public:
 
 	ofLight* getLight();
 	void setLight(ofLight*);
-    
 };
 
 

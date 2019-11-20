@@ -27,6 +27,8 @@ DKWire::DKWire()
 {
     input = nullptr;
     output = nullptr;
+    passes = nullptr;
+    
     active = true;
     
     wiresTension = 0.95;
@@ -70,7 +72,7 @@ void DKWire::drawWire(ofPoint p1, ofPoint p2, ofPoint p3)
     ofPushMatrix();
     ofNoFill();
     ofSetLineWidth(3);
-    ofSetColor(232, 181, 54);
+    ofSetColor(getOutput()->getWireConnectionColor());
     ofDrawBezier(p1.x, p1.y, p3.x, p3.y, p3.x, p3.y, p2.x, p2.y);
     ofFill();
     ofDrawCircle(p1.x, p1.y, connectionRadius);
@@ -133,3 +135,13 @@ DKConnectionType DKWire::getConnectionType()
 {
     return connectionType;
 }
+
+//void DKWire::setPasses(vector<DKModule*>* passesptr)
+//{
+//    passes = passedptr;
+//}
+//
+//vector<DKModule*>* DKWire::getPasses()
+//{
+//    return passes;
+//}

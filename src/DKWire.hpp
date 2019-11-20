@@ -41,12 +41,14 @@ public:
     DKWireConnection * getInput();
     DKWireConnection * getOutput();
     DKConnectionType getConnectionType();
+    //vector<DKModule*>* getPasses();
     
     void setInputConnection(DKWireConnection *);
     void setOutputConnection(DKWireConnection *);
     void setInputModule(DKModule *);
     void setOutputModule(DKModule *);
     void setConnectionType(DKConnectionType);
+    //void setPasses(vector<DKModule*>*);
 
     DKWireConnection * input;
     DKWireConnection * output;
@@ -56,6 +58,8 @@ public:
     void * data;
     ofFbo * fbo;
 	ofLight* light;
+    //DKFboChain* chain;
+    vector<DKModule*>* passes;
     double * scale;
     ofxDatGuiSlider * slider;
     bool active;

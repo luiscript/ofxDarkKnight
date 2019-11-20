@@ -44,10 +44,11 @@ void DKWireConnection::updateWireConnectionPos(int x, int y)
 void DKWireConnection::draw()
 {
     ofPushStyle();
+    ofSetCircleResolution(60);
+    ofNoFill();
+    ofSetLineWidth(2);
     ofSetColor(getWireConnectionColor());
     ofDrawCircle(wireConnectionPos.x, wireConnectionPos.y, 8);
-    ofSetColor(0);
-    ofDrawCircle(wireConnectionPos.x, wireConnectionPos.y, 5);
     ofPopStyle();
 }
 
@@ -124,17 +125,10 @@ void DKWireConnection::setLight(ofLight* l)
 	light = l;
 }
 
-void DKWireConnection::checkConnectionOnDrag(DKConnectionType type)
-{
-    if(connectionType == type)
-    {
-        //change color of connection to indicate that you can connect
-    }
-}
-
 ofColor DKWireConnection::getWireConnectionColor()
 {
 	if (connectionType == DKConnectionType::DK_FBO) return ofColor(180, 180, 0);
 	if (connectionType == DKConnectionType::DK_SLIDER) return ofColor(255, 255, 255);
 	if (connectionType == DKConnectionType::DK_LIGHT) return ofColor(0, 180, 180);
+    if (connectionType == DKConnectionType::DK_CHAIN) return ofColor(226, 88, 33);
 }
