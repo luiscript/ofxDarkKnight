@@ -20,87 +20,40 @@
  SOFTWARE.
  */
 
-
-#define STRINGIFY(A) #A
-
 #include "DKModule.hpp"
 
-class DKColorInverter : public DKModule
+class DKFXColorSub : public DKModule
 {
 private:
-	ofShader shader;
-	ofFbo* fbo;
-	ofFbo* newFbo;
-	bool gotTexture;
-	float mix;
+	float red;
+	float green;
+	float blue;
+    ofShader shader;
 public:
-	void setup()
-	{
-		fbo = nullptr;
-
-		newFbo = new ofFbo();
-		newFbo->allocate(getModuleWidth(), getModuleHeight());
-		newFbo->begin();
-		ofClear(0, 0, 0, 0);
-		newFbo->end();
-
-		gotTexture = false;
-
-		shader.load("Shaders/InverterShader");
-
-		addInputConnection(DKConnectionType::DK_FBO);
-		addOutputConnection(DKConnectionType::DK_FBO);
-	}
-
-	void update()
-	{
-
-	}
-
-	void draw()
-	{
-		ofPushStyle();
-		ofEnableAlphaBlending();
-		if (gotTexture)
-		{
-			fbo->bind();
-		}
-
-		newFbo->begin();
-		ofClear(0, 0, 0, 0);
-		shader.begin();
-
-		if (gotTexture)
-		{
-			shader.setUniform1f("mix", mix);
-			shader.setUniformTexture("text1", fbo->getTextureReference(), 1);
-			fbo->draw(0, 0);
-		}
-
-		shader.end();
-		newFbo->end();
-		ofDisableAlphaBlending();
-		ofPopStyle();
-
-		if (gotTexture)
-		{
-			fbo->unbind();
-		}
-	}
-
+    void setup()
+    {
+        red = green = blue = 1.0;
+        shader.load("Shaders/ColorShader");
+        addInputConnection(DKConnectionType::DK_CHAIN);
+        addChainOutputConnection(DKConnectionType::DK_CHAIN);
+    }
+    void render(ofFbo& readFbo, ofFbo& writeFbo)
+    {
+        writeFbo.begin();
+        ofClear(0, 0, 0, 0);
+        shader.begin();
+        shader.setUniform1f("r", red);
+        shader.setUniform1f("g", green);
+        shader.setUniform1f("b", blue);
+        readFbo.draw(0,0);
+        shader.end();
+        writeFbo.end();
+    }
 	void addModuleParameters()
 	{
-		gui->addSlider("mix", 0.0, 1.0, 1.0)->setPrecision(4)->bind(mix);
+		gui->addSlider("red", 0.0, 1.0, 1.0)->setPrecision(4)->bind(red);
+		gui->addSlider("green", 0.0, 1.0, 1.0)->setPrecision(4)->bind(green);
+		gui->addSlider("blue", 0.0, 1.0, 1.0)->setPrecision(4)->bind(blue);
 	}
-
-	void setFbo(ofFbo* fboptr)
-	{
-		gotTexture = fboptr != nullptr;
-		fbo = fboptr;
-	}
-
-	ofFbo* getFbo()
-	{
-		return  newFbo;
-	}
+	
 };

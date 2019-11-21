@@ -8,8 +8,6 @@
 */
 
 #include "DKChain.h"
-#include "DKColorInverter.h"
-#include "DKColorShader.hpp"
 #include "DKConfig.hpp"
 #include "DKLight.hpp"
 #include "DKLiveShader.hpp"

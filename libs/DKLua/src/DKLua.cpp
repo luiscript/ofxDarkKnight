@@ -40,13 +40,30 @@ void DKLua::setup()
     fileChangedTimes.clear();
     
     ofAddListener(fileDialog.fileDialogEvent, this, &DKLua::onFileDialogResponse);
+    lastTimeCheckMillis = ofGetElapsedTimeMillis();
 }
 
 void DKLua::update()
 {
     if(loaded) {
-        //lua.setNumber("centerX", getModuleWidth()/2);
-        //lua.setNumber("centerY", getModuleHeight()/2);
+        if( loadShaderNextFrame )
+        {
+            reloadScript();
+            loadShaderNextFrame = false;
+        }
+        int currTime = ofGetElapsedTimeMillis();
+        
+        if( ((currTime - lastTimeCheckMillis) > millisBetweenFileCheck) &&
+           !loadShaderNextFrame )
+        {
+
+            if( filesChanged() )
+            {
+                loadShaderNextFrame = true;
+            }
+     
+            lastTimeCheckMillis = currTime;
+        }
         for (auto& it : floatParameters)
         {
             lua.setNumber(it.first, *it.second);
@@ -120,6 +137,8 @@ void DKLua::onSettingsButtonPress(ofxDatGuiButtonEvent e)
 }
 
 void DKLua::onFileDialogResponse(ofxThreadedFileDialogResponse& response) {
+    fileDialog.stop();
+    
     if (response.id == "Open script")
     {
         script = response.filepath;
@@ -132,7 +151,7 @@ void DKLua::onFileDialogResponse(ofxThreadedFileDialogResponse& response) {
             lua.addListener(this);
             reloadScript();
             lastTimeCheckMillis = ofGetElapsedTimeMillis();
-            setMillisBetweenFileCheck( 500 );
+            setMillisBetweenFileCheck( 200 );
             loaded = true;
         }
         else
@@ -167,12 +186,10 @@ end
             lua.addListener(this);
             reloadScript();
             lastTimeCheckMillis = ofGetElapsedTimeMillis();
-            setMillisBetweenFileCheck( 500 );
+            setMillisBetweenFileCheck( 200 );
             loaded = true;
         }
     }
-    
-    fileDialog.stop();
 }
 
 void DKLua::reloadScript()
@@ -183,28 +200,14 @@ void DKLua::reloadScript()
     lua.doScript(script, true);
     lua.scriptSetup();
     loaded = true;
+    enableWatchFiles();
 }
 
 void DKLua::_update(ofEventArgs &e)
 {
-    if( loadShaderNextFrame )
-    {
-        reloadScript();
-        loadShaderNextFrame = false;
-    }
+    //cout << "update" << endl;
+   
     
-    int currTime = ofGetElapsedTimeMillis();
-    
-    if( ((currTime - lastTimeCheckMillis) > millisBetweenFileCheck) &&
-       !loadShaderNextFrame )
-    {
-        if( filesChanged() )
-        {
-            loadShaderNextFrame = true;
-        }
-        
-        lastTimeCheckMillis = currTime;
-    }
 }
 
 
@@ -268,7 +271,7 @@ ofFbo * DKLua::getFbo()
 void DKLua::errorReceived(string& msg) {
     //loaded = false;
     ofLogNotice() << "got a script error: " << msg;
-    //tinyfd_notifyPopup("Lua error", msg.c_str(), "error");
+    disableWatchFiles();
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------
 //

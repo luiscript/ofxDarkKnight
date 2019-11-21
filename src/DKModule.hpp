@@ -63,8 +63,6 @@ private:
     
     ofxDatGuiComponent * selectedComponent;
     unordered_map<string, ofxDatGuiComponent *> midiMappings;
-    DKModule* chainModule;
-
 public:
 	vector<ofxMidiMessage*> outMidiMessages;
     
@@ -76,6 +74,7 @@ public:
     vector<DKWireConnection*> inputs;
     vector<DKWireConnection*> outputs;
     vector<DKWireConnection*> chainOutputs;
+    DKModule* chainModule;
     
     virtual void setup() { };
     virtual void update() { };
@@ -85,7 +84,6 @@ public:
     virtual void unMount() { };
     virtual void setFbo(ofFbo *){ };
     virtual void setFbo(ofFbo *, int) { };
-    virtual void setChainModule(DKModule*) { };
 	virtual void setLight(ofLight*) { };
     virtual void onMouseMove(int, int) { };
     virtual void triggerMidiEvent(){ };
@@ -94,13 +92,13 @@ public:
     
     virtual ofFbo * getFbo(){ return nullptr; };
 	virtual ofLight* getLight() { return nullptr; };
-    virtual DKModule * getChainModule() { return nullptr; };
     virtual ofxPostProcessing* getChain() { return nullptr; };
     
 
     void setupModule(string, ofVec2f, bool);
     void setupModule(string, ofVec2f);
     void setupCommon(string, ofVec2f);
+    void setChainModule(DKModule*);
     void setupGui();
     void updateModule();
     void updateModule(float, float);
@@ -118,6 +116,7 @@ public:
     bool getModuleEnabled();
     bool getModuleHasChild();
     ofPoint getTranslation();
+    DKModule * getChainModule();
     
     void setModuleWidth(float);
     void setModuleHeight(float);

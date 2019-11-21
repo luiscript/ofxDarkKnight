@@ -20,9 +20,6 @@
  SOFTWARE.
  */
 
-
-#define STRINGIFY(A) #A
-
 #include "DKModule.hpp"
 
 class DKFXMirror : public DKModule
@@ -32,6 +29,7 @@ private:
     float horizontal;
     bool gotChain;
     ofShader shader;
+    
 public:
     void setup()
     {

@@ -20,57 +20,36 @@
  SOFTWARE.
  */
 
+
+#define STRINGIFY(A) #A
+
 #include "DKModule.hpp"
 
-class DKColorShader : public DKModule
+class DKFXColorInv : public DKModule
 {
 private:
-	float red;
-	float green;
-	float blue;
-    ofShader shader;
+	ofShader shader;
+	float mix = 0.0;
 public:
-	void init()
+	void setup()
 	{
-		red = green = blue = 1.0;
-		shader.load("Shaders/ColorShader");
+		shader.load("Shaders/InverterShader");
+		addInputConnection(DKConnectionType::DK_CHAIN);
+        addChainOutputConnection(DKConnectionType::DK_CHAIN);
 	}
-
-    void drawChain()
+    void render(ofFbo& readFbo, ofFbo& writeFbo)
     {
-        if (false)
-        {
-            ofPushStyle();
-            ofEnableAlphaBlending();
-//            chain->readFbo->bind();
-//            chain->writeFbo->begin();
-            ofClear(0, 0, 0, 0);
-            shader.begin();
-            shader.setUniform1f("r", red);
-            shader.setUniform1f("g", green);
-            shader.setUniform1f("b", blue);
-            
-            //shader.setUniformTexture("text1", chain->readFbo->getTexture(), 1);
-            //chain->readFbo->draw(0, 0);
-            
-            shader.end();
-//            chain->writeFbo->end();
-//
-//            chain->readFbo->unbind();
-            
-            ofDisableAlphaBlending();
-            ofPopStyle();
-            
-            //chain->readFbo = chain->writeFbo;
-        }
-        
+        writeFbo.begin();
+        shader.begin();
+        shader.setUniform1f("mixer", mix);
+        shader.setUniformTexture("tex1", readFbo.getTextureReference(), 1);
+        readFbo.draw(0, 0);
+        shader.end();
+        writeFbo.end();
     }
-
+    
 	void addModuleParameters()
 	{
-		gui->addSlider("red", 0.0, 1.0, 1.0)->setPrecision(4)->bind(red);
-		gui->addSlider("green", 0.0, 1.0, 1.0)->setPrecision(4)->bind(green);
-		gui->addSlider("blue", 0.0, 1.0, 1.0)->setPrecision(4)->bind(blue);
+        addSlider("mix", mix, 0.0, 1.0, 0.0, 4);
 	}
-	
 };

@@ -240,6 +240,11 @@ ofPoint DKModule::getTranslation()
     return translation;
 }
 
+DKModule* DKModule::getChainModule()
+{
+    return chainModule;
+}
+
 void DKModule::onSliderEventParent(ofxDatGuiSliderEvent e)
 {
     if(e.target->getMidiMode())
@@ -289,6 +294,11 @@ void DKModule::setModuleId(int index)
 {
     
     moduleId = index;
+}
+
+void DKModule::setChainModule(DKModule* chainptr)
+{
+    chainModule = chainptr;
 }
 
 void DKModule::setResolution(int w, int h)

@@ -83,7 +83,7 @@ void DKLfo::update()
 void DKLfo::draw()
 {
     float size = moduleGuiWidth * 0.35 + 3;
-    icons.draw(gui->getPosition().x + size, gui->getPosition().y + 28);
+    icons.draw(gui->getPosition().x + size, gui->getPosition().y + 30);
 }
 
 void DKLfo::addModuleParameters()
