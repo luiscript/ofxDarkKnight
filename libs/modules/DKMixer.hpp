@@ -198,14 +198,20 @@ STRINGIFY
  uniform sampler2DRect base;
  uniform sampler2DRect blendTgt;
  uniform int mode;
+ uniform float alpha1;
+ uniform float alpha2;
+ uniform float master;
  
  void main()
  {
      vec4 baseCol = texture2DRect(base, gl_TexCoord[0].st);
      vec4 blendCol = texture2DRect(blendTgt, gl_TexCoord[0].st);
      
-     float a = baseCol.a + blendCol.a * ( 1.0 - baseCol.a );
+     baseCol *= alpha1;
+     blendCol *= alpha2;
+     
      vec3 result;
+
      if (mode == 0)
      {
          result = BlendNormal(baseCol.rgb, blendCol.rgb);
@@ -310,15 +316,7 @@ STRINGIFY
      {
          result = BlendNormal(baseCol.rgb, blendCol.rgb);
      }
-     
-     if (blendCol.a <= 0.0)
-     {
-         gl_FragColor = vec4(0.0,0.0,0.0,0.0);
-     }
-     else
-     {
-         gl_FragColor = vec4(result, a);
-     }
+     gl_FragColor = vec4(result, master);
  }
 );
 
@@ -347,6 +345,7 @@ private:
     vector<ofFbo*> fbos;
     float alpha1;
     float alpha2;
+    float alphaMaster;
     int blendMode = 0;
 };
 

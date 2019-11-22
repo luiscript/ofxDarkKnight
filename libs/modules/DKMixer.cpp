@@ -31,9 +31,9 @@ void DKMixer::setup()
     addInputConnection(DKConnectionType::DK_EMPTY);
     addChainOutputConnection(DKConnectionType::DK_CHAIN);
     
-    blendMode = 1;
+    blendMode = 0;
     chainModule = nullptr;
-    alpha1 = alpha2 = 1.0;
+    alphaMaster = alpha1 = alpha2 = 1.0;
     shader.setupShaderFromSource(GL_FRAGMENT_SHADER, psBlendFragShaderGL2);
     shader.linkProgram();
     fbos.clear();
@@ -58,9 +58,12 @@ void DKMixer::draw()
     {
         shader.setUniformTexture("blendTgt", fbos[1]->getTextureReference(), 2);
     }
-    
+    shader.setUniform1f("alpha1", alpha1);
+    shader.setUniform1f("alpha2", alpha2);
+    shader.setUniform1f("master", alphaMaster);
     shader.setUniform1i("mode", blendMode);
     drawPlane();
+
     shader.end();
     raw.end();
 
@@ -86,8 +89,11 @@ void DKMixer::addModuleParameters()
     auto matrix = gui->addMatrix("BLEND", 24, true);
     matrix->setRadioMode(true);
     matrix->onMatrixEvent(this, &DKMixer::onBlendModeChange);
+    matrix->setSelected({0});
+    
     
     guiLabel = gui->addLabel(getBlendName(blendMode));
+    addSlider("Master", alphaMaster, 0.0, 1.0, 1.0);
 }
 
 void DKMixer::processChain(ofFbo& read, ofFbo& write, DKModule* cModule)
