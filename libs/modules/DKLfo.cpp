@@ -78,6 +78,8 @@ void DKLfo::update()
     }
     result *= amplitude;
     result += offset;
+    
+    //valuePlotter->setValue(result);
 }
 
 void DKLfo::draw()
@@ -97,6 +99,11 @@ void DKLfo::addModuleParameters()
     gui->addSlider("amplitude",0, 1,0)->setPrecision(3)->bind(amplitude);
     gui->addSlider("offset", 0, 1, 0)->setPrecision(3)->bind(offset);
     gui->addSlider("result", 0, 1, 0)->setPrecision(4)->bind(result);
+    
+   // valuePlotter = gui->addValuePlotter("LFO", 0, 1);
+
+    //myWaveMonitor->setFrequencyLimit(float limit);
+    //myWaveMonitor->setDrawMode(ofxDatGuiGraph drawMode);
 }
 
 void DKLfo::onWaveSelected(ofxDatGuiMatrixEvent e)

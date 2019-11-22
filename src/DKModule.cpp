@@ -106,7 +106,7 @@ void DKModule::updateModule()
     y = py + 11;
     
     for (int i=0; i<inputs.size(); i++) {
-        inputs[i]->setWireConnectionPos(ofPoint(x,y + i*23));
+        inputs[i]->setWireConnectionPos(ofPoint(x,y + i*22));
     }
     
     
@@ -120,7 +120,6 @@ void DKModule::updateModule()
         }
     }
 
-    
 }
 
 void DKModule::drawModule()
@@ -134,6 +133,29 @@ void DKModule::drawModule()
         for(auto chain : chainOutputs) chain->draw();
     }
     if (moduleEnabled) draw();
+}
+
+void DKModule::drawPlane()
+{
+    ofVboMesh quad;
+    quad.getVertices().resize(4);
+    quad.getTexCoords().resize(4);
+    quad.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
+    
+    int w = getModuleWidth();
+    int h = getModuleHeight();
+    
+    quad.setVertex(0, ofVec3f(0,0,0));
+    quad.setVertex(1, ofVec3f(w,0,0));
+    quad.setVertex(2, ofVec3f(w,h,0));
+    quad.setVertex(3, ofVec3f(0,h,0));
+
+    quad.setTexCoord(0, ofVec2f(0,0));
+    quad.setTexCoord(1, ofVec2f(w,0));
+    quad.setTexCoord(2, ofVec2f(w,h));
+    quad.setTexCoord(3, ofVec2f(0,h));
+
+    quad.draw();
 }
 
 void DKModule::toggleMidiMap()
@@ -206,7 +228,8 @@ DKWireConnection * DKModule::getInputConnection(float x , float y)
     for(auto inp : inputs)
     {
         foundedWireConnection = inp->testWireConnection(x, y);
-        if(foundedWireConnection != nullptr)
+        if(foundedWireConnection != nullptr &&
+           foundedWireConnection->getConnectionType() != DKConnectionType::DK_EMPTY)
         {
             return foundedWireConnection;
         }

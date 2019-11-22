@@ -147,16 +147,11 @@ void DKLua::onFileDialogResponse(ofxThreadedFileDialogResponse& response) {
         if(scriptFile.exists())
         {
             fileChangedTimes.push_back( getLastModified( scriptFile ) );
-            enableWatchFiles();
             lua.addListener(this);
             reloadScript();
             lastTimeCheckMillis = ofGetElapsedTimeMillis();
             setMillisBetweenFileCheck( 200 );
             loaded = true;
-        }
-        else
-        {
-            disableWatchFiles();
         }
     }
     else if (response.id == "New script")
@@ -182,7 +177,6 @@ end
         if(scriptFile.exists())
         {
             fileChangedTimes.push_back( getLastModified( scriptFile ) );
-            enableWatchFiles();
             lua.addListener(this);
             reloadScript();
             lastTimeCheckMillis = ofGetElapsedTimeMillis();
@@ -194,22 +188,11 @@ end
 
 void DKLua::reloadScript()
 {
-    lua.scriptExit();
-    lua.clear();
     lua.init();
     lua.doScript(script, true);
     lua.scriptSetup();
     loaded = true;
-    enableWatchFiles();
 }
-
-void DKLua::_update(ofEventArgs &e)
-{
-    //cout << "update" << endl;
-   
-    
-}
-
 
 void DKLua::addParameter(ofxDatGuiButtonEvent e)
 {
@@ -269,32 +252,12 @@ ofFbo * DKLua::getFbo()
 }
 
 void DKLua::errorReceived(string& msg) {
-    //loaded = false;
     ofLogNotice() << "got a script error: " << msg;
-    disableWatchFiles();
-}
-// ---------------------------------------------------------------------------------------------------------------------------------------------------
-//
-void DKLua::enableWatchFiles()
-{
-    if(!bWatchingFiles){
-        ofAddListener(ofEvents().update, this, &DKLua::_update );
-        bWatchingFiles = true;
-    }
+    lua.scriptExit();
+    lua.clear();
 }
 
-// ---------------------------------------------------------------------------------------------------------------------------------------------------
-//
-void DKLua::disableWatchFiles()
-{
-    if(bWatchingFiles){
-        ofRemoveListener(ofEvents().update, this, &DKLua::_update );
-        bWatchingFiles = false;
-    }
-}
 
-// ---------------------------------------------------------------------------------------------------------------------------------------------------
-//
 bool DKLua::filesChanged()
 {
     bool fileChanged = false;
@@ -337,6 +300,5 @@ void DKLua::setMillisBetweenFileCheck( int _millis )
 
 void DKLua::unMount()
 {
-    disableWatchFiles();
     ofRemoveListener(fileDialog.fileDialogEvent, this, &DKLua::onFileDialogResponse);
 }

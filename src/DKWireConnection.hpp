@@ -31,7 +31,8 @@ enum class DKConnectionType {
     DK_SLIDER = 2,
     DK_INT = 3,
 	DK_LIGHT = 4,
-    DK_CHAIN = 5
+    DK_CHAIN = 5,
+    DK_EMPTY = 6
 };
 
 struct DKFboChain

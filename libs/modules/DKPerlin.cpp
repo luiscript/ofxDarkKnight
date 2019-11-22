@@ -28,13 +28,14 @@ void DKPerlin::setup()
     noiseValue = 0;
     amplitude = 1;
     offset = 0;
-    random = ofRandom(0.0001,1.00001);
+    random = ofRandom(0.0001,10.00001);
     mult = 1.0;
 }
 
 void DKPerlin::update()
 {
     noiseValue = ofNoise(ofGetElapsedTimef() * mult, random) * amplitude + offset;
+    //valuePlotter->setValue(noiseValue);
 }
 
 void DKPerlin::draw()
@@ -48,6 +49,7 @@ void DKPerlin::addModuleParameters()
     gui->addSlider("offset", 0,1,0)->bind(offset);
     gui->addSlider("velocity", 0, 4)->bind(mult);
     gui->addSlider("noise", 0,1,0)->setPrecision(4)->bind(noiseValue);
+    //valuePlotter = gui->addValuePlotter("noise", 0, 1);
 }
 
 

@@ -57,20 +57,13 @@ public:
     bool load(string shaderName );
     bool load(string vertName, string fragName, string geomName);
     
-    void enableWatchFiles();
-    void disableWatchFiles();
-    
     void setMillisBetweenFileCheck( int _millis );
-    
-    void _update(ofEventArgs &e);
     
     void errorReceived(string& msg);
     
     // script control
     void reloadScript();
-    void nextScript();
-    void prevScript();
-    
+  
     ofxLua lua;
     string script;
     size_t currentScript;

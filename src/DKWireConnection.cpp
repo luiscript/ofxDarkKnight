@@ -43,13 +43,16 @@ void DKWireConnection::updateWireConnectionPos(int x, int y)
 
 void DKWireConnection::draw()
 {
-    ofPushStyle();
-    ofSetCircleResolution(60);
-    ofNoFill();
-    ofSetLineWidth(2);
-    ofSetColor(getWireConnectionColor());
-    ofDrawCircle(wireConnectionPos.x, wireConnectionPos.y, 8);
-    ofPopStyle();
+    if(connectionType != DKConnectionType::DK_EMPTY)
+    {
+        ofPushStyle();
+        ofSetCircleResolution(60);
+        ofNoFill();
+        ofSetLineWidth(2);
+        ofSetColor(getWireConnectionColor());
+        ofDrawCircle(wireConnectionPos.x, wireConnectionPos.y, 8);
+        ofPopStyle();
+    }
 }
 
 void DKWireConnection::setWireConnectionPos(ofPoint p)

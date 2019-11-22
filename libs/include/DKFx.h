@@ -9,5 +9,6 @@
 #include "DKFXColorInv.h"
 #include "DKFXColorSub.h"
 #include "DKFXMirror.h"
+#include "DKFXMixer.h"
 #include "DKFXTiltShiftH.h"
 

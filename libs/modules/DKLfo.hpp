@@ -34,6 +34,7 @@ private:
     float amplitude;
     float result;
     unsigned int wave;
+    //ofxDatGuiValuePlotter* valuePlotter;
 public:
     void setup();
     void update();

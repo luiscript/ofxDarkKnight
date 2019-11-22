@@ -34,6 +34,7 @@ public:
     float mult;
     float amplitude;
     float offset;
+    //ofxDatGuiValuePlotter* valuePlotter;
     void setup();
     void update();
     void draw();

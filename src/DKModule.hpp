@@ -104,6 +104,7 @@ public:
     void updateModule(float, float);
 	void updateModule(float, float, float);
     void drawModule();
+    void drawPlane();
     
     void enable();
     void disable();
