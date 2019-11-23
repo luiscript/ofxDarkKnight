@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2019 Luis Fernando García [http://luiscript.com]
+ Copyright (C) 2019 Luis Fernando Garc’a PŽrez [http://luiscript.com]
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal

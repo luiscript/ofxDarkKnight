@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2018 Luis Fernando Garc’a [http://luiscript.com]
+ Copyright (C) 2018 Luis Fernando Garc’a PŽrez [http://luiscript.com]
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -107,15 +107,13 @@ void ofxDarkKnight::draw()
     ofTranslate(translation.x, translation.y);
 	ofScale(zoom);
     
+    if(drawing) currentWire->drawCurrentWire(pointer);
+    
+    for(auto wire : wires) wire.draw();
+    
     for(auto module : modules )
         if(!module.second->moduleIsChild && module.second->getModuleEnabled())
             module.second->drawModule();
-
-    if(midiMapMode)
-    {
-        for(auto wire : wires) wire.draw();
-        if(drawing) currentWire->drawCurrentWire(pointer);
-    }
 
     ofPopMatrix();
     
@@ -198,7 +196,7 @@ void ofxDarkKnight::handleMousePressed(ofMouseEventArgs &mouse)
 	int x = (int)(mouse.x - translation.x) / zoom;
 	int y = (int)(mouse.y - translation.y) / zoom;
 
-	if (midiMapMode) checkOutputConnection(x, y, "*");
+	checkOutputConnection(x, y, "*");
 
 	if (shiftKey)
 	{
@@ -259,7 +257,7 @@ void ofxDarkKnight::handleMouseReleased(ofMouseEventArgs & mouse)
     int x = (int) (mouse.x - translation.x) / zoom;
     int y = (int) (mouse.y - translation.y) / zoom;
 
-    if( midiMapMode ) checkInputConnection(x, y, "*");
+        checkInputConnection(x, y, "*");
 }
 
 void ofxDarkKnight::handleMouseScrolled(ofMouseEventArgs & mouse)

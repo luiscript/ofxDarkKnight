@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2018 Luis Fernando Garc’a [http://luiscript.com]
+ Copyright (C) 2018 Luis Fernando Garc’a PŽrez [http://luiscript.com]
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -221,7 +221,7 @@ void Constellation::addModuleParameters()
     ofxDatGuiMatrix * matrix = gui->addMatrix("drawing modes", 8, true);
     matrix->onMatrixEvent(this, &Constellation::onDrawingModeChange);
     matrix->setRadioMode(true);
-    matrix->getChildAt(0)->setSelected(false);
+    matrix->setSelected({0});
     
     addSlider("count", numParticles, 0, 2000, 500);
     addSlider("size", particleSize, 0, 50, 5);

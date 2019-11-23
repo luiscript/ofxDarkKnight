@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2018 Luis Fernando Garc’a [http://luiscript.com]
+ Copyright (C) 2018 Luis Fernando Garc’a PŽrez [http://luiscript.com]
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -125,14 +125,10 @@ void DKModule::updateModule()
 void DKModule::drawModule()
 {
     gui->draw();
-
-    if(getModuleMidiMapMode())
-    {
-        for(auto out : outputs) out->draw();
-        for(auto inp : inputs ) inp->draw();
-        for(auto chain : chainOutputs) chain->draw();
-    }
-    if (moduleEnabled) draw();
+    for(auto out : outputs) out->draw();
+    for(auto inp : inputs ) inp->draw();
+    for(auto chain : chainOutputs) chain->draw();
+    draw();
 }
 
 void DKModule::drawPlane()

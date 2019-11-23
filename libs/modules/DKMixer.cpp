@@ -25,6 +25,7 @@ void DKMixer::setup()
     
     addOutputConnection(DKConnectionType::DK_FBO);
     addInputConnection(DKConnectionType::DK_EMPTY);
+    addInputConnection(DKConnectionType::DK_EMPTY);
     addInputConnection(DKConnectionType::DK_FBO);
     addInputConnection(DKConnectionType::DK_EMPTY);
     addInputConnection(DKConnectionType::DK_FBO);
@@ -82,18 +83,18 @@ void DKMixer::draw()
 
 void DKMixer::addModuleParameters()
 {
-    gui->addLabel("Layer 1");
-    addSlider("Alpha 1", alpha1, 0.0, 1.0, 1.0);
-    gui->addLabel("Layer 2");
-    addSlider("Alpha 2", alpha2, 0.0, 1.0, 1.0);
-    auto matrix = gui->addMatrix("BLEND", 24, true);
+    addSlider("Master", alphaMaster, 0.0, 1.0, 1.0);
+    gui->addLabel("1");
+    addSlider("1 Alpha", alpha1, 0.0, 1.0, 1.0);
+    gui->addLabel("2");
+    addSlider("2 Alpha", alpha2, 0.0, 1.0, 1.0);
+    guiLabel = gui->addLabel(getBlendName(blendMode));
+    guiLabel->setLabelAlignment(ofxDatGuiAlignment::CENTER);
+    auto matrix = gui->addMatrix("", 24, true);
     matrix->setRadioMode(true);
     matrix->onMatrixEvent(this, &DKMixer::onBlendModeChange);
     matrix->setSelected({0});
-    
-    
-    guiLabel = gui->addLabel(getBlendName(blendMode));
-    addSlider("Master", alphaMaster, 0.0, 1.0, 1.0);
+
 }
 
 void DKMixer::processChain(ofFbo& read, ofFbo& write, DKModule* cModule)

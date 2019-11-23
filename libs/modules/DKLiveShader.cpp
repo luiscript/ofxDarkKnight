@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2019 Luis Fernando García [http://luiscript.com]
+ Copyright (C) 2019 Luis Fernando García Pérez [http://luiscript.com]
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -163,7 +163,9 @@ R"END(void main(void)
 			autoShader.load(loadFileResult.filePath + "/emptyShader");
 			
 			loaded = true;
-
+            
+            string command = "open " + loadFileResult.filePath;
+            system(command.c_str());
 		}
 	}
 	if (e.target->getName() == "Open Shader")
@@ -176,6 +178,8 @@ R"END(void main(void)
 			string DKLiveShaderName = fileString.substr(0, fileString.find("."));
 			autoShader.load(DKLiveShaderName);
 			loaded = true;
+            string command = "open " + fileString;
+            system(command.c_str());
 		}
 	}
 }
