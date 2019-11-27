@@ -102,11 +102,11 @@ void DKLua::addModuleParameters()
     ofxDatGuiTextInput* parameterName = addParameter->addTextInput("Name", "parameter");
     parameterName->setTextUpperCase(false);
     parameterName->onTextInputEvent(this, &DKLua::onParameterNameChange);
-    ofxDatGuiTextInput* parameterMin = addParameter->addTextInput("Min value", "0");
+    ofxDatGuiTextInput* parameterMin = addParameter->addTextInput("Min", "0");
     parameterMin->onTextInputEvent(this, &DKLua::onParameterMinChange);
-    ofxDatGuiTextInput* parameterMax = addParameter->addTextInput("Max value", "1");
+    ofxDatGuiTextInput* parameterMax = addParameter->addTextInput("Max", "1");
     parameterMax->onTextInputEvent(this, &DKLua::onParameterMaxChange);
-    ofxDatGuiTextInput* parameterPrecision = addParameter->addTextInput("Precision", "2");
+    ofxDatGuiTextInput* parameterPrecision = addParameter->addTextInput("Decimals", "2");
     parameterPrecision->onTextInputEvent(this, &DKLua::onParameterPrecisionChange);
     
     ofxDatGuiButton* addParameterButton = addParameter->addButton("ADD");

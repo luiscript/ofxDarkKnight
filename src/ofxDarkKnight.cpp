@@ -319,7 +319,7 @@ void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
             //loop all the wires to find an input match
             for(auto it = wires.begin(); it != wires.end(); it++)
             {
-                //true if the input clicked is on the list
+                //true if the input clicked is on the list (existing cable)
                 // we need to disconect the wire and delete it from the list
                 if(it->getInput() == input)
                 {
@@ -327,8 +327,15 @@ void ofxDarkKnight::checkOutputConnection(float x, float y, string moduleName)
                     currentWire->setConnectionType(input->getConnectionType());
                     currentWire->setOutputConnection(it->getOutput());
                     currentWire->outputModule = it->outputModule;
-                    //if the disconected input is an FBO remove reference
-                    if (currentWire->getConnectionType() == DKConnectionType::DK_FBO)
+                    
+                    if (input->getConnectionType() == DKConnectionType::DK_MULTI_FBO)
+                    {
+                        int connectionIndex(input->getIndex());
+                        input->setFbo(nullptr);
+                        it->inputModule->setFbo(nullptr, connectionIndex);
+                        currentWire->fbo = it->outputModule->getFbo();
+                    }
+                    else if (currentWire->getConnectionType() == DKConnectionType::DK_FBO)
                     {
 						input->setFbo(nullptr);
                         it->inputModule->setFbo(nullptr);
@@ -370,16 +377,26 @@ void ofxDarkKnight::checkInputConnection(float x, float y, string moduleName)
         if(input != nullptr && currentWire != nullptr &&
            (module.second->getName() == moduleName || moduleName == "*"))
         {
+            currentWire->setInputConnection(input);
+            currentWire->setInputModule(module.second);
+            
+            //les check if the input connection is a multi fbo
+            if(input->getConnectionType() == DKConnectionType::DK_MULTI_FBO &&
+               currentWire->getOutput()->getConnectionType() == DKConnectionType::DK_FBO)
+            {
+                int connectionIndex(input->getIndex());
+                auto inputCon = module.second->getInputConnection(x, y) ;
+                inputCon->setFbo(currentWire->fbo);
+                inputCon->setIndex((unsigned) input->getIndex());
+                module.second->setFbo(currentWire->fbo, connectionIndex);
+            }
             //if current dragging wire connection is different from the input break the search
-            if(input->getConnectionType() != currentWire->getOutput()->getConnectionType())
+            else if(input->getConnectionType() != currentWire->getOutput()->getConnectionType())
             {
                 currentWire = nullptr;
                 drawing = false;
                 break;
             }
-            
-            currentWire->setInputConnection(input);
-            currentWire->setInputModule(module.second);
             
             if (currentWire->getConnectionType() == DKConnectionType::DK_SLIDER)
             {

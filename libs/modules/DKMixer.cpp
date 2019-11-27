@@ -26,9 +26,9 @@ void DKMixer::setup()
     addOutputConnection(DKConnectionType::DK_FBO);
     addInputConnection(DKConnectionType::DK_EMPTY);
     addInputConnection(DKConnectionType::DK_EMPTY);
-    addInputConnection(DKConnectionType::DK_FBO);
+    addInputConnection(DKConnectionType::DK_MULTI_FBO, 0);
     addInputConnection(DKConnectionType::DK_EMPTY);
-    addInputConnection(DKConnectionType::DK_FBO);
+    addInputConnection(DKConnectionType::DK_MULTI_FBO, 1);
     addInputConnection(DKConnectionType::DK_EMPTY);
     addChainOutputConnection(DKConnectionType::DK_CHAIN);
     
@@ -37,7 +37,9 @@ void DKMixer::setup()
     alphaMaster = alpha1 = alpha2 = 1.0;
     shader.setupShaderFromSource(GL_FRAGMENT_SHADER, psBlendFragShaderGL2);
     shader.linkProgram();
-    fbos.clear();
+
+    fboInputs[0] = nullptr;
+    fboInputs[1] = nullptr;
 }
 
 void DKMixer::update()
@@ -48,26 +50,38 @@ void DKMixer::update()
 
 void DKMixer::draw()
 {
+    
     raw.begin();
     ofClear(0,0,0,0);
     shader.begin();
-    if(fbos.size() >= 1)
+    
+    int read1 = 0, read2 = 0;
+    
+    if(fboInputs[0] != nullptr)
     {
-        shader.setUniformTexture("base", fbos[0]->getTextureReference(), 1);
+        shader.setUniformTexture("base", fboInputs[0]->getTextureReference(), 1);
+        read1 = 1;
     }
-    if(fbos.size() > 1)
+    
+    if(fboInputs[1] != nullptr)
     {
-        shader.setUniformTexture("blendTgt", fbos[1]->getTextureReference(), 2);
+        shader.setUniformTexture("blendTgt", fboInputs[1]->getTextureReference(), 2);
+        read2 = 1;
     }
+    
+    
     shader.setUniform1f("alpha1", alpha1);
     shader.setUniform1f("alpha2", alpha2);
     shader.setUniform1f("master", alphaMaster);
     shader.setUniform1i("mode", blendMode);
+    shader.setUniform1i("read1", read1);
+    shader.setUniform1i("read2", read2);
+    
     drawPlane();
-
+    
     shader.end();
     raw.end();
-
+    
     numFx = 0;
     
     processChain(raw, pingPong[1-currentReadFbo], chainModule);
@@ -79,6 +93,7 @@ void DKMixer::draw()
         pingPong[currentReadFbo].draw(0,0);
         raw.end();
     }
+    
 }
 
 void DKMixer::addModuleParameters()
@@ -88,8 +103,10 @@ void DKMixer::addModuleParameters()
     addSlider("1 Alpha", alpha1, 0.0, 1.0, 1.0);
     gui->addLabel("2");
     addSlider("2 Alpha", alpha2, 0.0, 1.0, 1.0);
+    
     guiLabel = gui->addLabel(getBlendName(blendMode));
     guiLabel->setLabelAlignment(ofxDatGuiAlignment::CENTER);
+   
     auto matrix = gui->addMatrix("", 24, true);
     matrix->setRadioMode(true);
     matrix->onMatrixEvent(this, &DKMixer::onBlendModeChange);
@@ -116,32 +133,19 @@ ofFbo* DKMixer::getFbo()
     return &raw;
 }
 
-void DKMixer::setFbo(ofFbo * fboPtr)
+void DKMixer::setFbo(ofFbo * fboPtr, int fboIndex)
 {
-    if (fboPtr == nullptr)
+    
+    if(fboIndex == 0 || fboIndex == 1)
     {
-        vector<ofFbo*> fbosTemp;
-        
-        for (int i = 0; i < inputs.size(); i++)
-        {
-            if (inputs[i]->getFbo() != nullptr)
-            {
-                fbosTemp.push_back(inputs[i]->getFbo());
-            }
-        }
-        
-        fbos.clear();
-        
-        for ( int i = 0; i < fbosTemp.size(); i++)
-        {
-            fbos.push_back(fbosTemp[i]);
-        }
-        
-        fbosTemp.clear();
+        fboInputs[fboIndex] = fboPtr;
     }
-    else
+    if(fboPtr == nullptr)
     {
-        fbos.push_back(fboPtr);
+        cout << "clear raw: " << fboIndex << endl;
+        raw.begin();
+        ofClear(0,0,0,0);
+        raw.end();
     }
 }
 

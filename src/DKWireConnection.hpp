@@ -26,13 +26,14 @@
 #include "ofMain.h"
 
 enum class DKConnectionType {
-    DK_TEXTURE = 0,
-    DK_FBO = 1,
-    DK_SLIDER = 2,
-    DK_INT = 3,
-	DK_LIGHT = 4,
-    DK_CHAIN = 5,
-    DK_EMPTY = 6
+    DK_TEXTURE,
+    DK_FBO,
+    DK_SLIDER,
+    DK_INT,
+	DK_LIGHT,
+    DK_CHAIN,
+    DK_EMPTY,
+    DK_MULTI_FBO
 };
 
 struct DKFboChain
@@ -50,6 +51,7 @@ private:
     double * scale;
     ofFbo * fboPtr;
 	ofLight* light;
+    unsigned connectionIndex = 0;
 public:
     void setup(ofPoint, string);
     void setup(ofPoint, DKConnectionType);
@@ -64,11 +66,13 @@ public:
     double * getScale();
     DKConnectionType getConnectionType();
     ofColor getWireConnectionColor();
+    unsigned getIndex();
     
     void setScale(double *);
     void setWireConnectionType(DKConnectionType);
     void setWireConnectionPos(ofPoint);
 	void setName(string);
+    void setIndex(unsigned);
     
     DKWireConnection * testWireConnection(float, float);
     

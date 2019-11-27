@@ -201,11 +201,29 @@ STRINGIFY
  uniform float alpha1;
  uniform float alpha2;
  uniform float master;
+ uniform int read1;
+ uniform int read2;
  
  void main()
  {
-     vec4 baseCol = texture2DRect(base, gl_TexCoord[0].st);
-     vec4 blendCol = texture2DRect(blendTgt, gl_TexCoord[0].st);
+     vec4 baseCol;
+     vec4 blendCol;
+     
+     if(read1 == 1)
+     {
+         baseCol = texture2DRect(base, gl_TexCoord[0].st);
+     } else
+     {
+         baseCol = vec4(0,0,0,0);
+     }
+     
+     if(read2 == 1)
+     {
+         blendCol = texture2DRect(blendTgt, gl_TexCoord[0].st);
+     } else
+     {
+         blendCol = vec4(0,0,0,0);
+     }
      
      baseCol *= alpha1;
      blendCol *= alpha2;
@@ -328,7 +346,7 @@ public:
     void draw();
     void addModuleParameters();
     ofFbo* getFbo();
-    void setFbo(ofFbo*);
+    void setFbo(ofFbo*, int);
     string getBlendName(int);
     void onBlendModeChange(ofxDatGuiMatrixEvent);
 private:
@@ -342,7 +360,7 @@ private:
     
     ofFbo raw;
     ofFbo pingPong[2];
-    vector<ofFbo*> fbos;
+    ofFbo* fboInputs[2];
     float alpha1;
     float alpha2;
     float alphaMaster;

@@ -369,6 +369,14 @@ void DKModule::addInputConnection(DKConnectionType t)
     inputs.push_back(input);
 }
 
+void DKModule::addInputConnection(DKConnectionType t, int connectionIndex)
+{
+    DKWireConnection * input = new DKWireConnection;
+    input->setWireConnectionType(t);
+    input->setIndex((unsigned) connectionIndex);
+    inputs.push_back(input);
+}
+
 void DKModule::addOutputConnection(DKConnectionType t)
 {
     DKWireConnection * output = new DKWireConnection;

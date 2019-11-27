@@ -150,6 +150,7 @@ public:
     void addSlider(string, float &, float, float, float, int);
     
     void addInputConnection(DKConnectionType);
+    void addInputConnection(DKConnectionType, int);
     void addOutputConnection(DKConnectionType);
     void addChainOutputConnection(DKConnectionType);
 

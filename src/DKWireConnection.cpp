@@ -75,6 +75,11 @@ DKConnectionType DKWireConnection::getConnectionType()
     return connectionType;
 }
 
+unsigned DKWireConnection::getIndex()
+{
+    return connectionIndex;
+}
+
 DKWireConnection * DKWireConnection::testWireConnection(float x, float y)
 {
     ofPoint p = getWireConnectionPos();
@@ -91,6 +96,11 @@ float DKWireConnection::getDist(DKWireConnection * wire)
 void DKWireConnection::setScale(double * sc)
 {
     scale = sc;
+}
+
+void DKWireConnection::setIndex(unsigned indexValue)
+{
+    connectionIndex = indexValue;
 }
 
 double * DKWireConnection::getScale()
@@ -130,7 +140,8 @@ void DKWireConnection::setLight(ofLight* l)
 
 ofColor DKWireConnection::getWireConnectionColor()
 {
-	if (connectionType == DKConnectionType::DK_FBO) return ofColor(180, 180, 0);
+	if (connectionType == DKConnectionType::DK_FBO
+        || connectionType == DKConnectionType::DK_MULTI_FBO) return ofColor(180, 180, 0);
 	if (connectionType == DKConnectionType::DK_SLIDER) return ofColor(255, 255, 255);
 	if (connectionType == DKConnectionType::DK_LIGHT) return ofColor(0, 180, 180);
     if (connectionType == DKConnectionType::DK_CHAIN) return ofColor(226, 88, 33);
