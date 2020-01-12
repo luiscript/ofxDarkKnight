@@ -55,6 +55,7 @@ private:
     bool drawFbo = false;
     bool hasInput = false;
     bool drawMode = false;
+    bool updateMediaPool = false;
     DKModule * currentCanvas;
 
     ofFbo mainFbo;

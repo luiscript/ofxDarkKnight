@@ -26,10 +26,12 @@ void DKLua::setup()
 {
     loaded = gotTexture = false;
 
-    fbo.allocate(getModuleWidth(), getModuleHeight());
-    fbo.begin();
-    ofClear(0, 0, 0, 0);
-    fbo.end();
+    
+    fbo = new ofFbo;
+    fbo->allocate(getModuleWidth(), getModuleHeight(), GL_RGBA);
+    fbo->begin();
+    ofClear(0, 0, 0, 255);
+    fbo->end();
     
     parameterName = "";
     min = 0.0;
@@ -80,9 +82,9 @@ void DKLua::draw()
 {
     if (loaded)
     {
-        fbo.begin();
+        fbo->begin();
         lua.scriptDraw();
-        fbo.end();
+        fbo->end();
     }
 }
 
@@ -90,9 +92,9 @@ void DKLua::draw()
 void DKLua::addModuleParameters()
 {
     ofxDatGuiFolder* DKLuaSettings = gui->addFolder("SCRIPT SETTINGS");
-    auto newButtton = DKLuaSettings->addButton("New Script");
-    auto openButton = DKLuaSettings->addButton("Open Script");
-    auto reloadButton = DKLuaSettings->addButton("Reload Script");
+    auto newButtton = DKLuaSettings->addButton("New");
+    auto openButton = DKLuaSettings->addButton("Open");
+    auto reloadButton = DKLuaSettings->addButton("Reload");
     
     newButtton->onButtonEvent(this, &DKLua::onSettingsButtonPress);
     openButton->onButtonEvent(this, &DKLua::onSettingsButtonPress);
@@ -119,16 +121,16 @@ void DKLua::addModuleParameters()
 
 void DKLua::onSettingsButtonPress(ofxDatGuiButtonEvent e)
 {
-    if (e.target->getName() == "New Script")
+    if (e.target->getName() == "New")
     {
         fileDialog.setup();
-        fileDialog.saveFile("New script", "Create new script", "live.lua");
+        fileDialog.saveFile("New", "Create new script", "live.lua");
     
     }
-    else if (e.target->getName() == "Open Script")
+    else if (e.target->getName() == "Open")
     {
         fileDialog.setup();
-        fileDialog.openFile("Open script", "Open script");
+        fileDialog.openFile("Open", "Open script");
     }
     else if( e.target->getName() == "Reload Script")
     {
@@ -139,7 +141,7 @@ void DKLua::onSettingsButtonPress(ofxDatGuiButtonEvent e)
 void DKLua::onFileDialogResponse(ofxThreadedFileDialogResponse& response) {
     fileDialog.stop();
     
-    if (response.id == "Open script")
+    if (response.id == "Open")
     {
         script = response.filepath;
         scriptFile = ofFile(script);
@@ -154,21 +156,12 @@ void DKLua::onFileDialogResponse(ofxThreadedFileDialogResponse& response) {
             loaded = true;
         }
     }
-    else if (response.id == "New script")
+    else if (response.id == "New")
     {
         const GLchar* luas =
-        R"END(function setup()\nend
-function update()
-end
-
-function draw()
+        R"END(function draw()
 of.clear(0)
-end
-
-function exit()
-end
-
-)END";
+end)END";
         script = response.filepath;
         ofstream dest(script.c_str(), ios::binary);
         dest << luas;
@@ -248,11 +241,11 @@ void DKLua::onParameterPrecisionChange(ofxDatGuiTextInputEvent e)
 
 ofFbo * DKLua::getFbo()
 {
-    return &fbo;
+    return fbo;
 }
 
-void DKLua::errorReceived(string& msg) {
-    ofLogNotice() << "got a script error: " << msg;
+void DKLua::errorReceived(string& msg)
+{
     lua.scriptExit();
     lua.clear();
 }
@@ -275,8 +268,7 @@ bool DKLua::filesChanged()
     return fileChanged;
 }
 
-// ---------------------------------------------------------------------------------------------------------------------------------------------------
-//
+
 std::time_t DKLua::getLastModified( ofFile& _file )
 {
     if( _file.exists() )
@@ -289,8 +281,7 @@ std::time_t DKLua::getLastModified( ofFile& _file )
     }
 }
 
-// ---------------------------------------------------------------------------------------------------------------------------------------------------
-//
+
 void DKLua::setMillisBetweenFileCheck( int _millis )
 {
     millisBetweenFileCheck = _millis;

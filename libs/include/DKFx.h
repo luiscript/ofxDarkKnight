@@ -24,5 +24,6 @@
 #include "DKFXColorInv.h"
 #include "DKFXColorSub.h"
 #include "DKFXMirror.h"
+#include "DKFXRotate.h"
 #include "DKFXTiltShiftH.h"
 

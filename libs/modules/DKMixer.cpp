@@ -13,13 +13,21 @@ void DKMixer::setup()
     s.width = getModuleWidth();
     s.height = getModuleHeight();
     s.textureTarget = GL_TEXTURE_RECTANGLE_ARB;
+    s.internalformat = GL_RGBA;
     
     for (int i = 0; i < 2; ++i)
     {
         pingPong[i].allocate(s);
+        pingPong[i].begin();
+        ofClear(0,0,0,0);
+        pingPong[i].end();
     }
     
     raw.allocate(s);
+    raw.begin();
+    ofClear(0,0,0,0);
+    raw.end();
+    
     
     numFx = currentReadFbo = 0;
     
@@ -50,9 +58,8 @@ void DKMixer::update()
 
 void DKMixer::draw()
 {
-    
     raw.begin();
-    ofClear(0,0,0,0);
+    ofClear(0,0,0,255);
     shader.begin();
     
     int read1 = 0, read2 = 0;
@@ -89,7 +96,7 @@ void DKMixer::draw()
     if(numFx > 0)
     {
         raw.begin();
-        ofClear(0,0,0,0);
+        ofClear(0,0,0,255);
         pingPong[currentReadFbo].draw(0,0);
         raw.end();
     }
@@ -142,7 +149,6 @@ void DKMixer::setFbo(ofFbo * fboPtr, int fboIndex)
     }
     if(fboPtr == nullptr)
     {
-        cout << "clear raw: " << fboIndex << endl;
         raw.begin();
         ofClear(0,0,0,0);
         raw.end();

@@ -33,11 +33,8 @@ private:
     bool drawFbo;
     bool gotTexture;
     bool loaded;
-    ofFbo internalFbo;
-    ofFbo * texture;
-    ofShader shader;
     int numParameters;
-    ofFbo fbo;
+    ofFbo *fbo;
     string parameterName;
     float min;
     float max;
@@ -74,10 +71,6 @@ public:
     
     void exit();
     void unMount();
-    
-    // override the initialisation functions
-    bool load(string shaderName );
-    bool load(string vertName, string fragName, string geomName);
     
     void setMillisBetweenFileCheck( int _millis );
     

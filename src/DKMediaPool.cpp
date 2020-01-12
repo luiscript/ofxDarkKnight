@@ -37,7 +37,7 @@ void DKMediaPool::init()
     font.load("ofxbraitsch/fonts/HelveticaNeueLTStd-Md.otf", 15, true, true);
     setModuleHasChild(true);
     alpha = 255;
-    yOffsetGui = 20;
+    yOffsetGui = 22;
     gui->setWidth(moduleGuiWidth * amp);
     numItems = 0;
 
@@ -134,6 +134,11 @@ void DKMediaPool::update()
 void DKMediaPool::draw()
 {
     ofPoint pos = gui->getPosition();
+    if(updateMediaPool)
+    {
+        drawMediaPool();
+        updateMediaPool = false;
+    }
     mediaPoolFbo.draw(pos.x, pos.y + yOffsetGui);
 	if (currentCanvas != nullptr)
 	{
@@ -147,10 +152,10 @@ void DKMediaPool::drawMediaPool()
 {
     mediaPoolFbo.begin();
     ofClear(0,0,0,0);
-    int width = gui->getWidth();
+    int width = gui->getWidth() + 2;
     float x = gui->getPosition().x;
     float y = 0.25 * width;
-    float cellWidth = width/4 + 2;
+    float cellWidth = width/4;
     float cellHeight = cellWidth * 0.5615;
 
     ofPushStyle();
@@ -160,6 +165,7 @@ void DKMediaPool::drawMediaPool()
     {
         for (int j = 0; j < 4; j++)
         {
+            ofFill();
             int curIndex = i + 4 * j;
             ofSetColor(66,66,74);
             ofDrawRectangle(i*cellWidth, j*cellHeight, cellWidth-2, cellHeight - 2);
@@ -170,13 +176,16 @@ void DKMediaPool::drawMediaPool()
             }
             if(index == curIndex)
             {
-                ofSetColor(232, 181, 54, 128);
-                ofDrawRectangle(i*cellWidth, j*cellHeight, cellWidth - 2, cellHeight - 2);
+                ofSetColor(232, 181, 54, 255);
+                ofSetLineWidth(1);
+                ofNoFill();
+                ofDrawRectangle(i*cellWidth + 1, j*cellHeight + 1, cellWidth - 4, cellHeight - 4);
             }
             if(getModuleMidiMapMode())
             {
-                /*ofSetColor(0, 200);
-                ofDrawRectangle(i*cellWidth, j*cellHeight, cellWidth - 2, cellHeight - 2);*/
+                ofFill();
+                ofSetColor(0, 200);
+                ofDrawRectangle(i*cellWidth, j*cellHeight, cellWidth - 2, cellHeight - 2);
                 
                 for (pair<string, int> element : midiMappings) {
                     if(element.second == curIndex)
@@ -186,11 +195,11 @@ void DKMediaPool::drawMediaPool()
                     }
                 }
                 
-                /*if(index == curIndex)
+                if(index == curIndex)
                 {
                     ofSetColor(255, 128);
-                    ofDrawRectangle(i*cellWidth, j*cellHeight, cellWidth - 2, cellHeight - 2);
-                }*/ 
+                    ofDrawRectangle(i*cellWidth, j*cellHeight, cellWidth - 4, cellHeight - 2);
+                }
             }
         }
     }
@@ -220,7 +229,6 @@ void DKMediaPool::updatePoolIndex(int mouseX, int mouseY)
             drawMediaPool();
             triggerPoolMedia(index);
         }
-        
     }
 }
 
@@ -243,6 +251,8 @@ void DKMediaPool::triggerPoolMedia(int ind)
         mainFbo.begin();
         ofClear(0,0,0,0);
         mainFbo.end();
+        
+        updateMediaPool = true;
     }
 }
     
@@ -305,6 +315,7 @@ void DKMediaPool::gotMidiMapping(string mapping)
             if(index >= 0)
             {
                 midiMappings.insert({mapping, index});
+                updateMediaPool = true;
             }
         }
     }
