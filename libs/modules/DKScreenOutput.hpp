@@ -40,6 +40,8 @@ private:
 public:
     void setup();
     void drawDisplay(ofEventArgs & args);
+	void closeDisplay(ofEventArgs& args);
+
     void setFbo(ofFbo *);
     void addModuleParameters();
     ofFbo * getFbo();

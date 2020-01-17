@@ -218,7 +218,7 @@ void Constellation::draw()
 
 void Constellation::addModuleParameters()
 {
-    ofxDatGuiMatrix * matrix = gui->addMatrix("drawing modes", 8, true);
+    ofxDatGuiMatrix * matrix = gui->addMatrix("mode", 8, true);
     matrix->onMatrixEvent(this, &Constellation::onDrawingModeChange);
     matrix->setRadioMode(true);
     matrix->setSelected({0});

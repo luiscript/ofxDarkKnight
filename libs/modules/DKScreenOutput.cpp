@@ -96,6 +96,7 @@ void DKScreenOutput::onVideoOutputChange(ofxDatGuiDropdownEvent e)
         display = ofCreateWindow(settings);
         
         ofAddListener(display->events().draw, this, &DKScreenOutput::drawDisplay);
+		ofAddListener(display->events().exit, this, &DKScreenOutput::closeDisplay);
     } else {
         if(display != nullptr)
         {
@@ -121,6 +122,15 @@ void DKScreenOutput::drawDisplay(ofEventArgs & args)
 void DKScreenOutput::unMount()
 {
     
+}
+
+void DKScreenOutput::closeDisplay(ofEventArgs& args)
+{
+	ofRemoveListener(display->events().draw, this, &DKScreenOutput::drawDisplay);
+	display.reset();
+	display = nullptr;
+
+	gui->getDropdown("Output")->select(0);
 }
 
 
