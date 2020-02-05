@@ -1,9 +1,24 @@
-//
-//  DKChain.cpp
-//  BatMapp
-//
-//  Created by luiscript on 17/11/19.
-//
+/*
+ Copyright (C) 2020 Luis Fernando García Pérez [http://luiscript.com]
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+ */
 
 #include "DKChain.h"
 
@@ -13,22 +28,13 @@ void DKChain::setup()
     s.width = getModuleWidth();
     s.height = getModuleHeight();
     s.textureTarget = GL_TEXTURE_RECTANGLE_ARB;
-    //s.internalformat = GL_RGBA;
-    //s.numSamples = 4;
-    //s.numColorbuffers = 4;
-    
-    //raw.allocate(<#int width#>, <#int height#>)
-    
-    for (int i = 0; i < 2; ++i)
+
+    for (int i = 0; i < 2; i++)
     {
         pingPong[i].allocate(s);
     }
     
-//    s.useDepth = true;
-//    s.depthStencilInternalFormat = GL_DEPTH_COMPONENT24;
-//    s.depthStencilAsTexture = true;
     raw.allocate(s);
-
     numFx = currentReadFbo = 0;
 
     addInputConnection(DKConnectionType::DK_FBO);
@@ -57,11 +63,6 @@ void DKChain::draw()
         pingPong[currentReadFbo].draw(0,0);
     }
     raw.end();
-    
-    
-//    raw.getTexture().draw(10, 10, 300, 300);
-//    raw.getDepthTexture().draw(320, 10, 300, 300);
-//    pingPong[currentReadFbo].draw(630, 10, 300, 300);
 }
 
 void DKChain::processChain(ofFbo& read, ofFbo& write, DKModule* cModule)
@@ -79,7 +80,7 @@ void DKChain::processChain(ofFbo& read, ofFbo& write, DKModule* cModule)
     {
         pingPong[currentReadFbo].begin();
         ofClear(0,0,0,0);
-        fboIn->draw(0,0);
+		if(fboIn != nullptr) fboIn->draw(0,0);
         pingPong[currentReadFbo].end();
     }
 }

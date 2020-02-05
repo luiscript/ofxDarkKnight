@@ -264,6 +264,11 @@ DKModule* DKModule::getChainModule()
     return chainModule;
 }
 
+float DKModule::getZoom()
+{
+	return zoom;
+}
+
 void DKModule::onSliderEventParent(ofxDatGuiSliderEvent e)
 {
     if(e.target->getMidiMode())
