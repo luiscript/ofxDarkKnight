@@ -19,7 +19,7 @@ void DKWebCam::setup()
 		}
 	}
 
-	vidGrabber.setDeviceID(1);
+	vidGrabber.setDeviceID(0);
 	vidGrabber.setDesiredFrameRate(60);
 	vidGrabber.initGrabber(camWidth, camHeight);
 	
@@ -56,7 +56,7 @@ void DKWebCam::draw()
 	//if (drawFbo)
 	//{
 		ofPushMatrix();
-		ofTranslate(gui->getPosition().x, gui->getPosition().y + 20);
+		ofTranslate(gui->getPosition().x, gui->getPosition().y + 50);
 		ofScale(scaleX, scaleY);
 		fbo->draw(0, 0);
 		ofPopMatrix();
@@ -65,10 +65,22 @@ void DKWebCam::draw()
 
 void DKWebCam::addModuleParameters()
 {
-
+	int numDevices = vidGrabber.listDevices().size();
+	ofxDatGuiMatrix* matrix = gui->addMatrix("cam index", numDevices, true);
+	matrix->onMatrixEvent(this, &DKWebCam::onInputChange);
+	matrix->setRadioMode(true);
+	matrix->setSelected({ 0 });
 }
 	
 ofFbo* DKWebCam::getFbo()
 {
 	return fbo;
+}
+
+void DKWebCam::onInputChange(ofxDatGuiMatrixEvent &e)
+{
+	vidGrabber.close();
+	vidGrabber.setDeviceID(e.child);
+	vidGrabber.setDesiredFrameRate(60);
+	vidGrabber.initGrabber(camWidth, camHeight);
 }

@@ -41,4 +41,5 @@ public:
 	void draw();
 	void addModuleParameters();
 	ofFbo* getFbo();
+	void onInputChange(ofxDatGuiMatrixEvent& e);
 };
