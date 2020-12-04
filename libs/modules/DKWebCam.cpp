@@ -77,7 +77,7 @@ ofFbo* DKWebCam::getFbo()
 	return fbo;
 }
 
-void DKWebCam::onInputChange(ofxDatGuiMatrixEvent &e)
+void DKWebCam::onInputChange(ofxDatGuiMatrixEvent e)
 {
 	vidGrabber.close();
 	vidGrabber.setDeviceID(e.child);
