@@ -431,7 +431,7 @@ void ofxDarkKnight::checkInputConnection(float x, float y, string moduleName)
 void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
 {
     bool mediaPoolFounded = false;
-    if(dragInfo.files.size() > 0)
+   /* if(dragInfo.files.size() > 0)
     {
         ofFile file(dragInfo.files[0]);
         if(file.exists())
@@ -480,7 +480,7 @@ void ofxDarkKnight::handleDragEvent(ofDragInfo & dragInfo)
                 }
             }
         }
-    }
+    }*/
 }
 
 

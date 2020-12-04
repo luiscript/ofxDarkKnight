@@ -3,15 +3,12 @@
 
 //========================================================================
 int main( ){
-    
     ofGLFWWindowSettings settings;
     settings.resizable = true;
     settings.setSize(1920, 1080);
-
-    settings.windowMode = OF_WINDOW;
     
     shared_ptr<ofAppBaseWindow> mainWindow = ofCreateWindow(settings);
-    
+
     shared_ptr<ofApp> mainApp(new ofApp);
     
     mainApp->mainWindow = mainWindow;

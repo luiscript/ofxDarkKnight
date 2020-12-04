@@ -6,28 +6,32 @@ void ofApp::setup()
     app.mainWindow = mainWindow;
     ofBackground(17,17,17);
 
-    app.factory["ABLETON LINK"] = &createInstance<ofxDarkKnightAbletonLink>;
-	app.factory["COLOR INVERTER"] = &createInstance<DKColorInverter>;
-	app.factory["COLOR SHADER"] = &createInstance<ColorShader>;
-	app.factory["INVERTER"] = &createInstance<ParamInverter>;
-	app.factory["LIGHT"] = &createInstance<DarkKnightLight>;
-	app.factory["LFO"] = &createInstance<LfoSlider>;
-	app.factory["MAPPING GRID"] = &createInstance<ofxDarkKnightMapping>;
-	app.factory["MIDI CLOCK IN"] = &createInstance<DarkKnightMidiClockIn>;
-	app.factory["MIDI CONTROL IN"] = &createInstance<DarkKnightMidiControlIn>;
-	app.factory["MIDI CONTROL OUT"] = &createInstance<DarkKnightMidiControlOut>;
-	app.factory["MIXER"] = &createInstance<Mixer>;
-	app.factory["OSC RECEIVER"] = &createInstance<DarkKnightOscClient>;
-	app.factory["OSC SENDER"] = &createInstance<DarkKnightOscServer>;
-	app.factory["PERLIN NOISE"] = &createInstance<NoiseSlider>;
-	app.factory["POST PROCESSING FX"] = &createInstance<DarkKnightPostProcessing>;
-	app.factory["PREVIEW"] = &createInstance<Preview>;
-	app.factory["SCREEN OUTPUT"] = &createInstance<ScreenOutput>;
-	app.factory["SKETCH POOL"] = &createInstance<MediaPool>;
-	app.factory["SKETCH POOL: FREE"] = &createInstance<Basic>;
-	app.factory["SPOUT SERVER"] = &createInstance<DarkKnightTextureServer>;
-	app.factory["SPOUT CLIENT"] = &createInstance<DarkKnightTextureClient>;
-	app.factory["VIDEO RECORDER"] = &createInstance<DarkKnightVideoRecorder>;
+    app.moduleList["ABLETON LINK"] = &moduleType<DKAbletonLink>;
+    app.moduleList["CHAIN FX"] = &moduleType<DKChain>;
+    app.moduleList["FX AA"] = &moduleType<DKFXAntiAliasing>;
+    app.moduleList["FX INVERT"] = &moduleType<DKFXColorInv>;
+    app.moduleList["FX MIRROR"] = &moduleType<DKFXMirror>;
+    app.moduleList["FX RGB SUB"] = &moduleType<DKFXColorSub>;
+    app.moduleList["FX ROTATE"] = &moduleType<DKFXRotate>;
+    app.moduleList["FX TILT SHIFT H"] = &moduleType<DKFXTiltShiftH>;
+    app.moduleList["INVERTER"] = &moduleType<DKSliderInverter>;
+    app.moduleList["LIGHT"] = &moduleType<DKLight>;
+    app.moduleList["LIVE SCRIPT"] = &moduleType<DKLua>;
+    app.moduleList["LIVE SHADER"] = &moduleType<DKLiveShader>;
+    app.moduleList["LFO"] = &moduleType<DKLfo>;
+    app.moduleList["MAPPING GRID"] = &moduleType<DKMapping>;
+    app.moduleList["MIDI CLOCK IN"] = &moduleType<DKMidiClockIn>;
+    app.moduleList["MIDI CONTROL IN"] = &moduleType<DKMidiControlIn>;
+    app.moduleList["MIDI CONTROL OUT"] = &moduleType<DKMidiControlOut>;
+    app.moduleList["MIXER"] = &moduleType<DKMixer>;
+    app.moduleList["OSC RECEIVER"] = &moduleType<DKOscClient>;
+    app.moduleList["OSC SENDER"] = &moduleType<DKOscServer>;
+    app.moduleList["PERLIN NOISE"] = &moduleType<DKPerlin>;
+    app.moduleList["PREVIEW"] = &moduleType<DKPreview>;
+    app.moduleList["PROJECT"] = &moduleType<DKConfig>;
+    app.moduleList["SCREEN OUTPUT"] = &moduleType<DKScreenOutput>;
+    app.moduleList["SKETCH POOL"] = &moduleType<DKMediaPool>;
+    app.moduleList["SKETCH POOL: DEMO"] = &moduleType<Basic>;
 }
 
 void ofApp::update()

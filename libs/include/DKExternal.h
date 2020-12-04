@@ -22,7 +22,6 @@
 
 
 #include "DKAbletonLink.hpp"
-#include "DKHap.hpp"
 #include "DKLua.h"
 #include "DKMapping.hpp"
 #include "DKMidi.hpp"

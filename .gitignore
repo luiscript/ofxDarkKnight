@@ -8,3 +8,4 @@ examples/**/[Rr]elease*/
 
 examples/basic/bin
 examples/allModulesExample/bin
+.DS_Store

@@ -1,28 +1,30 @@
-## ofxDarkKnight ##
+## ofxDarkKnight
 
 ![ofxDarkKnight](ofxaddons_thumbnail.png)
 
 **Node based programming environment for openframeworks**
 
 ![ofxDarkKnight](screenshot.png)
+
 # Getting started
 
 ## Download openFrameworks
-ofxDarkKnight it's built on top of [openframeworks](https://openframeworks.cc/) v0.10.1 and is tested on Mac OS and Windows. 
 
-Download [openFrameworks v0.10.1](https://openframeworks.cc/download) for your development platform. Open an example and run it to make sure that everything is working correctly.
+ofxDarkKnight it's built on top of [openframeworks](https://openframeworks.cc/) v0.11.0 and is tested on Mac OS and Windows.
+
+Download [openFrameworks v0.11.0](https://openframeworks.cc/download) for your development platform. Open an example and run it to make sure that everything is working correctly.
 
 If you're having problems running the examples please [read this guide](https://openframeworks.cc/ofBook/chapters/setup_and_project_structure.html#runningexamples)
 
-
 ## Install ofxDarkKnight
+
 Download and install [ofxDarkKnight](https://github.com/luiscript/ofxDarkKnight/) addon into your `openframeworks/addons/` directory or install it using git:
-  
-  `git clone https://github.com/luiscript/ofxDarkKnight/`
+
+`git clone https://github.com/luiscript/ofxDarkKnight/`
 
 ## Add DarkKnight modules
 
- `cd ofxDarkKnight && git submodule update --init --recursive`
+`cd ofxDarkKnight && git submodule update --init --recursive`
 
 ## Required addons
 
@@ -46,7 +48,7 @@ Download and install [ofxDarkKnight](https://github.com/luiscript/ofxDarkKnight/
 
 ofxOsc (included in openframeworks)
 
-**To properly use the DarkKnightVideoRecorder module you will need to have ffmpeg and Hap codec installed in your computer, otherwise you won't be able to export your video. If you don't want to install them just don't try to export your sequence, the recording process should work"
+\*\*To properly use the DarkKnightVideoRecorder module you will need to have ffmpeg and Hap codec installed in your computer, otherwise you won't be able to export your video. If you don't want to install them just don't try to export your sequence, the recording process should work"
 
 # Running the examples
 
@@ -82,7 +84,7 @@ If you want to start a new project from scratch, follow the next steps:
 
 - Copy the `ofxDarkKnight/data` content into `yourNewProject/bin/data` directory
 
-## Including the addon 
+## Including the addon
 
 - Add ofxDarkKnight to your code
 - Create an instance of ofxDarkKnight class and call it `app`.
@@ -96,7 +98,7 @@ If you want to start a new project from scratch, follow the next steps:
 class ofApp : public ofBaseApp
 {
     public:
-    
+
     void setup();
     void update();
     void draw();
@@ -117,7 +119,6 @@ Then just call `app.update()` in the main `update()`function and `app.draw()` in
 You may need to add <code>#include "unordered_map"</code> in your <code>ofApp.h</code> file.
 </aside>
 
-
 > ofApp.cpp:
 
 ```c++
@@ -125,8 +126,8 @@ void ofApp::setup()
 {
   ofBackground(0);
 
-	app.factory["PREVIEW"] = &createInstance<Preview>;
-	app.factory["SKETCH POOL"] = &createInstance<MediaPool>;
+  app.moduleList["PREVIEW"] = &createInstance<Preview>;
+  app.moduleList["SKETCH POOL"] = &createInstance<MediaPool>;
 
   app.setup();
 }
@@ -144,7 +145,6 @@ void ofApp::draw()
 
 ## Setup the SCREEN OUTPUT module
 
-
 The SCREEN OUTPUT module requires to share the OpenGL context with the main window. To do that, create a `shared_ptr<ofAppBaseWindow>` property of the ofApp class.
 
 Add the window to the app by modifying the `mainWindow` property.
@@ -159,6 +159,7 @@ Modify the `main.cpp` file to add some custom configuration to the window.
     shared_ptr<ofAppBaseWindow> mainWindow;
 }
 ```
+
 > ofApp.cpp:
 
 ```c++
@@ -177,33 +178,30 @@ void ofApp::setup()
 #include "ofApp.h"
 
 int main( ){
-    
+
     ofGLFWWindowSettings settings;
     settings.resizable = true;
     settings.setSize(1920, 1080);
     settings.windowMode = OF_WINDOW;
-    
+
     shared_ptr<ofAppBaseWindow> mainWindow = ofCreateWindow(settings);
     shared_ptr<ofApp> mainApp(new ofApp);
-    
+
     mainApp->mainWindow = mainWindow;
     ofRunApp(mainWindow, mainApp);
     ofRunMainLoop();
 }
-````
-
+```
 
 # Create new modules
 
-The fun part of ofxDarkKnight begins a soon as you start creating your own modules. The addon provides c++ clases that will help you create new modules with ease. For now you can create only 2 types of modules: Stand alone & Drawer modules. 
+The fun part of ofxDarkKnight begins a soon as you start creating your own modules. The addon provides c++ clases that will help you create new modules with ease. For now you can create only 2 types of modules: Stand alone & Drawer modules.
 
-The **stand alone** modules are designed to interact with your sketches in different ways. For instance you may want to add a MIDI controller to modify parameters or a Syphon server to send your graphics to other app in real time. 
+The **stand alone** modules are designed to interact with your sketches in different ways. For instance you may want to add a MIDI controller to modify parameters or a Syphon server to send your graphics to other app in real time.
 
 The **drawer modules** are designed to draw something on the screen, this could be a video, generative animation, shader or anything that can draw on the screen.
 
-
 ## The Module Class
-
 
 To create a new module follow the steps:
 
@@ -211,7 +209,6 @@ To create a new module follow the steps:
 2. Include `module.hpp` file (provided with the addon).
 3. Create a new c++ class that inheriths from `Module` class.
 4. Implement the virtual functions of `Module` class
-
 
 > Stand alone module header template
 
@@ -233,20 +230,17 @@ class DarkNightTemplate : public Module
 
 This are the list of virtual functions that you should implement in your module:
 
-functions | description
----------- | -------
-void setup() | Runs once at the begining of the sketch.
-void update() | Runs every frame to update data.
-void draw() | Runs every frame to draw something on the screen.
-void addModuleParameters() | Runs once after setup, here you will add all the parameters that your module needs. ofxDarkKnight uses ofxDatGui, to learn how to add paramemeters please read the [ofxDatGui docs](https://braitsch.github.io/ofxDatGui/). Right now only sliders are supported.
-void setFbo(ofFbo *) | This function will be called when an external module conects it's main output with the current module's input and it will recieve a pointer to an ofFbo that contains the graphics.
-ofFbo getFbo() | This function will be called when you try to connect the current module's output to an external module's input. It should return an ofFbo pointer that contains the drawing.
-void unMount() | Runs once when the app closes.
-
-
+| functions                  | description                                                                                                                                                                                                                                                       |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| void setup()               | Runs once at the begining of the sketch.                                                                                                                                                                                                                          |
+| void update()              | Runs every frame to update data.                                                                                                                                                                                                                                  |
+| void draw()                | Runs every frame to draw something on the screen.                                                                                                                                                                                                                 |
+| void addModuleParameters() | Runs once after setup, here you will add all the parameters that your module needs. ofxDarkKnight uses ofxDatGui, to learn how to add paramemeters please read the [ofxDatGui docs](https://braitsch.github.io/ofxDatGui/). Right now only sliders are supported. |
+| void setFbo(ofFbo \*)      | This function will be called when an external module conects it's main output with the current module's input and it will recieve a pointer to an ofFbo that contains the graphics.                                                                               |
+| ofFbo getFbo()             | This function will be called when you try to connect the current module's output to an external module's input. It should return an ofFbo pointer that contains the drawing.                                                                                      |
+| void unMount()             | Runs once when the app closes.                                                                                                                                                                                                                                    |
 
 You don't have to implement all the functions, just use the ones that you need. None function is required, it all depends on your goals.
-
 
 ## Simple drawer module
 
@@ -257,7 +251,6 @@ We will need to implement the `drawMasterOutput()` because this module will draw
 In this particular case, we will need to allocate an fbo because the drawing is generated from scratch and it do not depends on the module's input.
 
 Implement the `ofFbo * getFbo()` to pass it's drawing to the output.
-
 
 > Simple Ellipse module DarkKnightEllipse.hpp
 
@@ -271,7 +264,7 @@ class DarkKnightEllipse : public Module
     void draw();
     void addModuleParameters();
     ofFbo * getFbo();
-    
+
     private:
     ofFbo * fbo;
     int radius;
@@ -331,9 +324,7 @@ Now that we created a new module, we need to add it to the app, please refer to 
 
 Try to run the project and if everything is good you should be able to add your brand new Ellipse module and control it's size and fillColor with the module's parameters.
 
-
 Remember to include the module in the main header file <code>#include "DarkKnightEllipse.hpp"</code>
-
 
 > Simple Ellipse module DarkKnightEllipse.cpp
 
@@ -347,10 +338,9 @@ Remember to include the module in the main header file <code>#include "DarkKnigh
 
 ## Collections
 
-
 Collections are specials modules that holds up to 16 drawer modules with the hability to change between each other in real time. Look at the `ofxDarkKnight/libs/collections/basic.hpp`to see an example of a basic collection.
 
-To create a new collection you will need to follow next steps: 
+To create a new collection you will need to follow next steps:
 
 1. create a new class that inheriths from the `MediaPool` class.
 
@@ -374,15 +364,13 @@ public:
         addItem(new Terrain, "thumbnails/terrain.jpg", "TERRAIN");
         addItem(new Constellation, "thumbnails/constellation.jpg", "CONSTELLATION");
         addItem(new DarkKnightEllipse, "thumbnails/ellipse.jpg", "ELLIPSE");
-        
+
         init();
     }
 };
 ```
 
-
 ## Adding Ellipse example to the collection
-
 
 Since we're not using the Ellipse module as a stand alone module we can skip some tasks from the previus module definition:
 
@@ -447,10 +435,8 @@ void DarkKnightEllipse::addModuleParameters()
 
 MIT
 
- # Credits
+# Credits
 
 Created and maintained by [Luis Fer García](https://github.com/luiscript)
 
 This repository includes a fork from [ofxDatGui](https://github.com/braitsch/ofxDatGui) as internal dependency that was created by [Stephen Braitsch](https://github.com/braitsch).
-
-
