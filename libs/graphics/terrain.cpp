@@ -106,7 +106,7 @@ void Terrain::draw()
 void Terrain::addModuleParameters()
 {
     
-    ofxDatGuiMatrix * matrix = gui->addMatrix("drawing modes", 8, true);
+    ofxDatGuiMatrix * matrix = gui->addMatrix("mode", 8, true);
     matrix->setRadioMode(true);
     matrix->onMatrixEvent(this, &Terrain::onDrawingModeChange);
     

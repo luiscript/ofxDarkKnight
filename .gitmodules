@@ -10,9 +10,9 @@
 [submodule "libs/DKMapping"]
 	path = libs/DKMapping
 	url = https://github.com/luiscript/DKMapping
-[submodule "libs/DKSyphon"]
-	path = libs/DKSyphon
-	url = https://github.com/luiscript/DKSyphon
+[submodule "libs/DKSyphonSpout"]
+	path = libs/DKSyphonSpout
+	url = https://github.com/luiscript/DKSyphonSpout
 [submodule "libs/DKAbletonLink"]
 	path = libs/DKAbletonLink
 	url = https://github.com/luiscript/DKAbletonLink

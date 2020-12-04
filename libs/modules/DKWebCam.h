@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2019 Luis Fernando García Pérez [http://luiscript.com]
+ Copyright (C) 2020 Luis Fernando García Pérez [http://luiscript.com]
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -20,29 +20,26 @@
  SOFTWARE.
  */
 
-#ifndef DKChain_h
-#define DKChain_h
 
 #include "DKModule.hpp"
 
-class DKChain : public DKModule
+class DKWebCam : public DKModule
 {
-public:
-    void setup();
-    void update();
-    void draw();
-    ofFbo* getFbo();
-    void setFbo(ofFbo*);
 private:
+	float camWidth;
+	float camHeight;
+	ofFbo* fbo;
+	bool drawFbo = false;
+	float scaleX;
+	float scaleY;
 
-    void processChain(ofFbo&, ofFbo&, DKModule*);
-    unsigned currentReadFbo;
-    unsigned numFx = 0;
-    bool gotTexture;
-    
-    ofFbo raw;
-    ofFbo* fboIn;
-    ofFbo pingPong[2];
+	ofVideoGrabber vidGrabber;
+public:
+
+	void setup();
+	void update();
+	void draw();
+	void addModuleParameters();
+	ofFbo* getFbo();
+	void onInputChange(ofxDatGuiMatrixEvent& e);
 };
-
-#endif /* DKChain_h */

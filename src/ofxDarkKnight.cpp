@@ -40,8 +40,9 @@ void ofxDarkKnight::setup()
 	zoom = 1.0;
 	moduleId = 1;
     
+
     for(auto module : moduleList ) poolNames.push_back(module.first);
-    
+
     poolNames.sort();
     
 	float browserWidth = ofGetWidth() * 0.8;
@@ -60,18 +61,17 @@ void ofxDarkKnight::setup()
     ofAddListener(ofEvents().mouseScrolled, this, &ofxDarkKnight::handleMouseScrolled);
 	ofAddListener(ofEvents().mouseReleased, this, &ofxDarkKnight::handleMouseReleased);
 	ofAddListener(ofEvents().keyPressed,    this, &ofxDarkKnight::handleKeyPressed);
-	ofAddListener(ofEvents().keyReleased,       this, &ofxDarkKnight::handleKeyReleased);
+	ofAddListener(ofEvents().keyReleased,   this, &ofxDarkKnight::handleKeyReleased);
 	ofAddListener(ofEvents().fileDragEvent, this, &ofxDarkKnight::handleDragEvent);
 	
 	#ifdef TARGET_OSX
-	darkKnightMidiOut.openVirtualPort("ofxDarkKnight");
+		darkKnightMidiOut.openVirtualPort("ofxDarkKnight");
 	#else
 	if (darkKnightMidiOut.getNumOutPorts() > 0)
 	{
 		darkKnightMidiOut.openPort(darkKnightMidiOut.getNumOutPorts()-1);
 	}
 	#endif
-
 	addModule("PROJECT");
 
 }

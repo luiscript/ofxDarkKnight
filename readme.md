@@ -34,7 +34,7 @@ Download and install [ofxDarkKnight](https://github.com/luiscript/ofxDarkKnight/
 
 [astellato: ](https://github.com/astellato)[ofxSyphon](https://github.com/astellato/ofxSyphon) (Only for MacOS)
 
-[nariakiiwatani: ](https://github.com/nariakiiwatani)[ofxMeshWarp](https://github.com/nariakiiwatani/ofxMeshWarp)
+[nariakiiwatani: ](https://github.com/nariakiiwatani)[ofxMeshWarp](https://github.com/luiscript/ofxMeshWarp) (Fork)
 
 [bangnoise: ](https://github.com/bangnoise)[ofxHapPlayer](https://github.com/luiscript/ofxHapPlayer) (Fork) (With MacOS use libavformat branch)
 
@@ -109,15 +109,15 @@ class ofApp : public ofBaseApp
 
 ## Config the app
 
-The `setup` function of ofxDarkKnight class is expecting an `unordered_map<string, Module*>` pointer with a collection of pairs `moduleName-module` objects of type `string-Module*`.
+Before calling `app.setup()` you need to add the modules that your app will be able to access. To do that you need to add a moduleType to the module list like this:
 
-Create the data structure and send it to the app in the `setup` function of `ofApp.cpp`.
+```c++
+app.moduleList["MODULE-NAME"] = &moduleType<MODULE-CLASS>;
+```
 
-Then just call `app.update()` in the main `update()`function and `app.draw()` in the main `draw()` function.
+after adding all the modules that you require, just call `app.setup()` and you're ready to go.
 
-<aside class="notice">
-You may need to add <code>#include "unordered_map"</code> in your <code>ofApp.h</code> file.
-</aside>
+Then call `app.update()` in the main `update()` function and `app.draw()` in the main `draw()` function.
 
 > ofApp.cpp:
 
@@ -126,8 +126,8 @@ void ofApp::setup()
 {
   ofBackground(0);
 
-  app.moduleList["PREVIEW"] = &createInstance<Preview>;
-  app.moduleList["SKETCH POOL"] = &createInstance<MediaPool>;
+	app.moduleList["PREVIEW"] = &moduleType<DKPREVIEW>;
+	app.moduleList["SKETCH POOL"] = &moduleType<DKMediaPool>;
 
   app.setup();
 }
@@ -431,12 +431,16 @@ void DarkKnightEllipse::addModuleParameters()
 }
 ```
 
+# Tested on
+
+MacOS & Windows
+
 # License
 
 MIT
 
 # Credits
 
-Created and maintained by [Luis Fer García](https://github.com/luiscript)
+Created and maintained by [Luis Fernando García Pérez](https://github.com/luiscript)
 
 This repository includes a fork from [ofxDatGui](https://github.com/braitsch/ofxDatGui) as internal dependency that was created by [Stephen Braitsch](https://github.com/braitsch).

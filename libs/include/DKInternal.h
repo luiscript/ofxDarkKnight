@@ -30,3 +30,4 @@
 #include "DKPerlin.hpp"
 #include "DKScreenOutput.hpp"
 #include "DKSliderInverter.hpp"
+#include "DKWebCam.h"

@@ -58,7 +58,7 @@ private:
     float   moduleHeight;
     
     float   moduleGuiOpacity;
-    ofPoint translation;
+	ofPoint translation;
 	float	zoom;
     
     ofxDatGuiComponent * selectedComponent;
@@ -117,6 +117,7 @@ public:
     bool getModuleEnabled();
     bool getModuleHasChild();
     ofPoint getTranslation();
+	float getZoom();
     DKModule * getChainModule();
     
     void setModuleWidth(float);
